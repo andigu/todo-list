@@ -2,3 +2,4 @@
 derby.log
 masterDB/
 *.iml
+out/
