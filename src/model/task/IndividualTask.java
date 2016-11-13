@@ -6,6 +6,9 @@ import model.User;
 import java.util.Date;
 
 /**
+ * An individual task belongs to one user and one user only. It may not be shared with others. Only the owner has any
+ * form of access to it.
+ *
  * @author Andi Gu
  */
 public class IndividualTask extends Completable {

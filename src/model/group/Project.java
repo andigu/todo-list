@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * A project holds a set of collaborators and project tasks. It is completable - there is a due date, and can be marked
+ * as complete. Once it is marked as complete, it is shown as complete for all the collaborators within the project.
+ *
  * @author Andi Gu
  */
 public class Project extends Completable {

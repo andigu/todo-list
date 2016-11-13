@@ -1,9 +1,12 @@
 package model;
 
 /**
+ * All named entities and those that interact [are stored in] the database are identifiable. They have a unique id
+ * (unique to the rest of the objects of the same type). For example, all Group objects should have unique id's, but
+ * some Projects may have id's that overlap with the id's of the Group objects. It also ensures that Jackson can
+ * convert the object into a JSON.
+ *
  * @author Andi Gu
- * Class to ensure all objects that interact with the database have an id linked to the one given to it in the db
- * Additionally, ensures Jackson can convert the object into a JSON
  */
 public abstract class Identifiable {
     private final long id;

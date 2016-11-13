@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * A group holds a set of users and tasks. It is ongoing and non-completable, analogous to a class at school.
+ *
  * @author Andi Gu
  */
 public class Group extends Identifiable {

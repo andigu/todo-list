@@ -3,6 +3,9 @@ package model;
 import java.util.Date;
 
 /**
+ * A completable object implies that there is a due date, and that the object can be marked as complete. Data is
+ * kept on which user marked it as complete, and when.
+ *
  * @author Andi Gu
  */
 public abstract class Completable extends Identifiable {
