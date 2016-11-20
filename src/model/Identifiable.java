@@ -9,15 +9,19 @@ package model;
  * @author Andi Gu
  */
 public abstract class Identifiable {
-    private final long id;
+    private final Long id;
     private String name;
+
+    public Identifiable() {
+        id = null;
+    }
 
     public Identifiable(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

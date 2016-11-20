@@ -1,5 +1,5 @@
 .idea/
 derby.log
-masterDB/
+db/
 *.iml
 out/
