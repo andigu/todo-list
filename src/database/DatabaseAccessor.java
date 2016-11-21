@@ -1,4 +1,4 @@
-package db;
+package database;
 
 import model.User;
 import model.group.Group;
@@ -6,9 +6,7 @@ import model.group.Project;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
-import org.apache.derby.jdbc.ClientDataSource;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Set;
