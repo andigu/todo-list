@@ -9,6 +9,7 @@ import model.task.ProjectTask;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,9 +30,11 @@ public interface DatabaseAccessor {
 
     public Set<Project> getProjects(User user) throws SQLException;
 
-    public Set<GroupTask> getGroupTasks(Group group);
+    public Set<GroupTask> getGroupTasks(Group group) throws SQLException;
 
-    public Set<ProjectTask> getProjectTasks(Project project);
+    public Set<ProjectTask> getProjectTasks(Project project) throws SQLException;
+
+    public Map<User, Date> getUsersCompletedGroupTask(GroupTask task) throws SQLException;
 
     public void complete(IndividualTask task, Date dateCompleted);
 

@@ -1,5 +1,6 @@
 package database;
 
+import model.Completable;
 import model.User;
 import model.group.Group;
 import model.group.Project;
@@ -23,18 +24,33 @@ final class ObjectMapper {
     }
 
     static Project getProject(ResultSet resultSet) throws SQLException {
-        return new Project(resultSet.getLong("PROJECT_ID"), resultSet.getString("GROUP_NAME"), resultSet.getDate("DUE_DATE"));
+        Project project = new Project(resultSet.getLong("PROJECT_ID"), resultSet.getString("GROUP_NAME"), resultSet.getDate("DUE_DATE"));
+        complete(project, resultSet);
+        return project;
     }
 
     static GroupTask getGroupTask(ResultSet resultSet, Group group) throws SQLException {
-        return new GroupTask(resultSet.getLong("GROUP_TASK_ID"), resultSet.getString("GROUP_TASK_NAME"), resultSet.getDate("DUE_DATE"), group);
+        GroupTask groupTask = new GroupTask(resultSet.getLong("TASK_ID"), resultSet.getString("TASK_NAME"), resultSet.getDate("DUE_DATE"), group);
+        groupTask.complete(DerbyDatabaseAccessor.getInstance().getUsersCompletedGroupTask(groupTask));
+        return groupTask;
     }
 
     static ProjectTask getProjectTask(ResultSet resultSet, Project project) throws SQLException {
-        return new ProjectTask(resultSet.getLong("PROJECT_TASK_ID"), resultSet.getString("PROJECT_TASK_NAME"), resultSet.getDate("DUE_DATE"), project);
+        ProjectTask task = new ProjectTask(resultSet.getLong("PROJECT_TASK_ID"), resultSet.getString("TASK_NAME"), resultSet.getDate("DUE_DATE"), project);
+        complete(task, resultSet);
+        return task;
     }
 
     static IndividualTask getIndividualTask(ResultSet resultSet, User user) throws SQLException {
-        return new IndividualTask(resultSet.getLong("INDIVIDUAL_TASK_ID"), resultSet.getString("NAME"), user, resultSet.getDate("DUE_DATE"));
+        IndividualTask task = new IndividualTask(resultSet.getLong("INDIVIDUAL_TASK_ID"), resultSet.getString("TASK_NAME"), user, resultSet.getDate("DUE_DATE"));
+        complete(task, resultSet);
+        return task;
     }
+
+    private static void complete(Completable completable, ResultSet resultSet) throws SQLException {
+        if (resultSet.getBoolean("COMPLETED")) {
+            completable.complete(DerbyDatabaseAccessor.getInstance().getUserById(resultSet.getLong("USER_COMPLETED_ID")), resultSet.getDate("DATE_COMPLETED"));
+        }
+    }
+
 }

@@ -6,6 +6,7 @@ import model.group.Group;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -36,19 +37,22 @@ public class GroupTask extends Completable {
         return completed;
     }
 
-    /**
-     * Gets the set of all users who have not completed the task
-     *
-     * @return The set of all users in the group who have not completed the task
-     */
-    public Set<User> getUncompleted() {
-        Set<User> allUsers = new HashSet<>(group.getMembers()); // Copy of the set of all users in the group
-        allUsers.removeAll(completed);
-        return allUsers;
-    }
-
     @Override
     public void complete(User user, Date completed) {
+        this.completed.add(user);
+    }
 
+    public void complete(Map<User, Date> completedUsers) {
+        for (Map.Entry<User, Date> entry : completedUsers.entrySet()) {
+            complete(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

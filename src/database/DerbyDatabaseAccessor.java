@@ -34,6 +34,9 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getProjectsSQL = "SELECT USER_ID, PROJECTS.PROJECT_ID, PROJECT_NAME, PROJECT_DUE_DATE FROM USER_PROJECTS JOIN PROJECTS ON USER_PROJECTS.PROJECT_ID = PROJECTS.PROJECT_ID WHERE USER_ID = ?";
     private static final String getAllProjectTasksSQL = "SELECT TASK_ID, PROJECT_NAME, UPT.PROJECT_ID, TASK_DUE_DATE FROM PROJECT_TASKS JOIN (SELECT USER_ID, PROJECTS.PROJECT_ID, PROJECT_NAME, PROJECT_DUE_DATE FROM USER_PROJECTS JOIN PROJECTS ON USER_PROJECTS.PROJECT_ID = PROJECTS.PROJECT_ID WHERE USER_ID = ?) " +
             "AS UPT ON PROJECT_TASKS.PROJECT_ID = UPT.PROJECT_ID";
+    private static final String getGroupTasksSQL = "SELECT * FROM GROUP_TASKS WHERE GROUP_ID = ?";
+    private static final String getProjectTasksSQL = "SELECT * FROM PROJECT_TASKS WHERE PROJECT_ID = ?";
+    private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
 
 
     public static DerbyDatabaseAccessor getInstance() {
@@ -144,13 +147,45 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     }
 
     @Override
-    public Set<GroupTask> getGroupTasks(Group group) {
-        return null;
+    public Set<GroupTask> getGroupTasks(Group group) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getGroupTasksSQL)) {
+            statement.setLong(1, group.getId());
+            ResultSet result = statement.executeQuery();
+            Set<GroupTask> tasks = new HashSet<>();
+            while (result.next()) {
+                tasks.add(ObjectMapper.getGroupTask(result, group));
+            }
+            return tasks;
+        }
     }
 
     @Override
-    public Set<ProjectTask> getProjectTasks(Project project) {
-        return null;
+    public Set<ProjectTask> getProjectTasks(Project project) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getProjectTasksSQL)) {
+            statement.setLong(1, project.getId());
+            ResultSet result = statement.executeQuery();
+            Set<ProjectTask> tasks = new HashSet<>();
+            while (result.next()) {
+                tasks.add(ObjectMapper.getProjectTask(result, project));
+            }
+            return tasks;
+        }
+    }
+
+    @Override
+    public Map<User, Date> getUsersCompletedGroupTask(GroupTask task) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getUsersCompletedGroupTaskSQL)) {
+            statement.setLong(1, task.getId());
+            ResultSet result = statement.executeQuery();
+            Map<User, Date> users = new HashMap<>();
+            while (result.next()) {
+                users.put(ObjectMapper.getUser(result), result.getDate("DATE_COMPLETED"));
+            }
+            return users;
+        }
     }
 
     @Override
