@@ -23,13 +23,11 @@ public interface DatabaseAccessor {
 
     public Set<GroupTask> getAllGroupTasks(User user) throws SQLException;
 
-    public Set<ProjectTask> getAllProjectTasks(User user);
-
-    public Set<ProjectTask> getProjectTasksByDueDate(User user, Date dueDate);
+    public Set<ProjectTask> getAllProjectTasks(User user) throws SQLException;
 
     public Set<Group> getGroups(User user) throws SQLException;
 
-    public Set<Project> getProjects(User user);
+    public Set<Project> getProjects(User user) throws SQLException;
 
     public Set<GroupTask> getGroupTasks(Group group);
 

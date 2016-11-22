@@ -29,28 +29,15 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getUserByIdSQL = "SELECT * FROM USERS WHERE USER_ID = ?";
     private static final String getAllIndividualTasksSQL = "SELECT * FROM INDIVIDUAL_TASKS WHERE USER_ID = ?";
     private static final String getGroupsSQL = "SELECT USER_ID, GROUPS.GROUP_ID, GROUP_NAME FROM USER_GROUPS JOIN GROUPS ON USER_GROUPS.GROUP_ID = GROUPS.GROUP_ID WHERE USER_ID = ?";
-    private static final String getAllGroupTasksSQL = "SELECT TASK_ID, GROUP_NAME, UGG.GROUP_ID, TASK_DUE_DATE FROM GROUP_TASKS JOIN (SELECT USER_ID, GROUPS.GROUP_ID, GROUP_NAME FROM USER_GROUPS JOIN GROUPS ON USER_GROUPS.GROUP_ID = GROUPS.GROUP_ID WHERE USER_ID = ?) " +
-            "AS UGG ON GROUP_TASKS.GROUP_ID = UGG.GROUP_ID";
+    private static final String getAllGroupTasksSQL = "SELECT TASK_ID, GROUP_NAME, UGT.GROUP_ID, TASK_DUE_DATE FROM GROUP_TASKS JOIN (SELECT USER_ID, GROUPS.GROUP_ID, GROUP_NAME FROM USER_GROUPS JOIN GROUPS ON USER_GROUPS.GROUP_ID = GROUPS.GROUP_ID WHERE USER_ID = ?) " +
+            "AS UGT ON GROUP_TASKS.GROUP_ID = UGT.GROUP_ID";
+    private static final String getProjectsSQL = "SELECT USER_ID, PROJECTS.PROJECT_ID, PROJECT_NAME, PROJECT_DUE_DATE FROM USER_PROJECTS JOIN PROJECTS ON USER_PROJECTS.PROJECT_ID = PROJECTS.PROJECT_ID WHERE USER_ID = ?";
+    private static final String getAllProjectTasksSQL = "SELECT TASK_ID, PROJECT_NAME, UPT.PROJECT_ID, TASK_DUE_DATE FROM PROJECT_TASKS JOIN (SELECT USER_ID, PROJECTS.PROJECT_ID, PROJECT_NAME, PROJECT_DUE_DATE FROM USER_PROJECTS JOIN PROJECTS ON USER_PROJECTS.PROJECT_ID = PROJECTS.PROJECT_ID WHERE USER_ID = ?) " +
+            "AS UPT ON PROJECT_TASKS.PROJECT_ID = UPT.PROJECT_ID";
 
 
     public static DerbyDatabaseAccessor getInstance() {
         return instance;
-    }
-
-    private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
-        return new User(resultSet.getLong("USER_ID"), resultSet.getString("USERNAME"), resultSet.getString("FIRST_NAME"), resultSet.getString("LAST_NAME"));
-    }
-
-    private Group getGroupFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Group(resultSet.getLong("GROUP_ID"), resultSet.getString("GROUP_NAME"));
-    }
-
-    private GroupTask getGroupTaskFromResultSet(ResultSet resultSet, Group group) throws SQLException {
-        return new GroupTask(resultSet.getLong("GROUP_TASK_ID"), resultSet.getString("GROUP_TASK_NAME"), resultSet.getDate("DUE_DATE"), group);
-    }
-
-    private IndividualTask getIndivididualTaskFromResultSet(ResultSet resultSet, User user) throws SQLException {
-        return new IndividualTask(resultSet.getLong("INDIVIDUAL_TASK_ID"), resultSet.getString("NAME"), user, resultSet.getDate("DUE_DATE"));
     }
 
     @Override
@@ -60,7 +47,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             statement.setString(1, username);
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next() ? getUserFromResultSet(resultSet) : null;
+            return resultSet.next() ? ObjectMapper.getUser(resultSet) : null;
         }
     }
 
@@ -70,7 +57,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
              PreparedStatement statement = connection.prepareStatement(getUserByIdSQL)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next() ? getUserFromResultSet(resultSet) : null;
+            return resultSet.next() ? ObjectMapper.getUser(resultSet) : null;
         }
     }
 
@@ -82,7 +69,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             ResultSet resultSet = statement.executeQuery();
             Set<IndividualTask> tasks = new HashSet<>();
             while (resultSet.next()) {
-                tasks.add(getIndivididualTaskFromResultSet(resultSet, user));
+                tasks.add(ObjectMapper.getIndividualTask(resultSet, user));
             }
             return tasks;
         }
@@ -100,22 +87,32 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             while (resultSet.next()) {
                 id = resultSet.getLong("GROUP_ID");
                 if (!groupMap.containsKey(id)) {
-                    groupMap.put(id, getGroupFromResultSet(resultSet));
+                    groupMap.put(id, ObjectMapper.getGroup(resultSet));
                 }
-                groupTasks.add(getGroupTaskFromResultSet(resultSet, groupMap.get(id)));
+                groupTasks.add(ObjectMapper.getGroupTask(resultSet, groupMap.get(id)));
             }
             return groupTasks;
         }
     }
 
     @Override
-    public Set<ProjectTask> getAllProjectTasks(User user) {
-        return null;
-    }
-
-    @Override
-    public Set<ProjectTask> getProjectTasksByDueDate(User user, Date dueDate) {
-        return null;
+    public Set<ProjectTask> getAllProjectTasks(User user) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getAllProjectTasksSQL)) {
+            statement.setLong(1, user.getId());
+            ResultSet resultSet = statement.executeQuery();
+            Set<ProjectTask> projectTasks = new HashSet<>();
+            Map<Long, Project> projectMap = new HashMap<>();
+            long id;
+            while (resultSet.next()) {
+                id = resultSet.getLong("PROJECT_ID");
+                if (!projectMap.containsKey(id)) {
+                    projectMap.put(id, ObjectMapper.getProject(resultSet));
+                }
+                projectTasks.add(ObjectMapper.getProjectTask(resultSet, projectMap.get(id)));
+            }
+            return projectTasks;
+        }
     }
 
     @Override
@@ -126,15 +123,24 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             ResultSet result = statement.executeQuery();
             Set<Group> groups = new HashSet<>();
             while (result.next()) {
-                groups.add(getGroupFromResultSet(result));
+                groups.add(ObjectMapper.getGroup(result));
             }
             return groups;
         }
     }
 
     @Override
-    public Set<Project> getProjects(User user) {
-        return null;
+    public Set<Project> getProjects(User user) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getProjectsSQL)) {
+            statement.setLong(1, user.getId());
+            ResultSet result = statement.executeQuery();
+            Set<Project> projects = new HashSet<>();
+            while (result.next()) {
+                projects.add(ObjectMapper.getProject(result));
+            }
+            return projects;
+        }
     }
 
     @Override

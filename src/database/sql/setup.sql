@@ -47,11 +47,11 @@ CREATE TABLE groups (
 );
 
 CREATE TABLE group_tasks (
-  task_id       INTEGER     NOT NULL GENERATED ALWAYS AS IDENTITY ( START WITH 1, INCREMENT BY 1) PRIMARY KEY,
-  group_id      INTEGER     NOT NULL,
-  task_name     VARCHAR(50) NOT NULL,
-  task_due_date DATE        NOT NULL,
-  completed     INTEGER     NOT NULL DEFAULT 0,
+  task_id         INTEGER     NOT NULL GENERATED ALWAYS AS IDENTITY ( START WITH 1, INCREMENT BY 1) PRIMARY KEY,
+  group_id        INTEGER     NOT NULL,
+  task_name       VARCHAR(50) NOT NULL,
+  task_due_date   DATE        NOT NULL,
+  users_completed INTEGER     NOT NULL DEFAULT 0,
   FOREIGN KEY (group_id) REFERENCES groups (group_id)
 );
 
