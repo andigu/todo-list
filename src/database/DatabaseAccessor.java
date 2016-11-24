@@ -16,31 +16,31 @@ import java.util.Set;
  * @author Andi Gu
  */
 public interface DatabaseAccessor {
-    public User getUserByLogin(String username, String password) throws SQLException;
+    User getUserByLogin(String username, String password) throws SQLException;
 
-    public User getUserById(long id) throws SQLException;
+    User getUserById(long id) throws SQLException;
 
-    public Set<IndividualTask> getAllIndividualTasks(User user) throws SQLException;
+    Set<IndividualTask> getAllIndividualTasks(User user) throws SQLException;
 
-    public Set<GroupTask> getAllGroupTasks(User user) throws SQLException;
+    Set<GroupTask> getAllGroupTasks(User user) throws SQLException;
 
-    public Set<ProjectTask> getAllProjectTasks(User user) throws SQLException;
+    Set<ProjectTask> getAllProjectTasks(User user) throws SQLException;
 
-    public Set<Group> getGroups(User user) throws SQLException;
+    Set<Group> getGroups(User user) throws SQLException;
 
-    public Set<Project> getProjects(User user) throws SQLException;
+    Set<Project> getProjects(User user) throws SQLException;
 
-    public Set<GroupTask> getGroupTasks(Group group) throws SQLException;
+    Set<GroupTask> getGroupTasks(Group group) throws SQLException;
 
-    public Set<ProjectTask> getProjectTasks(Project project) throws SQLException;
+    Set<ProjectTask> getProjectTasks(Project project) throws SQLException;
 
-    public Map<User, Date> getUsersCompletedGroupTask(GroupTask task) throws SQLException;
+    Map<User, Date> getUsersCompletedGroupTask(GroupTask task) throws SQLException;
 
-    public void complete(IndividualTask task, Date dateCompleted);
+    void complete(IndividualTask task, Date dateCompleted);
 
-    public void complete(GroupTask task, Date dateCompleted);
+    void complete(GroupTask task, Date dateCompleted);
 
-    public void complete(ProjectTask task, Date dateCompleted);
+    void complete(ProjectTask task, Date dateCompleted);
 
-    public void completeProject(Project project, Date dateCompleted);
+    void completeProject(Project project, Date dateCompleted);
 }
