@@ -24,7 +24,7 @@ final class ObjectMapper {
     }
 
     static Project getProject(ResultSet resultSet) throws SQLException {
-        Project project = new Project(resultSet.getLong("PROJECT_ID"), resultSet.getString("GROUP_NAME"), resultSet.getDate("DUE_DATE"));
+        Project project = new Project(resultSet.getLong("PROJECT_ID"), resultSet.getString("PROJECT_NAME"), resultSet.getDate("PROJECT_DUE_DATE"));
         complete(project, resultSet);
         return project;
     }
@@ -36,13 +36,13 @@ final class ObjectMapper {
     }
 
     static ProjectTask getProjectTask(ResultSet resultSet, Project project) throws SQLException {
-        ProjectTask task = new ProjectTask(resultSet.getLong("PROJECT_TASK_ID"), resultSet.getString("TASK_NAME"), resultSet.getDate("DUE_DATE"), project);
+        ProjectTask task = new ProjectTask(resultSet.getLong("TASK_ID"), resultSet.getString("TASK_NAME"), resultSet.getDate("TASK_DUE_DATE"), project);
         complete(task, resultSet);
         return task;
     }
 
     static IndividualTask getIndividualTask(ResultSet resultSet, User user) throws SQLException {
-        IndividualTask task = new IndividualTask(resultSet.getLong("INDIVIDUAL_TASK_ID"), resultSet.getString("TASK_NAME"), user, resultSet.getDate("DUE_DATE"));
+        IndividualTask task = new IndividualTask(resultSet.getLong("TASK_ID"), resultSet.getString("TASK_NAME"), user, resultSet.getDate("DUE_DATE"));
         complete(task, resultSet);
         return task;
     }

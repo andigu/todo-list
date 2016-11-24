@@ -13,3 +13,7 @@ INSERT INTO PROJECT_TASKS (PROJECT_ID, TASK_NAME) VALUES
   (2, 'task_b'),
   (3, 'task_c'),
   (4, 'task_d');
+
+INSERT INTO USER_PROJECTS (USER_ID, PROJECT_ID) VALUES 
+  (1, 1),
+  (1, 2);

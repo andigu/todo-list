@@ -8,7 +8,7 @@ package model;
  *
  * @author Andi Gu
  */
-public abstract class Identifiable {
+public abstract class Identifiable implements Comparable<Identifiable> {
     private final Long id;
     private String name;
 
@@ -31,5 +31,11 @@ public abstract class Identifiable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public int compareTo(Identifiable o) {
+        assert id != null;
+        return id.compareTo(o.getId());
     }
 }

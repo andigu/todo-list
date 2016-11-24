@@ -39,4 +39,5 @@ public class User extends Identifiable {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
 }
