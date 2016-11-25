@@ -17,8 +17,8 @@ import java.sql.SQLException;
  */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    DatabaseAccessor db = DerbyDatabaseAccessor.getInstance();
-    JsonConverter converter = JsonConverter.getInstance();
+    private DatabaseAccessor db = DerbyDatabaseAccessor.getInstance();
+    private JsonConverter converter = JsonConverter.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

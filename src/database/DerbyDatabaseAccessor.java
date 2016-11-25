@@ -6,6 +6,7 @@ import model.group.Project;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
+import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
 import org.apache.derby.jdbc.ClientDataSource;
 
 import java.sql.Connection;
@@ -19,7 +20,7 @@ import java.util.*;
  */
 public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String databaseName = "db";
-    private static final ClientDataSource dataSource = new ClientDataSource() {{
+    private static final ClientDataSource dataSource = new ClientConnectionPoolDataSource() {{
         setDatabaseName(databaseName);
     }};
     private static final DerbyDatabaseAccessor instance = new DerbyDatabaseAccessor();
