@@ -14,9 +14,10 @@ import java.sql.SQLException;
 /**
  * @author Andi Gu
  */
-final class ObjectMapper {
+final class ResultSetConverter {
     static User getUser(ResultSet resultSet) throws SQLException {
-        return new User(resultSet.getLong("USER_ID"), resultSet.getString("USERNAME"), resultSet.getString("FIRST_NAME"), resultSet.getString("LAST_NAME"));
+        System.out.println(resultSet.getLong("USER_ID")+ " " + resultSet.getString("FIRST_NAME") + " " + resultSet.getString("LAST_NAME") + " " + resultSet.getString("USERNAME"));
+        return new User(resultSet.getLong("USER_ID"), resultSet.getString("FIRST_NAME"), resultSet.getString("LAST_NAME"), resultSet.getString("USERNAME"));
     }
 
     static Group getGroup(ResultSet resultSet) throws SQLException {

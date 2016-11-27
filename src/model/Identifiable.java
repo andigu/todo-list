@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.*;
+
 /**
  * All named entities and those that interact [are stored in] the database are identifiable. They have a unique id
  * (unique to the rest of the objects of the same type). For example, all Group objects should have unique id's, but
@@ -8,6 +10,9 @@ package model;
  *
  * @author Andi Gu
  */
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityReference(alwaysAsId = true)
 public abstract class Identifiable implements Comparable<Identifiable> {
     private final Long id;
     private String name;

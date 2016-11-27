@@ -5,39 +5,21 @@ package model;
  *
  * @author Andi Gu
  */
+
 public class User extends Identifiable {
-    private String firstName;
-    private String lastName;
+    private String username;
 
-    public User(long id, String userName, String fullName) {
-        super(id, userName);
-        String[] splitName = fullName.split(" ");
-        firstName = splitName[0];
-        lastName = splitName[1];
+    public User(long id, String name, String username) {
+        super(id, name);
+        this.username = username;
     }
 
-    public User(long id, String userName, String firstName, String lastName) {
-        super(id, userName);
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public User(long id, String firstName, String lastName, String username) {
+        super(id, firstName + " " + lastName);
+        this.username = username;
     }
 
-    public String getFullName() {
-        return firstName + " " + lastName;
+    public String getUsername() {
+        return username;
     }
-
-    public void setFullName(String fullName) {
-        String[] splitName = fullName.split(" ");
-        firstName = splitName[0];
-        lastName = splitName[1];
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
 }

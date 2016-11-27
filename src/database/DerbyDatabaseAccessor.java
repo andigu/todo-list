@@ -49,7 +49,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             statement.setString(1, username);
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next() ? ObjectMapper.getUser(resultSet) : null;
+            return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
         }
     }
 
@@ -59,7 +59,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
              PreparedStatement statement = connection.prepareStatement(getUserByIdSQL)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next() ? ObjectMapper.getUser(resultSet) : null;
+            return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
         }
     }
 
@@ -71,7 +71,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             ResultSet resultSet = statement.executeQuery();
             Set<IndividualTask> tasks = new HashSet<>();
             while (resultSet.next()) {
-                tasks.add(ObjectMapper.getIndividualTask(resultSet, user));
+                tasks.add(ResultSetConverter.getIndividualTask(resultSet, user));
             }
             return tasks;
         }
@@ -89,9 +89,9 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             while (resultSet.next()) {
                 id = resultSet.getLong("GROUP_ID");
                 if (!groupMap.containsKey(id)) {
-                    groupMap.put(id, ObjectMapper.getGroup(resultSet));
+                    groupMap.put(id, ResultSetConverter.getGroup(resultSet));
                 }
-                groupTasks.add(ObjectMapper.getGroupTask(resultSet, groupMap.get(id)));
+                groupTasks.add(ResultSetConverter.getGroupTask(resultSet, groupMap.get(id)));
             }
             return groupTasks;
         }
@@ -109,9 +109,9 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             while (resultSet.next()) {
                 id = resultSet.getLong("PROJECT_ID");
                 if (!projectMap.containsKey(id)) {
-                    projectMap.put(id, ObjectMapper.getProject(resultSet));
+                    projectMap.put(id, ResultSetConverter.getProject(resultSet));
                 }
-                projectTasks.add(ObjectMapper.getProjectTask(resultSet, projectMap.get(id)));
+                projectTasks.add(ResultSetConverter.getProjectTask(resultSet, projectMap.get(id)));
             }
             return projectTasks;
         }
@@ -125,7 +125,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             ResultSet result = statement.executeQuery();
             Set<Group> groups = new HashSet<>();
             while (result.next()) {
-                groups.add(ObjectMapper.getGroup(result));
+                groups.add(ResultSetConverter.getGroup(result));
             }
             return groups;
         }
@@ -139,7 +139,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             ResultSet result = statement.executeQuery();
             Set<Project> projects = new HashSet<>();
             while (result.next()) {
-                projects.add(ObjectMapper.getProject(result));
+                projects.add(ResultSetConverter.getProject(result));
             }
             return projects;
         }
@@ -153,7 +153,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             ResultSet result = statement.executeQuery();
             Set<GroupTask> tasks = new HashSet<>();
             while (result.next()) {
-                tasks.add(ObjectMapper.getGroupTask(result, group));
+                tasks.add(ResultSetConverter.getGroupTask(result, group));
             }
             return tasks;
         }
@@ -167,7 +167,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             ResultSet result = statement.executeQuery();
             Set<ProjectTask> tasks = new HashSet<>();
             while (result.next()) {
-                tasks.add(ObjectMapper.getProjectTask(result, project));
+                tasks.add(ResultSetConverter.getProjectTask(result, project));
             }
             return tasks;
         }
@@ -181,7 +181,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             ResultSet result = statement.executeQuery();
             Map<User, Date> users = new HashMap<>();
             while (result.next()) {
-                users.put(ObjectMapper.getUser(result), result.getDate("DATE_COMPLETED"));
+                users.put(ResultSetConverter.getUser(result), result.getDate("DATE_COMPLETED"));
             }
             return users;
         }

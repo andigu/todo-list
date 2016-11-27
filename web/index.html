@@ -5,7 +5,7 @@
     <title>Login</title>
 </head>
 <body>
-<form data-bind="submit: login">
+<form data-bind="submit: login" method="post" id="login-form">
     <label>
         Username:
         <input type="text" name="username"/>
@@ -18,8 +18,9 @@
     <button type="submit">Login</button>
 </form>
 
-<script type="text/javascript" src="js/lib/jquery-3.1.1.js"></script>
-<script type="text/javascript" src="js/lib/knockout-3.4.0.js"></script>
-<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="scripts/lib/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="scripts/lib/knockout-3.4.0.js"></script>
+<script type="text/javascript" src="scripts/lib/sammy.js"></script>
+<script type="text/javascript" src="scripts/main.js"></script>
 </body>
 </html>

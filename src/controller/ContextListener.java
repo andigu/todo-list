@@ -22,7 +22,6 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        // Loop through all drivers
         Enumeration<Driver> drivers = DriverManager.getDrivers();
         while (drivers.hasMoreElements()) {
             Driver driver = drivers.nextElement();

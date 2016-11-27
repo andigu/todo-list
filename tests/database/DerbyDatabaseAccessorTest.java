@@ -1,19 +1,13 @@
 package database;
 
-import model.Identifiable;
 import model.User;
-import model.group.Group;
 import model.group.Project;
-import model.task.IndividualTask;
 import model.task.ProjectTask;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.SortedSet;
 
 /**
  * @author Andi Gu
