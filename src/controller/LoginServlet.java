@@ -27,7 +27,6 @@ public class LoginServlet extends HttpServlet {
         resp.setContentType("json/application");
         try {
             resp.getWriter().write(converter.toJson(db.getUserByLogin(username, password)));
-            System.out.println(db.getUserByLogin(username, password).getName());
         } catch (SQLException e) {
             e.printStackTrace();
         }

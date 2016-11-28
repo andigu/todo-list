@@ -5,19 +5,23 @@
     <title>Login</title>
 </head>
 <body>
-<form data-bind="submit: login" method="post" id="login-form">
-    <label>
-        Username:
-        <input type="text" name="username"/>
-    </label>
-    <label>
-        Password:
-        <input type="password" name="password"/>
-    </label>
+<div id="login-view">
+    <form data-bind="submit: login" method="post" id="login-form">
+        <label>
+            Username:
+            <input type="text" name="username"/>
+        </label>
+        <label>
+            Password:
+            <input type="password" name="password"/>
+        </label>
 
-    <button type="submit">Login</button>
-</form>
-
+        <button type="submit">Login</button>
+    </form>
+</div>
+<div id="app-view">
+    Hello!
+</div>
 <script type="text/javascript" src="scripts/lib/jquery-3.1.1.js"></script>
 <script type="text/javascript" src="scripts/lib/knockout-3.4.0.js"></script>
 <script type="text/javascript" src="scripts/lib/sammy.js"></script>

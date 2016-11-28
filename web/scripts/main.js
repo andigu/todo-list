@@ -1,53 +1,47 @@
 /**
  * @author Andi Gu
  */
+"use strict";
 
-class User {
-    constructor(parameter) {
-        if (typeof parameter == parseInt(parameter)) {
-            this.id = parameter;
-        }
-        else {
-            this.id = parameter.id;
-        }
+class ActivityViewModel {
+    constructor() {
+        const self = this;
+        self.user = ko.observable();
+        self.login = function (form) {
+            $.post("/login", {
+                username: form.username.value,
+                password: form.password.value
+            }, function (response) {
+                console.log(response);
+                if (response == null) {
+                    alert("Wrong login");
+                }
+                else {
+                    self.user(response);
+                    location.hash = 'app';
+                }
+            })
+        };
+
+        Sammy(function () {
+            this.get('#login', function () {
+            });
+
+            this.get('#app', function () {
+            });
+        }).run('#login');
     }
 }
 
-function ActivityViewModel() {
-    const self = this;
-    self.user = ko.observable();
-    self.login = function (form) {
-        $.post("/login", {
-            username: form.username.value,
-            password: form.password.value
-        }, function (response) {
-            console.log(response);
-            if (response === null) {
-                alert("Wrong login");
-            }
-            else {
-                self.user(response);
-                location.hash = 'app';
-            }
-        })
-    };
-    location.hash = 'login';
-    Sammy(function () {
-        this.get('#:login', function () {
-            self.user(null);
-        });
 
-        this.get('#:app', function () {
-            alert("hello");
-            hideLogin();
-        });
-    }).run();
-
-
+function focus(elementId) {
+    const body = $('body');
+    body.children('div').hide();
+    body.children(elementId).show();
 }
-
-function hideLogin() {
-    $('#login-form').hide();
-}
-
-ko.applyBindings(new ActivityViewModel());
+$(document).ready(function () {
+    ko.applyBindings(new ActivityViewModel());
+    $(window).on('hashchange', function () {
+        focus(location.hash + "-view");
+    });
+});

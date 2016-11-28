@@ -16,7 +16,6 @@ import java.sql.SQLException;
  */
 final class ResultSetConverter {
     static User getUser(ResultSet resultSet) throws SQLException {
-        System.out.println(resultSet.getLong("USER_ID")+ " " + resultSet.getString("FIRST_NAME") + " " + resultSet.getString("LAST_NAME") + " " + resultSet.getString("USERNAME"));
         return new User(resultSet.getLong("USER_ID"), resultSet.getString("FIRST_NAME"), resultSet.getString("LAST_NAME"), resultSet.getString("USERNAME"));
     }
 
