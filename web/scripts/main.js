@@ -6,23 +6,39 @@
 class ActivityViewModel {
     constructor() {
         const self = this;
-        self.user = ko.observable();
+        self.user = null;
+        self.displayedTasks = ko.observableArray();
         self.login = function (form) {
             $.post("/login", {
-                username: form.username.value,
-                password: form.password.value
+                'username': form.username.value,
+                'password': form.password.value
             }, function (response) {
-                console.log(response);
                 if (response == null) {
                     alert("Wrong login");
                 }
                 else {
-                    self.user(response);
+                    self.user = response;
                     location.hash = 'app';
+                    self.getTasks();
                 }
             })
         };
     }
+
+    getTasks(taskTypes) {
+        const self = this;
+        if (taskTypes === undefined) {
+            taskTypes = ['individual', 'group', 'project']
+        }
+        let result = null;
+        $.get("/tasks", {
+            'user-id': self.user.id,
+            'task-types': taskTypes.toString(),
+        }, function (response) {
+            self.displayedTasks(response);
+            console.log(response);
+        });
+    };
 }
 
 

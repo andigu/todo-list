@@ -16,25 +16,25 @@ import java.util.Set;
  * @author Andi Gu
  */
 public interface DatabaseAccessor {
-    User getUserByLogin(String username, String password) throws SQLException;
+    User getUserByLogin(String username, String password);
 
-    User getUserById(long id) throws SQLException;
+    User getUserById(long id);
 
-    Set<IndividualTask> getAllIndividualTasks(User user) throws SQLException;
+    Set<IndividualTask> getAllIndividualTasks(User user);
 
-    Set<GroupTask> getAllGroupTasks(User user) throws SQLException;
+    Set<GroupTask> getAllGroupTasks(User user);
 
-    Set<ProjectTask> getAllProjectTasks(User user) throws SQLException;
+    Set<ProjectTask> getAllProjectTasks(User user);
 
-    Set<Group> getGroups(User user) throws SQLException;
+    Set<Group> getGroups(User user);
 
-    Set<Project> getProjects(User user) throws SQLException;
+    Set<Project> getProjects(User user);
 
-    Set<GroupTask> getGroupTasks(Group group) throws SQLException;
+    Set<GroupTask> getGroupTasks(Group group);
 
-    Set<ProjectTask> getProjectTasks(Project project) throws SQLException;
+    Set<ProjectTask> getProjectTasks(Project project);
 
-    Map<User, Date> getUsersCompletedGroupTask(GroupTask task) throws SQLException;
+    Map<User, Date> getUsersCompletedGroupTask(GroupTask task);
 
     void complete(IndividualTask task, Date dateCompleted);
 

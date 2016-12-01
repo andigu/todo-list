@@ -23,7 +23,7 @@ import java.util.Set;
  *
  * @author Andi Gu
  */
-public class ProjectTask extends Completable {
+public class ProjectTask extends Task {
     private Set<User> assignees;
     private Project project;
     private boolean complete;

@@ -28,4 +28,9 @@ public class JsonConverter {
     public <T> T toObject(String json, Class<T> tClass) throws IOException {
         return mapper.readValue(json, tClass);
     }
+
+    public String[] toStringArray(String jsonArray) throws  IOException {
+        jsonArray = jsonArray.replace("[", "").replace("]", "");
+        return jsonArray.split(",");
+    }
 }

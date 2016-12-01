@@ -42,7 +42,7 @@ final class ResultSetConverter {
     }
 
     static IndividualTask getIndividualTask(ResultSet resultSet, User user) throws SQLException {
-        IndividualTask task = new IndividualTask(resultSet.getLong("TASK_ID"), resultSet.getString("TASK_NAME"), user, resultSet.getDate("DUE_DATE"));
+        IndividualTask task = new IndividualTask(resultSet.getLong("TASK_ID"), resultSet.getString("TASK_NAME"), user, resultSet.getDate("TASK_DUE_DATE"));
         complete(task, resultSet);
         return task;
     }

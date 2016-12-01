@@ -23,7 +23,7 @@ import java.util.Set;
  * @author Andi Gu
  */
 
-public class GroupTask extends Completable {
+public class GroupTask extends Task {
     private Group group;
     private Set<User> completed;
 

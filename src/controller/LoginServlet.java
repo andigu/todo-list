@@ -16,20 +16,13 @@ import java.sql.SQLException;
  * @author Andi Gu
  */
 @WebServlet("/login")
-public class LoginServlet extends HttpServlet {
-    private DatabaseAccessor db = DerbyDatabaseAccessor.getInstance();
-    private JsonConverter converter = JsonConverter.getInstance();
-
+public class LoginServlet extends ApplicationServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         resp.setContentType("json/application");
-        try {
-            resp.getWriter().write(converter.toJson(db.getUserByLogin(username, password)));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        resp.getWriter().write(converter.toJson(db.getUserByLogin(username, password)));
     }
 
     @Override

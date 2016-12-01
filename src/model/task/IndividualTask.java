@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author Andi Gu
  */
-public class IndividualTask extends Completable {
+public class IndividualTask extends Task {
     private User owner;
     private boolean complete;
 
