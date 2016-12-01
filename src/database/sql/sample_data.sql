@@ -1,3 +1,5 @@
+SET SCHEMA MODEL;
+
 INSERT INTO USERS (USERNAME) VALUES
   ('person_a'),
   ('person_b'),

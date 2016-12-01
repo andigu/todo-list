@@ -1,0 +1,7 @@
+CREATE SCHEMA app;
+-- Table to store 'stay logged in' records
+CREATE TABLE app.logins (
+  token INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES MODEL.USERS (user_id)
+)

@@ -11,13 +11,15 @@ class ActivityViewModel {
         self.login = function (form) {
             $.post("/login", {
                 'username': form.username.value,
-                'password': form.password.value
+                'password': form.password.value,
+                'stay-logged': form.stay.value
             }, function (response) {
                 if (response == null) {
                     alert("Wrong login");
                 }
                 else {
                     self.user = response;
+
                     location.hash = 'app';
                     self.getTasks();
                 }

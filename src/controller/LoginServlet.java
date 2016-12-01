@@ -3,6 +3,7 @@ package controller;
 import controller.json.JsonConverter;
 import database.DatabaseAccessor;
 import database.DerbyDatabaseAccessor;
+import model.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +23,11 @@ public class LoginServlet extends ApplicationServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         resp.setContentType("json/application");
-        resp.getWriter().write(converter.toJson(db.getUserByLogin(username, password)));
+        User user = db.getUserByLogin(username, password);
+        if (req.getParameter("stay-logged").equals("checked") && user != null) {
+
+        }
+        resp.getWriter().write(converter.toJson(user));
     }
 
     @Override

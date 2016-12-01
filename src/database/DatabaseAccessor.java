@@ -43,4 +43,6 @@ public interface DatabaseAccessor {
     void complete(ProjectTask task, Date dateCompleted);
 
     void completeProject(Project project, Date dateCompleted);
+
+    Long storeLogin(Long userId);
 }

@@ -26,17 +26,17 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final DerbyDatabaseAccessor instance = new DerbyDatabaseAccessor();
 
 
-    private static final String getUserByLoginSQL = "SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ?";
-    private static final String getUserByIdSQL = "SELECT * FROM USERS WHERE USER_ID = ?";
-    private static final String getAllIndividualTasksSQL = "SELECT * FROM INDIVIDUAL_TASKS WHERE USER_ID = ?";
-    private static final String getGroupsSQL = "SELECT * FROM USER_GROUPS NATURAL JOIN GROUPS WHERE USER_ID = ?";
-    private static final String getAllGroupTasksSQL = "SELECT * FROM GROUP_TASKS NATURAL JOIN (SELECT * FROM USER_GROUPS NATURAL JOIN GROUPS WHERE USER_ID = ?) AS UGT";
-    private static final String getProjectsSQL = "SELECT * FROM USER_PROJECTS NATURAL JOIN PROJECTS WHERE USER_ID = ?";
-    private static final String getAllProjectTasksSQL = "SELECT * FROM PROJECT_TASKS NATURAL JOIN (SELECT * FROM USER_PROJECTS NATURAL JOIN PROJECTS WHERE USER_ID = ?) AS UPT";
-    private static final String getGroupTasksSQL = "SELECT * FROM GROUP_TASKS WHERE GROUP_ID = ?";
-    private static final String getProjectTasksSQL = "SELECT * FROM PROJECT_TASKS WHERE PROJECT_ID = ?";
-    private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
-
+    private static final String getUserByLoginSQL = "SELECT * FROM MODEL.USERS WHERE USERNAME = ? AND PASSWORD = ?";
+    private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
+    private static final String getAllIndividualTasksSQL = "SELECT * FROM MODEL.INDIVIDUAL_TASKS WHERE USER_ID = ?";
+    private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
+    private static final String getAllGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS NATURAL JOIN (SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?) AS UGT";
+    private static final String getProjectsSQL = "SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?";
+    private static final String getAllProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS NATURAL JOIN (SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?) AS UPT";
+    private static final String getGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS WHERE GROUP_ID = ?";
+    private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
+    private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
+    private static final String storeLogin = "INSERT INTO APP.LOGINS(USER_ID) VALUES ?";
 
     @Override
     public User getUserByLogin(String username, String password) {
@@ -231,6 +231,19 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     @Override
     public void completeProject(Project project, Date dateCompleted) {
 
+    }
+
+    @Override
+    public Long storeLogin(Long userId) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(storeLogin)) {
+            statement.setLong(1, userId);
+            statement.execute();
+            return null; // TODO FINISH THIS!
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static DerbyDatabaseAccessor getInstance() {
