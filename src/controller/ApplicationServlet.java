@@ -5,6 +5,7 @@ import database.DatabaseAccessor;
 import database.DerbyDatabaseAccessor;
 
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Andi Gu
@@ -12,4 +13,8 @@ import javax.servlet.http.HttpServlet;
 public abstract class ApplicationServlet extends HttpServlet {
     DatabaseAccessor db = DerbyDatabaseAccessor.getInstance();
     JsonConverter converter = JsonConverter.getInstance();
+
+    boolean hasParameter(HttpServletRequest request, String parameter) {
+        return request.getParameterMap().containsKey(parameter);
+    }
 }

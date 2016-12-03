@@ -9,11 +9,9 @@ import model.task.ProjectTask;
 import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
 import org.apache.derby.jdbc.ClientDataSource;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 /**
  * @author Andi Gu
@@ -25,9 +23,9 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     }};
     private static final DerbyDatabaseAccessor instance = new DerbyDatabaseAccessor();
 
-
     private static final String getUserByLoginSQL = "SELECT * FROM MODEL.USERS WHERE USERNAME = ? AND PASSWORD = ?";
     private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
+    private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
     private static final String getAllIndividualTasksSQL = "SELECT * FROM MODEL.INDIVIDUAL_TASKS WHERE USER_ID = ?";
     private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
     private static final String getAllGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS NATURAL JOIN (SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?) AS UGT";
@@ -36,7 +34,8 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS WHERE GROUP_ID = ?";
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
-    private static final String storeLogin = "INSERT INTO APP.LOGINS(USER_ID) VALUES ?";
+    private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
+    private static final String getMaxTokenSQL = "SELECT MAX(TOKEN) FROM APP.LOGINS";
 
     @Override
     public User getUserByLogin(String username, String password) {
@@ -54,9 +53,25 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
 
     @Override
     public User getUserById(long id) {
+        return getUserByIdentification(id, getUserByIdSQL);
+    }
+
+    @Override
+    public User getUserByToken(long token) {
+        return getUserByIdentification(token, getUserByTokenSQL);
+    }
+
+    /**
+     * Helper method to get user by token or id
+     *
+     * @param identification Method of identification for user - either token or id
+     * @param sql SQL to execute to get appropriate user with corresponding id type
+     * @return User with matching id
+     */
+    private User getUserByIdentification(long identification, String sql) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(getUserByIdSQL)) {
-            statement.setLong(1, id);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, identification);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
         } catch (SQLException e) {
@@ -236,10 +251,18 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     @Override
     public Long storeLogin(Long userId) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(storeLogin)) {
-            statement.setLong(1, userId);
+             PreparedStatement statement = connection.prepareStatement(storeLoginSQL);
+             Statement getNextId = connection.createStatement()) {
+            ResultSet resultSet = getNextId.executeQuery(getMaxTokenSQL);
+            long nextToken = 0;
+            if (resultSet.next()) {
+                nextToken = resultSet.getLong(1) + 1;
+            }
+            System.out.println(nextToken);
+            statement.setLong(1, nextToken);
+            statement.setLong(2, userId);
             statement.execute();
-            return null; // TODO FINISH THIS!
+            return nextToken;
         } catch (SQLException e) {
             e.printStackTrace();
         }

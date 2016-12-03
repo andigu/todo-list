@@ -14,16 +14,19 @@ class ActivityViewModel {
                 'password': form.password.value,
                 'stay-logged': form.stay.value
             }, function (response) {
-                if (response == null) {
-                    alert("Wrong login");
+                if (response['user'] == null) {
+                    alert('Wrong login!');
                 }
                 else {
-                    self.user = response;
-
+                    console.log(response);
+                    self.user = response['user'];
+                    if (response.hasOwnProperty('token')) {
+                        document.cookie = 'token=' + response['token'];
+                    }
                     location.hash = 'app';
                     self.getTasks();
                 }
-            })
+            });
         };
     }
 
@@ -32,7 +35,6 @@ class ActivityViewModel {
         if (taskTypes === undefined) {
             taskTypes = ['individual', 'group', 'project']
         }
-        let result = null;
         $.get("/tasks", {
             'user-id': self.user.id,
             'task-types': taskTypes.toString(),
@@ -40,9 +42,11 @@ class ActivityViewModel {
             self.displayedTasks(response);
             console.log(response);
         });
-    };
+    }
+    ;
 }
 
+const viewModel = new ActivityViewModel();
 
 function focus(elementId) {
     if (elementId.charAt(0) !== '#') {
@@ -56,11 +60,24 @@ function focus(elementId) {
     body.children(elementId).show();
 }
 
+function mapCookies() {
+    const map = {};
+    const split = document.cookie.split(';');
+    for (let i=0; i < split.length; i++) {
+        let temp = split[i].split("=");
+        map[temp[0]] = temp[1];
+    }
+    return map;
+}
+
 $(document).ready(function () {
-    ko.applyBindings(new ActivityViewModel());
+    ko.applyBindings(viewModel);
     $(window).on('hashchange', function () {
         focus(location.hash + "-view");
     });
+    if (mapCookies().hasOwnProperty("token")) {
+
+    }
     if (location.hash !== '#login') {
         location.hash = 'login';
     }

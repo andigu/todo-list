@@ -20,6 +20,8 @@ public interface DatabaseAccessor {
 
     User getUserById(long id);
 
+    User getUserByToken(long token);
+
     Set<IndividualTask> getAllIndividualTasks(User user);
 
     Set<GroupTask> getAllGroupTasks(User user);

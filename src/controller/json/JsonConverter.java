@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author Andi Gu
@@ -22,7 +23,7 @@ public class JsonConverter {
     }
 
     public String toJson(Object object) throws JsonProcessingException {
-        return mapper.writeValueAsString(object);
+        return object == null ? null : mapper.writeValueAsString(object);
     }
 
     public <T> T toObject(String json, Class<T> tClass) throws IOException {

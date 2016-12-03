@@ -1,10 +1,10 @@
 SET SCHEMA MODEL;
 
 INSERT INTO USERS (USERNAME) VALUES
-  ('person_a'),
-  ('person_b'),
-  ('person_c'),
-  ('person_d');
+  ('a'),
+  ('b'),
+  ('c'),
+  ('d');
 INSERT INTO PROJECTS (PROJECT_NAME) VALUES
   ('project_a'),
   ('project_b'),
