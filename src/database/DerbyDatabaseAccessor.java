@@ -66,7 +66,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
      * Helper method to get user by token or id
      *
      * @param identification Method of identification for user - either token or id
-     * @param sql SQL to execute to get appropriate user with corresponding id type
+     * @param sql            SQL to execute to get appropriate user with corresponding id type
      * @return User with matching id
      */
     private User getUserByIdentification(long identification, String sql) {
@@ -273,14 +273,15 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     /**
      * Inserts a new user into the databaseit
      *
-     * @param username   The username of the new user
-     * @param password   The password of the new user
-     * @param firstName  The firstname of the new user
-     * @param lastName   The lastname of the new user
+     * @param username  The username of the new user
+     * @param password  The password of the new user
+     * @param firstName The firstname of the new user
+     * @param lastName  The lastname of the new user
      */
     @Override
     public void registerUser(String username, String password, String firstName, String lastName) {
-        try(Connection conn = dataSource.getConnection(); PreparedStatement statement = conn.prepareStatement(registerUserSQL);){
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(registerUserSQL)) {
             statement.setString(1, username);
             statement.setString(2, password);
             statement.setString(3, firstName);
