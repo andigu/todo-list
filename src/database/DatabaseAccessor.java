@@ -46,5 +46,7 @@ public interface DatabaseAccessor {
 
     void completeProject(Project project, Date dateCompleted);
 
+    void registerUser(String username, String password, String firstName, String lastName);
+
     Long storeLogin(Long userId);
 }
