@@ -37,6 +37,8 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLogin = "INSERT INTO APP.LOGINS(USER_ID) VALUES ?";
+    private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME) VALUES (?, ?, ?, ? )";
+
 
     @Override
     public User getUserByLogin(String username, String password) {
@@ -244,6 +246,27 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Inserts a new user into the databaseit
+     *
+     * @param username   The username of the new user
+     * @param password   The password of the new user
+     * @param firstName  The firstname of the new user
+     * @param lastName   The lastname of the new user
+     */
+    @Override
+    public void registerUser(String username, String password, String firstName, String lastName) {
+        try(Connection conn = dataSource.getConnection(); PreparedStatement statement = conn.prepareStatement(registerUserSQL);){
+            statement.setString(1, username);
+            statement.setString(2, password);
+            statement.setString(3, firstName);
+            statement.setString(4, lastName);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static DerbyDatabaseAccessor getInstance() {
