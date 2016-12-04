@@ -6,6 +6,9 @@ import database.DerbyDatabaseAccessor;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Andi Gu
@@ -17,4 +20,5 @@ public abstract class ApplicationServlet extends HttpServlet {
     boolean hasParameter(HttpServletRequest request, String parameter) {
         return request.getParameterMap().containsKey(parameter);
     }
+
 }
