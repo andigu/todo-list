@@ -18,7 +18,7 @@ import java.util.List;
  *  @author Susheel Kona
  *  @since 12/2/2016
  */
-@WebServlet(name = "RegistrationServlet", urlPatterns = "/register")
+@WebServlet("/register")
 public class RegistrationServlet extends ApplicationServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doGet(req, resp);
@@ -29,7 +29,7 @@ public class RegistrationServlet extends ApplicationServlet {
         //TODO check for null values
         log(req.getParameter("username"));
         db.registerUser(req.getParameter("username"), req.getParameter("password"),
-                req.getParameter("firstname"), req.getParameter("lastname"));
+                req.getParameter("first-name"), req.getParameter("last-name"));
         resp.getWriter().print("");
     }
 }

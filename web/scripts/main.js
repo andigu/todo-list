@@ -30,10 +30,10 @@ class ActivityViewModel {
         };
 
         self.register = function(form) {
-            console.log("registration initiated")
-            var info = {
-              'firstname': form.firstname.value,
-              'lastname': form.lastname.value,
+            console.log("registration initiated");
+            let info = {
+              'first-name': form.firstname.value,
+              'last-name': form.lastname.value,
               'username': form.username.value,
               'password': form.password.value
             };
