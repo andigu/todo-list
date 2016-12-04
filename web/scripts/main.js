@@ -87,7 +87,7 @@ function mapCookies() {
 }
 
 
-$.holdReady(true);
+//$.holdReady(true);
 if (mapCookies().hasOwnProperty("token")) {
     $.post("/login", {
         "token": mapCookies()["token"]
@@ -97,7 +97,7 @@ if (mapCookies().hasOwnProperty("token")) {
             location.hash = "app";
             viewModel.getTasks();
         }
-        $.holdReady(false)
+        //$.holdReady(false)
     });
 }
 
