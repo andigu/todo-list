@@ -104,6 +104,9 @@ if (mapCookies().hasOwnProperty("token")) {
 $(document).ready(function () {
     ko.applyBindings(viewModel);
     $(window).on("hashchange", function () {
+        if(location.hash == "#login" && viewModel.user != null) {
+            location.hash="#app";
+        }
         focus(location.hash + "-view");
     });
     if (viewModel.user != undefined) {
