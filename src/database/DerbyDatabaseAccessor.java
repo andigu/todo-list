@@ -28,15 +28,15 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
     private static final String getAllIndividualTasksSQL = "SELECT * FROM MODEL.INDIVIDUAL_TASKS WHERE USER_ID = ?";
     private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
-    private static final String getAllGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS NATURAL JOIN (SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?) AS UGT";
+    private static final String getAllGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS JOIN (SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?) AS UGT ON MODEL.GROUP_TASKS.GROUP_ID = UGT.GROUP_ID";
     private static final String getProjectsSQL = "SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?";
-    private static final String getAllProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS NATURAL JOIN (SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?) AS UPT";
+    private static final String getAllProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS JOIN (SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?) AS UPT ON MODEL.PROJECT_TASKS.PROJECT_ID = UPT.PROJECT_ID";
     private static final String getGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS WHERE GROUP_ID = ?";
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
     private static final String getMaxTokenSQL = "SELECT MAX(TOKEN) FROM APP.LOGINS";
-    private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME) VALUES (?, ?, ?, ? )";
+    private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME) VALUES (?, ?, ?, ?)";
 
     @Override
     public User getUserByLogin(String username, String password) {
@@ -137,6 +137,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
                 }
                 projectTasks.add(ResultSetConverter.getProjectTask(resultSet, projectMap.get(id)));
             }
+            System.out.println("fdsfsdfds" + projectTasks);
             return projectTasks;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -42,8 +42,7 @@ class ActivityViewModel {
             self.displayedTasks(response);
             console.log(response);
         });
-    }
-    ;
+    };
 }
 
 const viewModel = new ActivityViewModel();
@@ -63,11 +62,26 @@ function focus(elementId) {
 function mapCookies() {
     const map = {};
     const split = document.cookie.split(';');
-    for (let i=0; i < split.length; i++) {
+    for (let i = 0; i < split.length; i++) {
         let temp = split[i].split("=");
         map[temp[0]] = temp[1];
     }
     return map;
+}
+
+
+$.holdReady(true);
+if (mapCookies().hasOwnProperty("token")) {
+    $.post("/login", {
+        'token': mapCookies()["token"]
+    }, function (response) {
+        if (response['user'] != null) {
+            viewModel.user = response['user'];
+            location.hash = 'app';
+            viewModel.getTasks();
+        }
+        $.holdReady(false)
+    });
 }
 
 $(document).ready(function () {
@@ -75,13 +89,16 @@ $(document).ready(function () {
     $(window).on('hashchange', function () {
         focus(location.hash + "-view");
     });
-    if (mapCookies().hasOwnProperty("token")) {
-
-    }
-    if (location.hash !== '#login') {
-        location.hash = 'login';
+    if (viewModel.user != undefined) {
+        location.hash = 'app';
+        focus('#app')
     }
     else {
-        focus('#login-view');
+        if (location.hash !== '#login') {
+            location.hash = 'login';
+        }
+        else {
+            focus('#login-view');
+        }
     }
 });

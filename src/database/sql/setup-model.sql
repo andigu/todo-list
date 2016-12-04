@@ -57,7 +57,7 @@ CREATE TABLE model.group_tasks (
   task_id         INTEGER     NOT NULL GENERATED ALWAYS AS IDENTITY ( START WITH 1, INCREMENT BY 1) PRIMARY KEY,
   group_id        INTEGER     NOT NULL,
   task_name       VARCHAR(50) NOT NULL,
-  task_due_date   DATE        NOT NULL,
+  task_due_date   DATE        NOT NULL DEFAULT CURRENT_DATE,
   users_completed INTEGER     NOT NULL DEFAULT 0,
   FOREIGN KEY (group_id) REFERENCES model.groups (group_id)
 );
@@ -83,7 +83,7 @@ CREATE TABLE model.individual_tasks (
   task_id           INTEGER     NOT NULL GENERATED ALWAYS AS IDENTITY ( START WITH 1, INCREMENT BY 1) PRIMARY KEY,
   user_id           INTEGER     NOT NULL,
   task_name         VARCHAR(50) NOT NULL,
-  task_due_date     DATE        NOT NULL,
+  task_due_date     DATE        NOT NULL DEFAULT CURRENT_DATE,
   completed         BOOLEAN              DEFAULT FALSE,
   user_completed_id INTEGER,
   date_completed    DATE,
