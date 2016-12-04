@@ -24,7 +24,12 @@
 
         <button type="submit">Login</button>
     </form>
+    <p>
+        Don't have an account?
+        <a href="#registration">Sign up</a>
+    </p>
 </div>
+
 <div id="app-view">
     <table>
         <tbody data-bind="foreach: displayedTasks">
@@ -35,6 +40,25 @@
     </table>
 </div>
 
+<div id="registration-view" style="line-height: 40px">
+    <h1>Sign up</h1>
+    <form data-bind="submit: register">
+        <label>
+            First Name: <br/> <input type="text" name="firstname"/> <br/>
+        </label>
+        <label>
+            Last Name: <br/> <input type="text" name="lastname"/> <br/>
+        </label>
+        <!-- For later use-->
+        <label>
+            Email Address: <br/>  <input type="text" name="email"/> <br/>
+        </label>
+        <label>
+            Password: <br/> <input type="password" name="password"/> <br/>
+        </label>
+        <button type="submit">Register</button>
+    </form>
+</div>
 
 <script type="text/javascript" src="scripts/lib/jquery-3.1.1.js"></script>
 <script type="text/javascript" src="scripts/lib/knockout-3.4.0.js"></script>

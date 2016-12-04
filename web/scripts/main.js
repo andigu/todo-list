@@ -28,6 +28,20 @@ class ActivityViewModel {
                 }
             });
         };
+
+        self.register = function(form) {
+            console.log("registration initiated")
+            var info = {
+              'firstname': form.firstname.value,
+              'lastname': form.lastname.value,
+              'password': form.password.value,
+            };
+            console.log(info);
+            $.get("/register", info, function (response) {
+                alert("Registered! Press OK to sign in");
+                location.hash="login"
+            });
+        }
     }
 
     getTasks(taskTypes) {
