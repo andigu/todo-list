@@ -8,40 +8,41 @@ class ActivityViewModel {
         const self = this;
         self.user = null;
         self.displayedTasks = ko.observableArray();
+
         self.login = function (form) {
             $.post("/login", {
-                'username': form.username.value,
-                'password': form.password.value,
-                'stay-logged': form.stay.value
+                "username": form.username.value,
+                "password": form.password.value,
+                "stay-logged": form.stay.value
             }, function (response) {
-                if (response['user'] == null) {
-                    alert('Wrong login!');
+                if (response["user"] == null) {
+                    alert("Wrong login!");
                 }
                 else {
                     console.log(response);
-                    self.user = response['user'];
-                    if (response.hasOwnProperty('token')) {
-                        document.cookie = 'token=' + response['token'];
+                    self.user = response["user"];
+                    if (response.hasOwnProperty("token")) {
+                        document.cookie = "token=" + response["token"];
                     }
-                    location.hash = 'app';
+                    location.hash = "app";
                     self.getTasks();
                 }
             });
         };
 
-        self.register = function(form) {
+        self.register = function (form) {
             console.log("registration initiated");
             let info = {
-              'first-name': form.firstname.value,
-              'last-name': form.lastname.value,
-              'username': form.username.value,
-              'password': form.password.value
+                "first-name": form.firstname.value,
+                "last-name": form.lastname.value,
+                "username": form.username.value,
+                "password": form.password.value
             };
             console.log(info);
-            $.get("/register",info, function (response) {
+            $.get("/register", info, function (response) {
                 alert("Registered! Press OK to sign in");
                 //TODO sign in and go to app page here
-                location.hash="login"
+                location.hash = "login"
             });
         }
     }
@@ -49,11 +50,11 @@ class ActivityViewModel {
     getTasks(taskTypes) {
         const self = this;
         if (taskTypes === undefined) {
-            taskTypes = ['individual', 'group', 'project']
+            taskTypes = ["individual", "group", "project"]
         }
         $.get("/tasks", {
-            'user-id': self.user.id,
-            'task-types': taskTypes.toString(),
+            "user-id": self.user.id,
+            "task-types": taskTypes.toString(),
         }, function (response) {
             self.displayedTasks(response);
             console.log(response);
@@ -64,20 +65,20 @@ class ActivityViewModel {
 const viewModel = new ActivityViewModel();
 
 function focus(elementId) {
-    if (elementId.charAt(0) !== '#') {
-        elementId = '#' + elementId;
+    if (elementId.charAt(0) !== "#") {
+        elementId = "#" + elementId;
     }
-    if (elementId.substr(elementId.length - 5) !== '-view') {
-        elementId += '-view'
+    if (elementId.substr(elementId.length - 5) !== "-view") {
+        elementId += "-view"
     }
-    const body = $('body');
-    body.children('div').hide();
+    const body = $("body");
+    body.children("div").hide();
     body.children(elementId).show();
 }
 
 function mapCookies() {
     const map = {};
-    const split = document.cookie.split(';');
+    const split = document.cookie.split(";");
     for (let i = 0; i < split.length; i++) {
         let temp = split[i].split("=");
         map[temp[0]] = temp[1];
@@ -89,11 +90,11 @@ function mapCookies() {
 $.holdReady(true);
 if (mapCookies().hasOwnProperty("token")) {
     $.post("/login", {
-        'token': mapCookies()["token"]
+        "token": mapCookies()["token"]
     }, function (response) {
-        if (response['user'] != null) {
-            viewModel.user = response['user'];
-            location.hash = 'app';
+        if (response["user"] != null) {
+            viewModel.user = response["user"];
+            location.hash = "app";
             viewModel.getTasks();
         }
         $.holdReady(false)
@@ -102,19 +103,19 @@ if (mapCookies().hasOwnProperty("token")) {
 
 $(document).ready(function () {
     ko.applyBindings(viewModel);
-    $(window).on('hashchange', function () {
+    $(window).on("hashchange", function () {
         focus(location.hash + "-view");
     });
     if (viewModel.user != undefined) {
-        location.hash = 'app';
-        focus('#app')
+        location.hash = "app";
+        focus("#app")
     }
     else {
-        if (location.hash !== '#login') {
-            location.hash = 'login';
+        if (location.hash !== "#login") {
+            location.hash = "login";
         }
         else {
-            focus('#login-view');
+            focus("#login-view");
         }
     }
 });
