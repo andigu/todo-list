@@ -34,11 +34,13 @@ class ActivityViewModel {
             var info = {
               'firstname': form.firstname.value,
               'lastname': form.lastname.value,
-              'password': form.password.value,
+              'username': form.username.value,
+              'password': form.password.value
             };
             console.log(info);
-            $.get("/register", info, function (response) {
+            $.get("/register",info, function (response) {
                 alert("Registered! Press OK to sign in");
+                //TODO sign in and go to app page here
                 location.hash="login"
             });
         }

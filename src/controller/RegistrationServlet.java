@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+
 
 /**
  *  Requests to register new users in the database are processed in this servlet
@@ -15,13 +19,17 @@ import java.io.IOException;
  *  @since 12/2/2016
  */
 @WebServlet(name = "RegistrationServlet", urlPatterns = "/register")
-public class RegistrationServlet extends HttpServlet {
+public class RegistrationServlet extends ApplicationServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doGet(req, resp);
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //DerbyDatabaseAccessor.getInstance().registerUser();
-        //TODO fix and complete this
+        resp.setContentType("json/application");
+        //TODO check for null values
+        log(req.getParameter("username"));
+        db.registerUser(req.getParameter("username"), req.getParameter("password"),
+                req.getParameter("firstname"), req.getParameter("lastname"));
+        resp.getWriter().print("");
     }
 }
