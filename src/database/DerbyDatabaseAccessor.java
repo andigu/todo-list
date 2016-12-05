@@ -35,7 +35,6 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
-    private static final String getMaxTokenSQL = "SELECT MAX(TOKEN) FROM APP.LOGINS";
     private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME) VALUES (?, ?, ?, ?)";
 
     @Override
@@ -53,26 +52,27 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     }
 
     @Override
-    public User getUserById(long id) {
-        return getUserByIdentification(id, getUserByIdSQL);
+    public User getUserById(String id) {
+        return getUserByIdentification(id, "id");
     }
 
     @Override
-    public User getUserByToken(long token) {
-        return getUserByIdentification(token, getUserByTokenSQL);
+    public User getUserByToken(String token) {
+        return getUserByIdentification(token, "token");
     }
 
     /**
-     * Helper method to get user by token or id
+     * Functionality that is shared between getUserById and getUserByToken
      *
-     * @param identification Method of identification for user - either token or id
-     * @param sql            SQL to execute to get appropriate user with corresponding id type
-     * @return User with matching id
+     * @param identification Unique identification value
+     * @param idType Cannot directly pass in SQL: if this were possible, other functions might accidentally call this
+     *               function and get unexpected results
+     * @return User with matching identification
      */
-    private User getUserByIdentification(long identification, String sql) {
+    private User getUserByIdentification(String identification, String idType) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, identification);
+        PreparedStatement statement = connection.prepareStatement(idType.equals("token") ? getUserByTokenSQL : getUserByIdSQL)) {
+            statement.setString(1, identification);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
         } catch (SQLException e) {
@@ -85,7 +85,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public Set<IndividualTask> getAllIndividualTasks(User user) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(getAllIndividualTasksSQL)) {
-            statement.setLong(1, user.getId());
+            statement.setString(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             Set<IndividualTask> tasks = new HashSet<>();
             while (resultSet.next()) {
@@ -102,7 +102,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public Set<GroupTask> getAllGroupTasks(User user) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(getAllGroupTasksSQL)) {
-            statement.setLong(1, user.getId());
+            statement.setString(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             Set<GroupTask> groupTasks = new HashSet<>();
             Map<Long, Group> groupMap = new HashMap<>();
@@ -125,13 +125,13 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public Set<ProjectTask> getAllProjectTasks(User user) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(getAllProjectTasksSQL)) {
-            statement.setLong(1, user.getId());
+            statement.setString(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             Set<ProjectTask> projectTasks = new HashSet<>();
-            Map<Long, Project> projectMap = new HashMap<>();
-            long id;
+            Map<String, Project> projectMap = new HashMap<>();
+            String id;
             while (resultSet.next()) {
-                id = resultSet.getLong("PROJECT_ID");
+                id = resultSet.getString("PROJECT_ID");
                 if (!projectMap.containsKey(id)) {
                     projectMap.put(id, ResultSetConverter.getProject(resultSet));
                 }
@@ -149,7 +149,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public Set<Group> getGroups(User user) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(getGroupsSQL)) {
-            statement.setLong(1, user.getId());
+            statement.setString(1, user.getId());
             ResultSet result = statement.executeQuery();
             Set<Group> groups = new HashSet<>();
             while (result.next()) {
@@ -166,7 +166,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public Set<Project> getProjects(User user) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(getProjectsSQL)) {
-            statement.setLong(1, user.getId());
+            statement.setString(1, user.getId());
             ResultSet result = statement.executeQuery();
             Set<Project> projects = new HashSet<>();
             while (result.next()) {
@@ -183,7 +183,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public Set<GroupTask> getGroupTasks(Group group) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(getGroupTasksSQL)) {
-            statement.setLong(1, group.getId());
+            statement.setString(1, group.getId());
             ResultSet result = statement.executeQuery();
             Set<GroupTask> tasks = new HashSet<>();
             while (result.next()) {
@@ -200,7 +200,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public Set<ProjectTask> getProjectTasks(Project project) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(getProjectTasksSQL)) {
-            statement.setLong(1, project.getId());
+            statement.setString(1, project.getId());
             ResultSet result = statement.executeQuery();
             Set<ProjectTask> tasks = new HashSet<>();
             while (result.next()) {
@@ -217,7 +217,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public Map<User, Date> getUsersCompletedGroupTask(GroupTask task) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(getUsersCompletedGroupTaskSQL)) {
-            statement.setLong(1, task.getId());
+            statement.setString(1, task.getId());
             ResultSet result = statement.executeQuery();
             Map<User, Date> users = new HashMap<>();
             while (result.next()) {
@@ -251,20 +251,14 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     }
 
     @Override
-    public Long storeLogin(Long userId) {
+    public String storeLogin(String userId) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(storeLoginSQL);
-             Statement getNextId = connection.createStatement()) {
-            ResultSet resultSet = getNextId.executeQuery(getMaxTokenSQL);
-            long nextToken = 0;
-            if (resultSet.next()) {
-                nextToken = resultSet.getLong(1) + 1;
-            }
-            System.out.println(nextToken);
-            statement.setLong(1, nextToken);
-            statement.setLong(2, userId);
+             PreparedStatement statement = connection.prepareStatement(storeLoginSQL)) {
+            String token = UUID.randomUUID().toString();
+            statement.setString(1, token);
+            statement.setString(2, userId);
             statement.execute();
-            return nextToken;
+            return token;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -272,12 +266,12 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     }
 
     /**
-     * Inserts a new user into the databaseit
+     * Inserts a new user into the database.
      *
      * @param username  The username of the new user
      * @param password  The password of the new user
-     * @param firstName The firstname of the new user
-     * @param lastName  The lastname of the new user
+     * @param firstName The first name of the new user
+     * @param lastName  The last name of the new user
      */
     @Override
     public void registerUser(String username, String password, String firstName, String lastName) {

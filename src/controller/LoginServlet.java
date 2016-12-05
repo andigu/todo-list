@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Andi Gu
@@ -22,7 +21,7 @@ public class LoginServlet extends ApplicationServlet {
         Map<String, Object> jsonMap = new HashMap<>();
         User user;
         if (hasParameter(req, "token")) {
-            user = db.getUserByToken(Long.parseLong(req.getParameter("token")));
+            user = db.getUserByToken(req.getParameter("token"));
         }
         else {
             user = db.getUserByLogin(req.getParameter("username"), req.getParameter("password"));
@@ -30,6 +29,7 @@ public class LoginServlet extends ApplicationServlet {
                 if (req.getParameter("stay-logged").equals("on")) {
                     jsonMap.put("token", db.storeLogin(user.getId()));
                 }
+
             }
         }
         jsonMap.put("user", user);

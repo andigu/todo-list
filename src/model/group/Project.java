@@ -18,7 +18,7 @@ public class Project extends Completable {
     private Set<User> collaborators;
     private Set<ProjectTask> tasks;
 
-    public Project(long id, String name, Date dueDate) {
+    public Project(String id, String name, Date dueDate) {
         super(id, name, dueDate);
         collaborators = new HashSet<>();
         tasks = new HashSet<>();

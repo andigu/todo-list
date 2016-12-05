@@ -16,7 +16,7 @@ public class Group extends Identifiable {
     private Set<User> members;
     private Set<GroupTask> tasks;
 
-    public Group(long id, String name) {
+    public Group(String id, String name) {
         super(id, name);
         members = new HashSet<>();
         tasks = new HashSet<>();

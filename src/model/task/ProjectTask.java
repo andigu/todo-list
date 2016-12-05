@@ -28,7 +28,7 @@ public class ProjectTask extends Task {
     private Project project;
     private boolean complete;
 
-    public ProjectTask(long id, String name, Date dueDate, Project project) {
+    public ProjectTask(String id, String name, Date dueDate, Project project) {
         super(id, name, dueDate);
         this.project = project;
         complete = false;

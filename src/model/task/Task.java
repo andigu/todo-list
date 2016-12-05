@@ -9,7 +9,7 @@ import java.util.Date;
  * @author Andi Gu
  */
 public abstract class Task extends Completable{
-    Task(long id, String name, Date dueDate) {
+    Task(String id, String name, Date dueDate) {
         super(id, name, dueDate);
     }
 }

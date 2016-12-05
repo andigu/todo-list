@@ -15,7 +15,7 @@ public class IndividualTask extends Task {
     private User owner;
     private boolean complete;
 
-    public IndividualTask(long id, String name, User owner, Date dueDate) {
+    public IndividualTask(String id, String name, User owner, Date dueDate) {
         super(id, name, dueDate);
         this.owner = owner;
         complete = false;

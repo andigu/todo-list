@@ -11,7 +11,7 @@ import java.util.Date;
 public abstract class Completable extends Identifiable {
     private Date dueDate;
 
-    public Completable(long id, String name, Date dueDate) {
+    public Completable(String id, String name, Date dueDate) {
         super(id, name);
         this.dueDate = dueDate;
     }

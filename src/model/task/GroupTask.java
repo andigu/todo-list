@@ -27,7 +27,7 @@ public class GroupTask extends Task {
     private Group group;
     private Set<User> completed;
 
-    public GroupTask(long id, String name, Date dueDate, Group group) {
+    public GroupTask(String id, String name, Date dueDate, Group group) {
         super(id, name, dueDate);
         this.group = group;
         completed = new HashSet<>();

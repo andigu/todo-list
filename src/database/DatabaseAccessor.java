@@ -18,9 +18,9 @@ import java.util.Set;
 public interface DatabaseAccessor {
     User getUserByLogin(String username, String password);
 
-    User getUserById(long id);
+    User getUserById(String id);
 
-    User getUserByToken(long token);
+    User getUserByToken(String token);
 
     Set<IndividualTask> getAllIndividualTasks(User user);
 
@@ -48,5 +48,5 @@ public interface DatabaseAccessor {
 
     void registerUser(String username, String password, String firstName, String lastName);
 
-    Long storeLogin(Long userId);
+    String storeLogin(String userId);
 }
