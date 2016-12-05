@@ -284,7 +284,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             statement.setString(4, firstName);
             statement.setString(5, lastName);
             statement.execute();
-            return new User(token, username, firstName, lastName);
+            return new User(token, firstName, lastName, username);
         } catch (SQLIntegrityConstraintViolationException e) {
             throw e;
         } catch (SQLException e) {

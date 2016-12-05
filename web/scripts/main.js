@@ -3,6 +3,13 @@
  */
 "use strict";
 
+requirejs.config({
+    //By default load any module IDs from js/lib
+    baseUrl: 'js/lib',
+});
+
+
+
 class ActivityViewModel {
     constructor() {
         this.user = null;
@@ -33,7 +40,7 @@ class ActivityViewModel {
 
 
     register(form) {
-        console.log("registration initiated");
+        const self = this;
         $.get("/register", {
             "first-name": form.firstname.value,
             "last-name": form.lastname.value,
@@ -133,6 +140,4 @@ $(document).ready(function () {
             focus("login");
         }
     }
-
-
 });
