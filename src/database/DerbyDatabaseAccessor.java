@@ -35,7 +35,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
-    private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME) VALUES (?, ?, ?, ?)";
+    private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME)  VALUES (?, ?, ?, ?, ?)";
 
     @Override
     public User getUserByLogin(String username, String password) {
@@ -254,7 +254,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public String storeLogin(String userId) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(storeLoginSQL)) {
-            String token = UUID.randomUUID().toString();
+            String token = randomId();
             statement.setString(1, token);
             statement.setString(2, userId);
             statement.execute();
@@ -277,14 +277,19 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     public void registerUser(String username, String password, String firstName, String lastName) {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(registerUserSQL)) {
-            statement.setString(1, username);
-            statement.setString(2, password);
-            statement.setString(3, firstName);
-            statement.setString(4, lastName);
+            statement.setString(1, randomId());
+            statement.setString(2, username);
+            statement.setString(3, password);
+            statement.setString(4, firstName);
+            statement.setString(5, lastName);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private String randomId() {
+        return UUID.randomUUID().toString();
     }
 
     public static DerbyDatabaseAccessor getInstance() {
