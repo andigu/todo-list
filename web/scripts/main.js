@@ -87,7 +87,7 @@ function mapCookies() {
 }
 
 
-$.holdReady(true);
+//$.holdReady(true);
 if (mapCookies().hasOwnProperty("token")) {
     $.post("/login", {
         "token": mapCookies()["token"]
@@ -97,13 +97,16 @@ if (mapCookies().hasOwnProperty("token")) {
             location.hash = "app";
             viewModel.getTasks();
         }
-        $.holdReady(false)
+        //$.holdReady(false)
     });
 }
 
 $(document).ready(function () {
     ko.applyBindings(viewModel);
     $(window).on("hashchange", function () {
+        if(location.hash == "#login" && viewModel.user != null) {
+            location.hash="#app";
+        }
         focus(location.hash + "-view");
     });
     if (viewModel.user !== undefined) {
