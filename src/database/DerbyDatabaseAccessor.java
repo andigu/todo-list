@@ -65,13 +65,13 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
      * Functionality that is shared between getUserById and getUserByToken
      *
      * @param identification Unique identification value
-     * @param idType Cannot directly pass in SQL: if this were possible, other functions might accidentally call this
-     *               function and get unexpected results
+     * @param idType         Cannot directly pass in SQL: if this were possible, other functions might accidentally call this
+     *                       function and get unexpected results
      * @return User with matching identification
      */
     private User getUserByIdentification(String identification, String idType) {
         try (Connection connection = dataSource.getConnection();
-        PreparedStatement statement = connection.prepareStatement(idType.equals("token") ? getUserByTokenSQL : getUserByIdSQL)) {
+             PreparedStatement statement = connection.prepareStatement(idType.equals("token") ? getUserByTokenSQL : getUserByIdSQL)) {
             statement.setString(1, identification);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
@@ -274,18 +274,23 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
      * @param lastName  The last name of the new user
      */
     @Override
-    public void registerUser(String username, String password, String firstName, String lastName) {
+    public User registerUser(String username, String password, String firstName, String lastName) throws SQLIntegrityConstraintViolationException {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(registerUserSQL)) {
-            statement.setString(1, randomId());
+            String token = randomId();
+            statement.setString(1, token);
             statement.setString(2, username);
             statement.setString(3, password);
             statement.setString(4, firstName);
             statement.setString(5, lastName);
             statement.execute();
+            return new User(token, username, firstName, lastName);
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw e;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     private String randomId() {

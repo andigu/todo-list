@@ -14,12 +14,9 @@ class ActivityViewModel {
         $.post("/login", {
             "username": form.username.value,
             "password": form.password.value,
-            "stay-logged": form.stay.value
+            "stay-logged": form.stay.checked
         }, function (response) {
-            if (response["user"] === null) {
-                alert("Wrong login!");
-            }
-            else {
+            if (response.hasOwnProperty("user")) {
                 console.log(response);
                 self.user = response["user"];
                 if (response.hasOwnProperty("token")) {
@@ -28,23 +25,28 @@ class ActivityViewModel {
                 location.hash = "app";
                 self.getTasks();
             }
+            else {
+                alert("Wrong login");
+            }
         });
     };
 
 
     register(form) {
         console.log("registration initiated");
-        let info = {
+        $.get("/register", {
             "first-name": form.firstname.value,
             "last-name": form.lastname.value,
             "username": form.username.value,
             "password": form.password.value
-        };
-        console.log(info);
-        $.get("/register", info, function (response) {
-            alert("Registered! Press OK to sign in");
-            //TODO sign in and go to app page here
-            location.hash = "login"
+        }, function (response) {
+            if (response.hasOwnProperty("user")) {
+                self.user = response["user"];
+            }
+            else {
+                alert(response["error"]);
+                console.log(response)
+            }
         });
     }
 
@@ -115,6 +117,10 @@ $(document).ready(function () {
         focus(location.hash);
     });
 
+    $("#register-button").click(function () {
+        location.hash = "register";
+    });
+
     if (viewModel.user !== undefined && viewModel.user !== null) {
         location.hash = "app";
         focus("app")
@@ -128,7 +134,5 @@ $(document).ready(function () {
         }
     }
 
-    $("#register-button").onclick = function () {
-        location.hash = "register";
-    };
+
 });

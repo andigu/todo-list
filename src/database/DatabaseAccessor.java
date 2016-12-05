@@ -8,6 +8,7 @@ import model.task.IndividualTask;
 import model.task.ProjectTask;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +47,7 @@ public interface DatabaseAccessor {
 
     void completeProject(Project project, Date dateCompleted);
 
-    void registerUser(String username, String password, String firstName, String lastName);
+    User registerUser(String username, String password, String firstName, String lastName) throws SQLIntegrityConstraintViolationException;
 
     String storeLogin(String userId);
 }

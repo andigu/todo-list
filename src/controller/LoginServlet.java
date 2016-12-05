@@ -26,13 +26,15 @@ public class LoginServlet extends ApplicationServlet {
         else {
             user = db.getUserByLogin(req.getParameter("username"), req.getParameter("password"));
             if (user != null) {
-                if (req.getParameter("stay-logged").equals("on")) {
+                if (req.getParameter("stay-logged").equals("true")) {
                     jsonMap.put("token", db.storeLogin(user.getId()));
                 }
 
             }
         }
-        jsonMap.put("user", user);
+        if (user != null) {
+            jsonMap.put("user", user);
+        }
         resp.getWriter().write(converter.toJson(jsonMap));
 
     }
