@@ -101,11 +101,15 @@ function checkToken() {
     }
 }
 
+function currentHash() {
+    return location.hash.substring(1);
+}
+
 $(document).ready(function () {
     ko.applyBindings(viewModel);
     checkToken();
     $(window).on("hashchange", function () {
-        if(location.hash === "#login") {
+        if (currentHash() === "login") {
             checkToken();
         }
         focus(location.hash);
@@ -116,11 +120,15 @@ $(document).ready(function () {
         focus("app")
     }
     else {
-        if (location.hash !== "#login") {
+        if (currentHash() !== "login") {
             location.hash = "login";
         }
         else {
             focus("login");
         }
     }
+
+    $("#register-button").onclick = function () {
+        location.hash = "register";
+    };
 });
