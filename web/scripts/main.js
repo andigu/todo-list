@@ -15,7 +15,7 @@ class ActivityViewModel {
                 "password": form.password.value,
                 "stay-logged": form.stay.value
             }, function (response) {
-                if (response["user"] == null) {
+                if (response["user"] === null) {
                     alert("Wrong login!");
                 }
                 else {
@@ -106,7 +106,7 @@ $(document).ready(function () {
     $(window).on("hashchange", function () {
         focus(location.hash + "-view");
     });
-    if (viewModel.user != undefined) {
+    if (viewModel.user !== undefined) {
         location.hash = "app";
         focus("#app")
     }
