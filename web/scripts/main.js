@@ -3,13 +3,6 @@
  */
 "use strict";
 
-requirejs.config({
-    //By default load any module IDs from js/lib
-    baseUrl: 'js/lib',
-});
-
-
-
 class ActivityViewModel {
     constructor() {
         this.user = null;
@@ -18,6 +11,7 @@ class ActivityViewModel {
 
     login(form) {
         const self = this;
+        console.log(form, form.elements);
         $.post("/login", {
             "username": form.username.value,
             "password": form.password.value,
@@ -47,12 +41,12 @@ class ActivityViewModel {
             "username": form.username.value,
             "password": form.password.value
         }, function (response) {
-            if (response.hasOwnProperty("user")) {
-                self.user = response["user"];
-            }
-            else {
+            if (response.hasOwnProperty("error")) {
                 alert(response["error"]);
                 console.log(response)
+            }
+            else {
+                self.user = response;
             }
         });
     }

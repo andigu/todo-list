@@ -27,8 +27,9 @@ public class RegistrationServlet extends ApplicationServlet {
         //TODO check for null values
         log(req.getParameter("username"));
         try {
-            resp.getWriter().write(converter.toJson(db.registerUser(req.getParameter("username"), req.getParameter("password"),
-                    req.getParameter("first-name"), req.getParameter("last-name"))));
+            User user = db.registerUser(req.getParameter("username"), req.getParameter("password"),
+                    req.getParameter("first-name"), req.getParameter("last-name"));
+            resp.getWriter().write(converter.toJson(user));
         } catch (SQLIntegrityConstraintViolationException e) {
             resp.getWriter().write(converter.toJson(new Error(ErrorType.DuplicateKey)));
         }
