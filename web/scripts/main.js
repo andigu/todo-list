@@ -19,7 +19,7 @@ class ActivityViewModel {
         }, function (response) {
             if (response.hasOwnProperty("user")) {
                 console.log(response);
-                self.user = response["user"];
+                self.user = ko.mapping.fromJS(response["user"]);
                 if (response.hasOwnProperty("token")) {
                     document.cookie = "token=" + response["token"];
                 }
@@ -32,6 +32,11 @@ class ActivityViewModel {
         });
     };
 
+    //Convert user property from observable to JS
+    getUserProperty(property) {
+        const self = this;
+        //return (ko.mapping.toJS(self.user()))[property];
+    }
 
     register(form) {
         const self = this;
@@ -46,7 +51,7 @@ class ActivityViewModel {
                 console.log(response)
             }
             else {
-                self.user = response;
+                self.user = ko.mapping.fromJS(response);
             }
         });
     }
@@ -57,7 +62,8 @@ class ActivityViewModel {
             taskTypes = ["individual", "group", "project"]
         }
         $.get("/tasks", {
-            "user-id": self.user.id,
+            //"user-id": self.user.id,
+            "user-id": ko.mapping.toJS(self.user).id,
             "task-types": taskTypes.toString(),
         }, function (response) {
             self.displayedTasks(response);
