@@ -5,7 +5,9 @@
 
 class ActivityViewModel {
     constructor() {
-        this.user = null;
+        this.name = ko.observable();
+        this.userName = ko.observable();
+        this.id = ko.observable();
         this.displayedTasks = ko.observableArray();
     }
 
@@ -19,11 +21,11 @@ class ActivityViewModel {
         }, function (response) {
             if (response.hasOwnProperty("user")) {
                 console.log(response);
-                self.user = ko.mapping.fromJS(response["user"]);
+                mapUser(response["user"]);
                 if (response.hasOwnProperty("token")) {
                     document.cookie = "token=" + response["token"];
                 }
-                location.hash = "app";
+                setHash("app");
                 self.getTasks();
             }
             else {
@@ -32,14 +34,7 @@ class ActivityViewModel {
         });
     };
 
-    //Convert user property from observable to JS
-    getUserProperty(property) {
-        const self = this;
-        //return (ko.mapping.toJS(self.user()))[property];
-    }
-
     register(form) {
-        const self = this;
         $.get("/register", {
             "first-name": form.firstname.value,
             "last-name": form.lastname.value,
@@ -51,7 +46,7 @@ class ActivityViewModel {
                 console.log(response)
             }
             else {
-                self.user = ko.mapping.fromJS(response);
+                mapUser(response);
             }
         });
     }
@@ -62,14 +57,20 @@ class ActivityViewModel {
             taskTypes = ["individual", "group", "project"]
         }
         $.get("/tasks", {
-            //"user-id": self.user.id,
-            "user-id": ko.mapping.toJS(self.user).id,
+            "user-id": self.id,
             "task-types": taskTypes.toString(),
         }, function (response) {
             self.displayedTasks(response);
             console.log(response);
         });
     };
+}
+
+function mapUser(object) {
+    console.log(object);
+    viewModel.userName(object["username"]);
+    viewModel.id(object["id"]);
+    viewModel.name(object["name"]);
 }
 
 const viewModel = new ActivityViewModel();
@@ -82,8 +83,14 @@ function focus(elementId) {
         elementId += "-view"
     }
     const body = $("body");
-    body.children("div").hide();
-    body.children(elementId).show();
+    const loadingDiv = $("#loading");
+    body.children("div.content").hide();
+    loadingDiv.show(function () {
+        body.children(elementId).show(function () {
+            loadingDiv.hide();
+        });
+    });
+
 }
 
 function mapCookies() {
@@ -102,42 +109,42 @@ function checkToken() {
             "token": mapCookies()["token"]
         }, function (response) {
             if (response["user"] != null) {
-                viewModel.user = response["user"];
-                location.hash = "app";
+                mapUser(response["user"]);
+                setHash("app");
                 viewModel.getTasks();
             }
         });
+        return true;
     }
+    return false;
 }
 
-function currentHash() {
+function getHash() {
     return location.hash.substring(1);
 }
 
+function setHash(hash) {
+    location.hash = hash;
+    if (getHash() === "login") {
+        checkToken();
+    }
+    focus(location.hash);
+}
+
+
 $(document).ready(function () {
     ko.applyBindings(viewModel);
-    checkToken();
-    $(window).on("hashchange", function () {
-        if (currentHash() === "login") {
-            checkToken();
-        }
-        focus(location.hash);
-    });
-
     $("#register-button").click(function () {
-        location.hash = "register";
+        setHash("register");
     });
 
-    if (viewModel.user !== undefined && viewModel.user !== null) {
-        location.hash = "app";
-        focus("app")
+    if (checkToken()) { // TODO perhaps sloppy?
+        return;
+    }
+    if (!(viewModel.id() === undefined || viewModel.id() !== null) ) {
+        setHash("app");
     }
     else {
-        if (currentHash() !== "login") {
-            location.hash = "login";
-        }
-        else {
-            focus("login");
-        }
+        setHash("login");
     }
 });

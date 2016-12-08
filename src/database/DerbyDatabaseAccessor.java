@@ -137,7 +137,6 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
                 }
                 projectTasks.add(ResultSetConverter.getProjectTask(resultSet, projectMap.get(id)));
             }
-            System.out.println("fdsfsdfds" + projectTasks);
             return projectTasks;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
 <body>
-<div id="login-view">
+<div id="loading" class="filler">
+    Loading...
+</div>
+
+<div id="login-view" class="content">
     <form data-bind="submit: login" method="post" id="login-form">
         <label>
             Username:
@@ -30,7 +35,14 @@
     </p>
 </div>
 
-<div id="app-view">
+<div id="app-view" class="content">
+    <div>
+    <h1> Your info </h1>
+        Id: <p data-bind="text: id"></p> <br />
+        Name: <p data-bind="text: name"></p> <br />
+        Username: <p data-bind="text: userName"></p>
+    </div>
+    <h1>Your tasks</h1>
     <table>
         <tbody data-bind="foreach: displayedTasks">
         <tr>
@@ -40,7 +52,7 @@
     </table>
 </div>
 
-<div id="register-view" style="line-height: 40px">
+<div id="register-view" class="content">
     <h1>Sign up</h1>
     <form data-bind="submit: register">
         <label>

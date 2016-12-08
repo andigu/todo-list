@@ -22,7 +22,6 @@ public class TasksServlet extends ApplicationServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = db.getUserById(req.getParameter("user-id"));
         String[] taskTypes = converter.toStringArray(req.getParameter("task-types"));
-        System.out.println(Arrays.toString(taskTypes));
         Set<Task> tasks = new HashSet<>();
         for (String taskType : taskTypes) {
             switch (taskType) {
