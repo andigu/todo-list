@@ -71,8 +71,10 @@ class ActivityViewModel {
         });
     }
 
-    goTo(hash) {
-        setHash(hash);
+    goTo(val, event) {
+        let id = event.target.id;
+        id = id.substring(0, id.indexOf("-"));
+        setHash(id);
     }
 }
 
@@ -127,8 +129,13 @@ function hasToken() {
     return mapCookies().hasOwnProperty("token")
 }
 
-function inApp() {
-    return !((getHash() === "login" || getHash() === "register"));
+function inApp(hash) {
+    if (hash !== undefined) {
+        return !((hash === "login" || hash === "register"));
+    }
+    else {
+        return !((getHash() === "login" || getHash() === "register"));
+    }
 }
 
 function getHash() {
@@ -136,63 +143,57 @@ function getHash() {
 }
 
 function setHash(hash) {
-    let loggedIn = false;
+    console.log(hash);
     $.get("/sessions", {
         "cmd": "ping"
     }, function (response) {
         if (response["logged-in"]) {
-            loggedIn = true;
-        }
-        else {
-            if (hasToken()) {
+            updatePage(true, hash);
+        } else {
+            if (!hasToken()) {
+                updatePage(false, hash);
+            } else {
                 $.post("/login", {
                     "token": mapCookies()["token"]
                 }, function (response) {
                     if (response["user"] != null) {
                         mapUser(response["user"]);
-                        loggedIn = true;
+                        updatePage(true, hash);
                     }
                     else {
-                        loggedIn = false;
+                        updatePage(false, hash);
                     }
                 });
             }
-            else {
-                loggedIn = false;
-            }
-        }
-
-        if (loggedIn && !inApp()) {
-            location.hash = "app";
-        }
-        else if (!loggedIn && inApp()) {
-            location.hash = "login";
-        }
-        else {
-            location.hash = hash;
-            if (hash === "app") {
-                viewModel.getTasks();
-            }
-            focus(hash);
-        }
-        if (hashHandlers.hasOwnProperty(getHash())) {
-            hashHandlers[getHash()]();
         }
     });
 }
 
+function updatePage(loggedIn, hash) {
+    if (loggedIn && !inApp(hash)) {
+        location.hash = "app";
+    } else if (!loggedIn && inApp(hash)) {
+        location.hash = "login";
+    } else {
+        location.hash = hash;
+    }
+    focus(hash);
+    if (hashHandlers.hasOwnProperty(getHash())) {
+        hashHandlers[getHash()]();
+    }
+}
 
-$(window).on("hashchange", function () {
-    setHash(getHash()); // TODO perhaps sloppy? However, useful in case where user manually changes hash
+$(window).on("hashchange", function() {
+    setHash(getHash()); // TODO More sloppy!
 });
-
 
 $(document).ready(function () {
     ko.applyBindings(viewModel);
     $("#register-button").click(function () {
         setHash("register");
     });
-    setHash(getHash()); // TODO Sloppy again
+
+    setHash(getHash());// TODO sloppy
     $.get("/sessions", {"cmd": "user-inf"}, function (response) {
         mapUser(response);
     })

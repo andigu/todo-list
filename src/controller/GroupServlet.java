@@ -19,7 +19,9 @@ public class GroupServlet extends ApplicationServlet {
         User user = getSessionUser(req);
         if (!hasParameter(req, "filters")) {
             resp.setContentType("json/application");
-            resp.getWriter().write(converter.toJson(db.getGroups(user)));
+            if (user != null) {
+                resp.getWriter().write(converter.toJson(db.getGroups(user)));
+            }
         }
     }
 

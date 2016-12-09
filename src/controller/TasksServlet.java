@@ -21,27 +21,29 @@ public class TasksServlet extends ApplicationServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = getSessionUser(req);
-        String[] taskTypes = converter.toStringArray(req.getParameter("task-types"));
-        Map<String, Set<? extends Task>> tasks = new HashMap<>();
-        for (String taskType : taskTypes) {
-            Set<? extends Task> holder = new HashSet<>();
-            switch (taskType) {
-                case "individual":
-                    holder = db.getAllIndividualTasks(user);
-                    break;
-                case "group":
-                    holder = db.getAllGroupTasks(user);
-                    break;
-                case "project":
-                    holder = db.getAllProjectTasks(user);
-                    break;
+        if (user != null) {
+            String[] taskTypes = converter.toStringArray(req.getParameter("task-types"));
+            Map<String, Set<? extends Task>> tasks = new HashMap<>();
+            for (String taskType : taskTypes) {
+                Set<? extends Task> holder = new HashSet<>();
+                switch (taskType) {
+                    case "individual":
+                        holder = db.getAllIndividualTasks(user);
+                        break;
+                    case "group":
+                        holder = db.getAllGroupTasks(user);
+                        break;
+                    case "project":
+                        holder = db.getAllProjectTasks(user);
+                        break;
+                }
+                if (holder.size() > 0) {
+                    tasks.put(taskType, holder);
+                }
             }
-            if (holder.size() > 0) {
-                tasks.put(taskType, holder);
-            }
+            resp.setContentType("json/application");
+            resp.getWriter().write(converter.toJson(tasks));
         }
-        resp.setContentType("json/application");
-        resp.getWriter().write(converter.toJson(tasks));
     }
 
     @Override
