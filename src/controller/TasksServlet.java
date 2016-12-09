@@ -20,7 +20,7 @@ import java.util.*;
 public class TasksServlet extends ApplicationServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = getSessionUser(req);
+        User user = getLoggedUser(req);
         if (user != null) {
             String[] taskTypes = converter.toStringArray(req.getParameter("task-types"));
             Map<String, Set<? extends Task>> tasks = new HashMap<>();

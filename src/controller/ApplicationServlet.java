@@ -5,9 +5,11 @@ import database.DatabaseAccessor;
 import database.DerbyDatabaseAccessor;
 import model.User;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,20 +24,35 @@ public abstract class ApplicationServlet extends HttpServlet {
         return request.getParameterMap().containsKey(parameter);
     }
 
-    String getSessionUserId(HttpServletRequest request) {
-        if (request.getSession().getAttribute("user-id") != null) {
-            return request.getSession().getAttribute("user-id").toString();
+    User getLoggedUser(HttpServletRequest request) {
+        User session = getSessionUser(request), cookie = getCookieUser(request);
+        if (session == null && cookie == null) {
+            return null;
+        } else {
+            return session == null ? cookie : session;
         }
-        else {
+    }
+
+    private User getSessionUser(HttpServletRequest request) {
+        if (request.getSession().getAttribute("user-id") != null) {
+            return db.getUserById(request.getSession().getAttribute("user-id").toString());
+        } else {
             return null;
         }
     }
 
-    User getSessionUser(HttpServletRequest request) {
-        if (getSessionUserId(request) != null) {
-            return db.getUserById(getSessionUserId(request));
+    private User getCookieUser(HttpServletRequest request) {
+        int index = -1;
+        Cookie[] cookies = request.getCookies();
+        for (int i = 0; i < cookies.length; i++) {
+            if (cookies[i].getName().equals("token")) {
+                index = i;
+            }
         }
-        else {
+
+        if (index >= 0) {
+            return db.getUserByToken(request.getCookies()[index].getValue());
+        } else {
             return null;
         }
     }

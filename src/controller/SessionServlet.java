@@ -19,11 +19,11 @@ public class SessionServlet extends ApplicationServlet {
         resp.setContentType("json/application");
         switch (req.getParameter("cmd")) {
             case "ping":
-                resp.getWriter().write(converter.toStatus("logged-in", getSessionUserId(req) != null));
+                resp.getWriter().write(converter.toStatus("logged-in", getLoggedUser(req) != null));
                 break;
             case "user-inf":
-                if (getSessionUserId(req) != null) {
-                    resp.getWriter().write(converter.toJson(db.getUserById(getSessionUserId(req))));
+                if (getLoggedUser(req) != null) {
+                    resp.getWriter().write(converter.toJson(getLoggedUser(req)));
                 }
                 break;
         }

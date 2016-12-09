@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Todolist</title>
     <!--SYLESHEETS-->
-    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">-->
+    <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
     <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
@@ -16,7 +16,7 @@
     Loading...
 </div>
 
-<<div id="login-view" class="content">
+<div id="login-view" class="content">
     <div class="w3-container w3-card-16 w3-padding-0" style="width: 350px; margin: auto">
         <div class="w3-container w3-indigo">
             <h1>Todolist</h1>
@@ -40,14 +40,15 @@
                     </div>
                 </div>
                 <div class="w3-container w3-padding-16 wd-row-padding">
-                    <input type="checkbox" name="stay" checked="checked" class="w3-checkbox" />
+                    <input type="checkbox" name="stay" checked="checked" class="w3-checkbox"/>
                     <label class="w3-validate">Remember Me</label>
                 </div>
                 <div style="text-align: center">
-                    <button type="submit" class="w3-btn w3-hover-white w3-indigo" style="text-align: center">LOGIN</button>
+                    <button type="submit" class="w3-btn w3-hover-white w3-indigo" style="text-align: center">LOGIN
+                    </button>
                 </div>
             </form>
-            <a href="" id="register-button" >Sign up</a>
+            <a href="" id="register-button">Sign up</a>
         </div>
     </div>
 </div>
@@ -62,7 +63,6 @@
     Name: <p data-bind="text: name"></p> <br/>
     Username: <p data-bind="text: userName"></p>
 </div>
-
 
 
 <div id="app-view" class="content">
@@ -123,10 +123,10 @@
     <h1>Your Groups</h1>
     <table>
         <thead>
-            <tr>Name</tr>
+        <tr>Name</tr>
         </thead>
         <tbody data-bind="foreach: groups">
-            <tr data-bind="text: name"></tr>
+        <tr data-bind="text: name"></tr>
         </tbody>
     </table>
 </div>

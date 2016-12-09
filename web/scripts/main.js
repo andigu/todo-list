@@ -15,14 +15,12 @@ class ActivityViewModel {
 
     login(form) {
         const self = this;
-        console.log(form, form.elements);
         $.post("/login", {
             "username": form.username.value,
             "password": form.password.value,
             "stay-logged": form.stay.checked
         }, function (response) {
             if (response.hasOwnProperty("user")) {
-                console.log(response);
                 mapUser(response["user"]);
                 if (response.hasOwnProperty("token")) {
                     document.cookie = "token=" + response["token"];
@@ -45,7 +43,6 @@ class ActivityViewModel {
         }, function (response) {
             if (response.hasOwnProperty("error")) {
                 alert(response["error"]);
-                console.log(response)
             }
             else {
                 mapUser(response);
@@ -92,43 +89,6 @@ function mapTasks(object) {
 
 const viewModel = new ActivityViewModel();
 
-function focus(elementId) {
-    if (elementId.charAt(0) !== "#") {
-        elementId = "#" + elementId;
-    }
-    if (elementId.substr(elementId.length - 5) !== "-view") {
-        elementId += "-view"
-    }
-    const body = $("body");
-    const loadingDiv = $("#loading");
-    if (!inApp()) {
-        body.children("div.persist").hide();
-    }
-    else {
-        body.children("div.persist").show();
-    }
-    body.children("div.content").hide();
-    loadingDiv.show(function () {
-        body.children(elementId).show(function () {
-            loadingDiv.hide();
-        });
-    });
-}
-
-function mapCookies() {
-    const map = {};
-    const split = document.cookie.split(";");
-    for (let i = 0; i < split.length; i++) {
-        let temp = split[i].split("=");
-        map[temp[0]] = temp[1];
-    }
-    return map;
-}
-
-function hasToken() {
-    return mapCookies().hasOwnProperty("token")
-}
-
 function inApp(hash) {
     if (hash !== undefined) {
         return !((hash === "login" || hash === "register"));
@@ -143,48 +103,47 @@ function getHash() {
 }
 
 function setHash(hash) {
-    console.log(hash);
+    if (hash === getHash()) {
+        $(window).trigger("hashchange");
+    }
+    else {
+        location.hash = hash;
+    }
+}
+
+$(window).on("hashchange", function () {
+    let hash = getHash();
     $.get("/sessions", {
         "cmd": "ping"
     }, function (response) {
-        if (response["logged-in"]) {
-            updatePage(true, hash);
+        let loggedIn = response["logged-in"];
+        if (loggedIn && !inApp(hash)) {
+            location.hash = "app";
+        } else if (!loggedIn && inApp(hash)) {
+            location.hash = "login";
         } else {
-            if (!hasToken()) {
-                updatePage(false, hash);
-            } else {
-                $.post("/login", {
-                    "token": mapCookies()["token"]
-                }, function (response) {
-                    if (response["user"] != null) {
-                        mapUser(response["user"]);
-                        updatePage(true, hash);
-                    }
-                    else {
-                        updatePage(false, hash);
-                    }
-                });
-            }
+            location.hash = hash;
         }
+        hash = getHash();
+        let elementId = "#" + hash + "-view";
+        const body = $("body");
+        const loadingDiv = $("#loading");
+        if (!inApp(hash)) {
+            body.children("div.persist").hide();
+        }
+        else {
+            body.children("div.persist").show();
+        }
+        if (hashHandlers.hasOwnProperty(getHash())) {
+            hashHandlers[getHash()]();
+        }
+        body.children("div.content").hide();
+        loadingDiv.show(function () {
+            body.children(elementId).show(function () {
+                loadingDiv.hide();
+            });
+        });
     });
-}
-
-function updatePage(loggedIn, hash) {
-    if (loggedIn && !inApp(hash)) {
-        location.hash = "app";
-    } else if (!loggedIn && inApp(hash)) {
-        location.hash = "login";
-    } else {
-        location.hash = hash;
-    }
-    focus(hash);
-    if (hashHandlers.hasOwnProperty(getHash())) {
-        hashHandlers[getHash()]();
-    }
-}
-
-$(window).on("hashchange", function() {
-    setHash(getHash()); // TODO More sloppy!
 });
 
 $(document).ready(function () {
@@ -200,6 +159,10 @@ $(document).ready(function () {
 });
 
 const hashHandlers = {
-    "app": viewModel.getTasks,
-    "groups": viewModel.getGroups
+    "app": function () {
+        viewModel.getTasks()
+    },
+    "groups": function () {
+        viewModel.getGroups()
+    }
 };
