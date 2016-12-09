@@ -35,19 +35,81 @@
     </p>
 </div>
 
-<div id="app-view" class="content">
-    <div>
+<div id="nav-bar" class="persist">
+    <!--<div data-bind="click: goTo('app')">App</div>-->
+    <!--<div data-bind="click: goTo('group')">Groups</div>-->
+</div>
+
+<div id="user-info" class="persist">
     <h1> Your info </h1>
-        Id: <p data-bind="text: id"></p> <br />
-        Name: <p data-bind="text: name"></p> <br />
-        Username: <p data-bind="text: userName"></p>
-    </div>
+    Name: <p data-bind="text: name"></p> <br/>
+    Username: <p data-bind="text: userName"></p>
+</div>
+
+
+
+<div id="app-view" class="content">
+
     <h1>Your tasks</h1>
+    <h2>Individual Tasks</h2>
     <table>
-        <tbody data-bind="foreach: displayedTasks">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Due date</th>
+        </tr>
+        </thead>
+        <tbody data-bind="foreach: individualTasks">
         <tr>
             <td data-bind="text: name"></td>
+            <td data-bind="text: dueDate"></td>
         </tr>
+        </tbody>
+    </table>
+
+    <h2>Group Tasks</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Due date</th>
+            <th>Group</th>
+        </tr>
+        </thead>
+        <tbody data-bind="foreach: groupTasks">
+        <tr>
+            <td data-bind="text: name"></td>
+            <td data-bind="text: dueDate"></td>
+            <td data-bind="text: group.name"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Project Tasks</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Due date</th>
+        </tr>
+        </thead>
+        <tbody data-bind="foreach: projectTasks">
+        <tr>
+            <td data-bind="text: name"></td>
+            <td data-bind="text: dueDate"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="group-view" class="content">
+    <h1>Your Groups</h1>
+    <table>
+        <thead>
+            <tr>Name</tr>
+        </thead>
+        <tbody data-bind="foreach: groups">
+            <tr data-bind="text: name"></tr>
         </tbody>
     </table>
 </div>

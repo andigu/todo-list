@@ -105,10 +105,10 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
             statement.setString(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             Set<GroupTask> groupTasks = new HashSet<>();
-            Map<Long, Group> groupMap = new HashMap<>();
-            long id;
+            Map<String, Group> groupMap = new HashMap<>();
+            String id;
             while (resultSet.next()) {
-                id = resultSet.getLong("GROUP_ID");
+                id = resultSet.getString("GROUP_ID");
                 if (!groupMap.containsKey(id)) {
                     groupMap.put(id, ResultSetConverter.getGroup(resultSet));
                 }

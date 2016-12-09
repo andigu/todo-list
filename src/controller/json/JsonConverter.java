@@ -34,4 +34,9 @@ public class JsonConverter {
         jsonArray = jsonArray.replace("[", "").replace("]", "");
         return jsonArray.split(",");
     }
+
+    public String toStatus(String name, Object status) {
+        name = "\"" + name + "\"";
+        return "{" + name + ":" + status.toString() + "}";
+    }
 }

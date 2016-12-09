@@ -30,7 +30,7 @@ final class ResultSetConverter {
     }
 
     static GroupTask getGroupTask(ResultSet resultSet, Group group) throws SQLException {
-        GroupTask groupTask = new GroupTask(resultSet.getString("TASK_ID"), resultSet.getString("TASK_NAME"), resultSet.getDate("DUE_DATE"), group);
+        GroupTask groupTask = new GroupTask(resultSet.getString("TASK_ID"), resultSet.getString("TASK_NAME"), resultSet.getDate("TASK_DUE_DATE"), group);
         groupTask.complete(DerbyDatabaseAccessor.getInstance().getUsersCompletedGroupTask(groupTask));
         return groupTask;
     }

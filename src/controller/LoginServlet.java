@@ -34,9 +34,9 @@ public class LoginServlet extends ApplicationServlet {
         }
         if (user != null) {
             jsonMap.put("user", user);
+            req.getSession().setAttribute("user-id", user.getId());
         }
         resp.getWriter().write(converter.toJson(jsonMap));
-
     }
 
     @Override

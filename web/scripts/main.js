@@ -7,8 +7,10 @@ class ActivityViewModel {
     constructor() {
         this.name = ko.observable();
         this.userName = ko.observable();
-        this.id = ko.observable();
-        this.displayedTasks = ko.observableArray();
+        this.individualTasks = ko.observableArray();
+        this.groupTasks = ko.observableArray();
+        this.projectTasks = ko.observableArray();
+        this.groups = ko.observableArray();
     }
 
     login(form) {
@@ -57,20 +59,44 @@ class ActivityViewModel {
             taskTypes = ["individual", "group", "project"]
         }
         $.get("/tasks", {
-            "user-id": self.id,
             "task-types": taskTypes.toString(),
         }, function (response) {
-            self.displayedTasks(response);
+            mapTasks(response);
             console.log(response);
         });
     };
+
+    getGroups() {
+        const self = this;
+        $.get("/groups", {}, function (response) {
+            self.groups(response);
+        });
+    }
+
+    goTo(hash) {
+        setHash(hash);
+    }
 }
 
+const hashHandlers = {
+    "app": function() {
+        viewModel.getTasks();
+    },
+    "groups": function() {
+        viewModel.getGroups();
+    }
+};
+
+
 function mapUser(object) {
-    console.log(object);
     viewModel.userName(object["username"]);
-    viewModel.id(object["id"]);
     viewModel.name(object["name"]);
+}
+
+function mapTasks(object) {
+    viewModel.individualTasks(object["individual"]);
+    viewModel.groupTasks(object["group"]);
+    viewModel.projectTasks(object["project"]);
 }
 
 const viewModel = new ActivityViewModel();
@@ -84,13 +110,18 @@ function focus(elementId) {
     }
     const body = $("body");
     const loadingDiv = $("#loading");
+    if (!inApp()) {
+        body.children("div.persist").hide();
+    }
+    else {
+        body.children("div.persist").show();
+    }
     body.children("div.content").hide();
     loadingDiv.show(function () {
         body.children(elementId).show(function () {
             loadingDiv.hide();
         });
     });
-
 }
 
 function mapCookies() {
@@ -103,20 +134,12 @@ function mapCookies() {
     return map;
 }
 
-function checkToken() {
-    if (mapCookies().hasOwnProperty("token")) {
-        $.post("/login", {
-            "token": mapCookies()["token"]
-        }, function (response) {
-            if (response["user"] != null) {
-                mapUser(response["user"]);
-                setHash("app");
-                viewModel.getTasks();
-            }
-        });
-        return true;
-    }
-    return false;
+function hasToken() {
+    return mapCookies().hasOwnProperty("token")
+}
+
+function inApp() {
+    return !((getHash() === "login" || getHash() === "register"));
 }
 
 function getHash() {
@@ -124,12 +147,50 @@ function getHash() {
 }
 
 function setHash(hash) {
-    location.hash = hash;
-    if (getHash() === "login") {
-        checkToken();
-    }
-    focus(location.hash);
+    let loggedIn = false;
+    $.get("/sessions", {}, function (response) {
+        if (response["logged-in"]) {
+            loggedIn = true;
+        }
+        else {
+            if (hasToken()) {
+                $.post("/login", {
+                    "token": mapCookies()["token"]
+                }, function (response) {
+                    if (response["user"] != null) {
+                        mapUser(response["user"]);
+                        loggedIn = true;
+                    }
+                    else {
+                        loggedIn = false;
+                    }
+                });
+            }
+            else {
+                loggedIn = false;
+            }
+        }
+
+        if (loggedIn && !inApp()) {
+            location.hash = "app";
+        }
+        else if (!loggedIn && inApp()) {
+            location.hash = "login";
+        }
+        else {
+            location.hash = hash;
+            if (hash === "app") {
+                viewModel.getTasks();
+            }
+            focus(hash);
+        }
+        hashHandlers[getHash()]();
+    });
 }
+
+$(window).on("hashchange", function () {
+    setHash(getHash()); // TODO perhaps sloppy? However, useful in case where user manually changes hash
+});
 
 
 $(document).ready(function () {
@@ -137,14 +198,5 @@ $(document).ready(function () {
     $("#register-button").click(function () {
         setHash("register");
     });
-
-    if (checkToken()) { // TODO perhaps sloppy?
-        return;
-    }
-    if (!(viewModel.id() === undefined || viewModel.id() !== null) ) {
-        setHash("app");
-    }
-    else {
-        setHash("login");
-    }
+    setHash(getHash()); // TODO Sloppy again
 });

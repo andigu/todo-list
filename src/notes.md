@@ -45,3 +45,5 @@ should become
 }
 ```
 
+# General notes
+* HTML class persist represents info that should be displayed if and only if the user is logged in

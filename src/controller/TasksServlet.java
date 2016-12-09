@@ -1,6 +1,8 @@
 package controller;
 
 import model.User;
+import model.task.GroupTask;
+import model.task.IndividualTask;
 import model.task.Task;
 
 import javax.servlet.ServletException;
@@ -8,9 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Andi Gu
@@ -20,21 +20,28 @@ import java.util.Set;
 public class TasksServlet extends ApplicationServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = db.getUserById(req.getParameter("user-id"));
+        User user = db.getUserById(req.getSession().getAttribute("user-id").toString());
         String[] taskTypes = converter.toStringArray(req.getParameter("task-types"));
-        Set<Task> tasks = new HashSet<>();
+        Map<String, Set<? extends Task>> tasks = new HashMap<>();
         for (String taskType : taskTypes) {
+            Set<? extends Task> holder = new HashSet<>();
             switch (taskType) {
                 case "individual":
-                    tasks.addAll(db.getAllIndividualTasks(user));
+                    holder = db.getAllIndividualTasks(user);
+                    break;
                 case "group":
-                    tasks.addAll(db.getAllGroupTasks(user));
+                    holder = db.getAllGroupTasks(user);
+                    break;
                 case "project":
-                    tasks.addAll(db.getAllProjectTasks(user));
+                    holder = db.getAllProjectTasks(user);
+                    break;
+            }
+            if (holder.size() > 0) {
+                tasks.put(taskType, holder);
             }
         }
         resp.setContentType("json/application");
-        resp.getWriter().write(converter.toJson(tasks.toArray()));
+        resp.getWriter().write(converter.toJson(tasks));
     }
 
     @Override
