@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Todolist</title>
     <!--SYLESHEETS-->
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -52,8 +53,8 @@
 </div>
 
 <div id="nav-bar" class="persist">
-    <!--<div data-bind="click: goTo('app')">App</div>-->
-    <!--<div data-bind="click: goTo('group')">Groups</div>-->
+    <div data-bind="click: goTo('app')">App</div>
+    <div data-bind="click: goTo('groups')">Groups</div>
 </div>
 
 <div id="user-info" class="persist">
@@ -118,7 +119,7 @@
     </table>
 </div>
 
-<div id="group-view" class="content">
+<div id="groups-view" class="content">
     <h1>Your Groups</h1>
     <table>
         <thead>

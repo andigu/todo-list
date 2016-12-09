@@ -16,7 +16,7 @@ import java.io.IOException;
 public class GroupServlet extends ApplicationServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = db.getUserById(req.getSession().getAttribute("user-id").toString());
+        User user = getSessionUser(req);
         if (!hasParameter(req, "filters")) {
             resp.setContentType("json/application");
             resp.getWriter().write(converter.toJson(db.getGroups(user)));
