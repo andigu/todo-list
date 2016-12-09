@@ -20,7 +20,7 @@ import java.util.*;
 public class TasksServlet extends ApplicationServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = db.getUserById(req.getSession().getAttribute("user-id").toString());
+        User user = getSessionUser(req);
         String[] taskTypes = converter.toStringArray(req.getParameter("task-types"));
         Map<String, Set<? extends Task>> tasks = new HashMap<>();
         for (String taskType : taskTypes) {
