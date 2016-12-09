@@ -21,4 +21,12 @@ public abstract class ApplicationServlet extends HttpServlet {
         return request.getParameterMap().containsKey(parameter);
     }
 
+    String getSessionUserId(HttpServletRequest request) {
+        if (request.getSession().getAttribute("user-id") != null) {
+            return request.getSession().getAttribute("user-id").toString();
+        }
+        else {
+            return null;
+        }
+    }
 }

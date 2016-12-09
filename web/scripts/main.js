@@ -54,7 +54,6 @@ class ActivityViewModel {
     }
 
     getTasks(taskTypes) {
-        const self = this;
         if (taskTypes === undefined) {
             taskTypes = ["individual", "group", "project"]
         }
@@ -62,7 +61,6 @@ class ActivityViewModel {
             "task-types": taskTypes.toString(),
         }, function (response) {
             mapTasks(response);
-            console.log(response);
         });
     };
 
@@ -77,15 +75,6 @@ class ActivityViewModel {
         setHash(hash);
     }
 }
-
-const hashHandlers = {
-    "app": function() {
-        viewModel.getTasks();
-    },
-    "groups": function() {
-        viewModel.getGroups();
-    }
-};
 
 
 function mapUser(object) {
@@ -148,7 +137,9 @@ function getHash() {
 
 function setHash(hash) {
     let loggedIn = false;
-    $.get("/sessions", {}, function (response) {
+    $.get("/sessions", {
+        "cmd": "ping"
+    }, function (response) {
         if (response["logged-in"]) {
             loggedIn = true;
         }
@@ -184,9 +175,12 @@ function setHash(hash) {
             }
             focus(hash);
         }
-        hashHandlers[getHash()]();
+        if (hashHandlers.hasOwnProperty(getHash())) {
+            hashHandlers[getHash()]();
+        }
     });
 }
+
 
 $(window).on("hashchange", function () {
     setHash(getHash()); // TODO perhaps sloppy? However, useful in case where user manually changes hash
@@ -199,4 +193,12 @@ $(document).ready(function () {
         setHash("register");
     });
     setHash(getHash()); // TODO Sloppy again
+    $.get("/sessions", {"cmd": "user-inf"}, function (response) {
+        mapUser(response);
+    })
 });
+
+const hashHandlers = {
+    "app": viewModel.getTasks,
+    "groups": viewModel.getGroups
+};

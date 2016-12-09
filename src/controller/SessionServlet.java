@@ -17,7 +17,16 @@ public class SessionServlet extends ApplicationServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("json/application");
-        resp.getWriter().write(converter.toStatus("logged-in", req.getSession().getAttribute("user-id") != null));
+        switch (req.getParameter("cmd")) {
+            case "ping":
+                resp.getWriter().write(converter.toStatus("logged-in", getSessionUserId(req) != null));
+                break;
+            case "user-inf":
+                if (getSessionUserId(req) != null) {
+                    resp.getWriter().write(converter.toJson(db.getUserById(getSessionUserId(req))));
+                }
+                break;
+        }
     }
 
     @Override
