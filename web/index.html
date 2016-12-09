@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+
+    <!--SYLESHEETS-->
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
@@ -11,28 +15,40 @@
     Loading...
 </div>
 
-<div id="login-view" class="content">
-    <form data-bind="submit: login" method="post" id="login-form">
-        <label>
-            Username:
-            <input type="text" name="username"/>
-        </label>
-        <label>
-            Password:
-            <input type="password" name="password"/>
-        </label>
-
-        <label>
-            Stay logged in?
-            <input type="checkbox" name="stay"/>
-        </label>
-
-        <button type="submit">Login</button>
-    </form>
-    <p>
-        Don't have an account?
-        <button id="register-button">Sign up</button>
-    </p>
+<<div id="login-view" class="content">
+    <div class="w3-container w3-card-16 w3-padding-0" style="width: 350px; margin: auto">
+        <div class="w3-container w3-indigo">
+            <h1>Todolist</h1>
+        </div>
+        <div class="w3-container w3-padding-16">
+            <form data-bind="submit: login" method="post" id="login-form" class="w3-container">
+                <div class="w3-row w3-section">
+                    <div class="w3-col" style="width:50px">
+                        <i class="material-icons w3-xxlarge">person</i>
+                    </div>
+                    <div class="w3-rest">
+                        <input name="username" type="text" class="w3-input" placeholder="Username"/>
+                    </div>
+                </div>
+                <div class="w3-row w3-section">
+                    <div class="w3-col" style="width:50px">
+                        <i class="material-icons w3-xxlarge">lock</i>
+                    </div>
+                    <div class="w3-rest">
+                        <input name="password" type="password" class="w3-input" placeholder="Password"/>
+                    </div>
+                </div>
+                <div class="w3-container w3-padding-16 wd-row-padding">
+                    <input type="checkbox" name="stay" checked="checked" class="w3-checkbox" />
+                    <label class="w3-validate">Remember Me</label>
+                </div>
+                <div style="text-align: center">
+                    <button type="submit" class="w3-btn w3-hover-white w3-indigo" style="text-align: center">LOGIN</button>
+                </div>
+            </form>
+            <a href="" id="register-button" >Sign up</a>
+        </div>
+    </div>
 </div>
 
 <div id="nav-bar" class="persist">
