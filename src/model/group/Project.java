@@ -1,5 +1,6 @@
 package model.group;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import model.Completable;
 import model.User;
 import model.task.ProjectTask;
@@ -15,7 +16,9 @@ import java.util.Set;
  * @author Andi Gu
  */
 public class Project extends Completable {
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<User> collaborators;
+
     private Set<ProjectTask> tasks;
 
     public Project(String id, String name, Date dueDate) {

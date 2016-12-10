@@ -1,5 +1,6 @@
 package model.task;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import model.Completable;
 import model.User;
 import model.group.Group;
@@ -25,6 +26,8 @@ import java.util.Set;
 
 public class GroupTask extends Task {
     private Group group;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<User> completed;
 
     public GroupTask(String id, String name, Date dueDate, Group group) {

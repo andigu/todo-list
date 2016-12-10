@@ -4,10 +4,9 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Todolist</title>
-    <!--SYLESHEETS-->
-    <!--<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">-->
-    <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
@@ -54,8 +53,8 @@
 </div>
 
 <div id="nav-bar" class="persist">
-    <div id="app-link" data-bind="click: goTo">App</div>
-    <div id="groups-link" data-bind="click: goTo">Groups</div>
+    <div id="app-link" class="nav-link">App</div>
+    <div id="groups-link" class="nav-link">Groups</div>
 </div>
 
 <div id="user-info" class="persist">
@@ -108,12 +107,14 @@
         <tr>
             <th>Name</th>
             <th>Due date</th>
+            <th>Project Name</th>
         </tr>
         </thead>
         <tbody data-bind="foreach: projectTasks">
         <tr>
             <td data-bind="text: name"></td>
             <td data-bind="text: dueDate"></td>
+            <td data-bind="text: project.name"></td>
         </tr>
         </tbody>
     </table>
@@ -130,6 +131,20 @@
         </tbody>
     </table>
 </div>
+
+<div id="projects-view" class="content">
+    <h1>Your Projects</h1>
+    <table>
+        <thead>
+        <tr>Name</tr>
+        </thead>
+        <tbody data-bind="foreach: projects">
+        <tr data-bind="text: name"></tr>
+        </tbody>
+    </table>
+</div>
+
+
 
 <div id="register-view" class="content">
     <h1>Sign up</h1>

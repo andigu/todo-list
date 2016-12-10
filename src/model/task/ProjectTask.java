@@ -1,5 +1,6 @@
 package model.task;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import model.Completable;
 import model.User;
 import model.group.Project;
@@ -24,6 +25,7 @@ import java.util.Set;
  * @author Andi Gu
  */
 public class ProjectTask extends Task {
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<User> assignees;
     private Project project;
     private boolean complete;

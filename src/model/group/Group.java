@@ -1,5 +1,6 @@
 package model.group;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import model.Identifiable;
 import model.User;
 import model.task.GroupTask;
@@ -13,7 +14,9 @@ import java.util.Set;
  * @author Andi Gu
  */
 public class Group extends Identifiable {
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<User> members;
+
     private Set<GroupTask> tasks;
 
     public Group(String id, String name) {

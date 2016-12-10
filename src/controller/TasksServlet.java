@@ -22,7 +22,12 @@ public class TasksServlet extends ApplicationServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = getLoggedUser(req);
         if (user != null) {
-            String[] taskTypes = converter.toStringArray(req.getParameter("task-types"));
+            String[] taskTypes;
+            if (!hasParameter(req, "task-types")) {
+                taskTypes = new String[]{"individual", "group", "project"};
+            } else {
+                taskTypes = converter.toStringArray(req.getParameter("task-types"));
+            }
             Map<String, Set<? extends Task>> tasks = new HashMap<>();
             for (String taskType : taskTypes) {
                 Set<? extends Task> holder = new HashSet<>();

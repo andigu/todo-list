@@ -11,6 +11,7 @@ class ActivityViewModel {
         this.groupTasks = ko.observableArray();
         this.projectTasks = ko.observableArray();
         this.groups = ko.observableArray();
+        this.projects = ko.observableArray();
     }
 
     login(form) {
@@ -27,8 +28,7 @@ class ActivityViewModel {
                 }
                 setHash("app");
                 self.getTasks();
-            }
-            else {
+            } else {
                 alert("Wrong login");
             }
         });
@@ -43,20 +43,18 @@ class ActivityViewModel {
         }, function (response) {
             if (response.hasOwnProperty("error")) {
                 alert(response["error"]);
-            }
-            else {
+            } else {
                 mapUser(response);
             }
         });
     }
 
     getTasks(taskTypes) {
-        if (taskTypes === undefined) {
-            taskTypes = ["individual", "group", "project"]
+        let json = {};
+        if (taskTypes !== undefined) {
+            json["task-types"] = taskTypes.toString();
         }
-        $.get("/tasks", {
-            "task-types": taskTypes.toString(),
-        }, function (response) {
+        $.get("/tasks", json, function (response) {
             mapTasks(response);
         });
     };
@@ -68,10 +66,11 @@ class ActivityViewModel {
         });
     }
 
-    goTo(val, event) {
-        let id = event.target.id;
-        id = id.substring(0, id.indexOf("-"));
-        setHash(id);
+    getProjects() {
+        const self = this;
+        $.get("/projects", {}, function (response) {
+            self.projects(response);
+        });
     }
 }
 
@@ -92,8 +91,7 @@ const viewModel = new ActivityViewModel();
 function inApp(hash) {
     if (hash !== undefined) {
         return !((hash === "login" || hash === "register"));
-    }
-    else {
+    } else {
         return !((getHash() === "login" || getHash() === "register"));
     }
 }
@@ -105,8 +103,7 @@ function getHash() {
 function setHash(hash) {
     if (hash === getHash()) {
         $(window).trigger("hashchange");
-    }
-    else {
+    } else {
         location.hash = hash;
     }
 }
@@ -130,8 +127,7 @@ $(window).on("hashchange", function () {
         const loadingDiv = $("#loading");
         if (!inApp(hash)) {
             body.children("div.persist").hide();
-        }
-        else {
+        } else {
             body.children("div.persist").show();
         }
         if (hashHandlers.hasOwnProperty(getHash())) {
@@ -155,7 +151,11 @@ $(document).ready(function () {
     setHash(getHash());// TODO sloppy
     $.get("/sessions", {"cmd": "user-inf"}, function (response) {
         mapUser(response);
-    })
+    });
+
+    $(".nav-link").click(function () {
+        setHash(this.id.substring(0, this.id.indexOf("-")));
+    });
 });
 
 const hashHandlers = {
@@ -164,5 +164,8 @@ const hashHandlers = {
     },
     "groups": function () {
         viewModel.getGroups()
+    },
+    "projects": function () {
+        viewModel.getProjects();
     }
 };
