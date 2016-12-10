@@ -1,5 +1,7 @@
 package controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import controller.json.JsonConstant;
 import model.User;
 
 import javax.servlet.ServletException;
@@ -7,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author Andi Gu
@@ -15,19 +18,13 @@ import java.io.IOException;
 @WebServlet("/projects")
 public class ProjectsServlet extends ApplicationServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = getLoggedUser(req);
-        if (!hasParameter(req, "filters")) {
-            resp.setContentType("json/application");
+    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
+        User user = getLoggedUser(request);
+        if (!hasParameter(request, JsonConstant.FILTERS)) {
             if (user != null) {
-                resp.getWriter().write(converter.toJson(db.getProjects(user)));
+                jsonMap.put(JsonConstant.PROJECTS, db.getProjects(user));
             }
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
     }
 }
 

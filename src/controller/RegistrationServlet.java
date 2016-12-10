@@ -1,15 +1,14 @@
 package controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import controller.json.Error;
-import controller.json.ErrorType;
+import controller.json.JsonConstant;
 import model.User;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Map;
 
 /**
  * Requests to register new users in the database are processed in this servlet
@@ -18,20 +17,16 @@ import java.sql.SQLIntegrityConstraintViolationException;
  */
 @WebServlet("/register")
 public class RegistrationServlet extends ApplicationServlet {
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
-
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("json/application");
+    @Override
+    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         //TODO check for null values
-        log(req.getParameter("username"));
         try {
-            User user = db.registerUser(req.getParameter("username"), req.getParameter("password"),
-                    req.getParameter("first-name"), req.getParameter("last-name"));
-            resp.getWriter().write(converter.toJson(user));
+            User user = db.registerUser(request.getParameter(JsonConstant.USERNAME), request.getParameter(JsonConstant.PASSWORD),
+                    request.getParameter(JsonConstant.FIRST_NAME), request.getParameter(JsonConstant.LAST_NAME));
+            jsonMap.put(JsonConstant.USER, user);
         } catch (SQLIntegrityConstraintViolationException e) {
-            resp.getWriter().write(converter.toJson(new Error(ErrorType.DuplicateKey)));
+            writeError(new Error(JsonConstant.DUPLICATE_KEY_ERROR), jsonMap);
         }
     }
+
 }

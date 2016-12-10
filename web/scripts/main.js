@@ -62,28 +62,52 @@ class ActivityViewModel {
     getGroups() {
         const self = this;
         $.get("/groups", {}, function (response) {
-            self.groups(response);
+            mapObject(response, "groups", self.groups);
         });
     }
 
     getProjects() {
         const self = this;
         $.get("/projects", {}, function (response) {
-            self.projects(response);
+            mapObject(response, "projects", self.projects);
         });
     }
 }
 
+function hasProperty(object, property) {
+    return property in object
+}
+
+function getStatus(object, name) {
+    if (hasProperty(object, "status")) {
+        object = object["status"];
+    }
+    if (object["name"] === name) {
+        return object["status"]
+    }
+}
 
 function mapUser(object) {
+    if (hasProperty(object, "user")) {
+        object = object["user"];
+    }
     viewModel.userName(object["username"]);
     viewModel.name(object["name"]);
 }
 
 function mapTasks(object) {
+    if (hasProperty(object, "tasks")) {
+        object = object["tasks"];
+    }
     viewModel.individualTasks(object["individual"]);
     viewModel.groupTasks(object["group"]);
     viewModel.projectTasks(object["project"]);
+}
+
+function mapObject(object, name, observable) {
+    if (hasProperty(object, name)) {
+        observable(object[name]);
+    }
 }
 
 const viewModel = new ActivityViewModel();
@@ -113,7 +137,7 @@ $(window).on("hashchange", function () {
     $.get("/sessions", {
         "cmd": "ping"
     }, function (response) {
-        let loggedIn = response["logged-in"];
+        let loggedIn = getStatus(response, "logged-in");
         if (loggedIn && !inApp(hash)) {
             location.hash = "app";
         } else if (!loggedIn && inApp(hash)) {

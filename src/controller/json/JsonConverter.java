@@ -1,11 +1,9 @@
 package controller.json;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author Andi Gu
@@ -13,13 +11,14 @@ import java.util.Map;
 
 public class JsonConverter {
     private static JsonConverter instance = new JsonConverter();
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
 
     public static JsonConverter getInstance() {
         return instance;
     }
 
     private JsonConverter() {
+        mapper = new ObjectMapper();
     }
 
     public String toJson(Object object) throws JsonProcessingException {
@@ -28,15 +27,5 @@ public class JsonConverter {
 
     public <T> T toObject(String json, Class<T> tClass) throws IOException {
         return mapper.readValue(json, tClass);
-    }
-
-    public String[] toStringArray(String jsonArray) throws  IOException {
-        jsonArray = jsonArray.replace("[", "").replace("]", "");
-        return jsonArray.split(",");
-    }
-
-    public String toStatus(String name, Object status) {
-        name = "\"" + name + "\"";
-        return "{" + name + ":" + status.toString() + "}";
     }
 }

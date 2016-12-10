@@ -1,10 +1,12 @@
 package controller;
 
-import javax.servlet.ServletException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import controller.json.JsonConstant;
+import controller.json.Status;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.Map;
 
 /**
  * Just for front end to ping if a session for the user exists
@@ -15,22 +17,16 @@ import java.io.IOException;
 @WebServlet("/sessions")
 public class SessionServlet extends ApplicationServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("json/application");
-        switch (req.getParameter("cmd")) {
-            case "ping":
-                resp.getWriter().write(converter.toStatus("logged-in", getLoggedUser(req) != null));
+    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
+        switch (request.getParameter(JsonConstant.CMD)) {
+            case JsonConstant.PING_CMD:
+                writeStatus(new Status(JsonConstant.LOGGED_IN_STATUS, getLoggedUser(request) != null), jsonMap);
                 break;
-            case "user-inf":
-                if (getLoggedUser(req) != null) {
-                    resp.getWriter().write(converter.toJson(getLoggedUser(req)));
+            case JsonConstant.USER_INF_CMD:
+                if (getLoggedUser(request) != null) {
+                    jsonMap.put(JsonConstant.USER, getLoggedUser(request));
                 }
                 break;
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
     }
 }

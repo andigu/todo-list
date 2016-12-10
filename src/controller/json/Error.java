@@ -1,18 +1,16 @@
 package controller.json;
 
 /**
- * Class to transmit error information from backend to frontend
- *
  * @author Andi Gu
  */
 public class Error {
-    private String error;
+    private String message;
 
-    public Error(ErrorType errorType) {
-        error = errorType.toString();
+    public Error(String message) {
+        this.message = message;
     }
 
-    public String getError() {
-        return error;
+    public String getMessage() {
+        return message;
     }
 }

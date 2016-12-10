@@ -1,13 +1,11 @@
 package controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import controller.json.JsonConstant;
 import model.User;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,31 +14,21 @@ import java.util.Map;
 @WebServlet("/login")
 public class LoginServlet extends ApplicationServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("json/application");
-        Map<String, Object> jsonMap = new HashMap<>();
+    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         User user;
-        if (hasParameter(req, "token")) {
-            user = db.getUserByToken(req.getParameter("token"));
-        }
-        else {
-            user = db.getUserByLogin(req.getParameter("username"), req.getParameter("password"));
+        if (hasParameter(request, JsonConstant.TOKEN)) {
+            user = db.getUserByToken(request.getParameter(JsonConstant.TOKEN));
+        } else {
+            user = db.getUserByLogin(request.getParameter(JsonConstant.USERNAME), request.getParameter(JsonConstant.PASSWORD));
             if (user != null) {
-                if (req.getParameter("stay-logged").equals("true")) {
-                    jsonMap.put("token", db.storeLogin(user.getId()));
+                if (request.getParameter(JsonConstant.STAY_LOGGED).equals("true")) {
+                    jsonMap.put(JsonConstant.TOKEN, db.storeLogin(user.getId()));
                 }
-
             }
         }
         if (user != null) {
-            jsonMap.put("user", user);
-            req.getSession().setAttribute("user-id", user.getId());
+            jsonMap.put(JsonConstant.USER, user);
+            request.getSession().setAttribute(JsonConstant.USER_ID, user.getId());
         }
-        resp.getWriter().write(converter.toJson(jsonMap));
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
     }
 }

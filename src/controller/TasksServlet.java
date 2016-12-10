@@ -1,16 +1,16 @@
 package controller;
 
+import controller.json.JsonConstant;
 import model.User;
-import model.task.GroupTask;
-import model.task.IndividualTask;
 import model.task.Task;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Andi Gu
@@ -19,26 +19,26 @@ import java.util.*;
 @WebServlet("/tasks")
 public class TasksServlet extends ApplicationServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = getLoggedUser(req);
+    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws IOException {
+        User user = getLoggedUser(request);
         if (user != null) {
             String[] taskTypes;
-            if (!hasParameter(req, "task-types")) {
-                taskTypes = new String[]{"individual", "group", "project"};
+            if (!hasParameter(request, JsonConstant.TASK_TYPES)) {
+                taskTypes = new String[]{JsonConstant.INDIVIDUAL_TASK, JsonConstant.GROUP_TASK, JsonConstant.PROJECT_TASK};
             } else {
-                taskTypes = converter.toStringArray(req.getParameter("task-types"));
+                taskTypes = converter.toObject(request.getParameter(JsonConstant.TASK_TYPES), String[].class);
             }
             Map<String, Set<? extends Task>> tasks = new HashMap<>();
+            Set<? extends Task> holder = new HashSet<>();
             for (String taskType : taskTypes) {
-                Set<? extends Task> holder = new HashSet<>();
                 switch (taskType) {
-                    case "individual":
+                    case JsonConstant.INDIVIDUAL_TASK:
                         holder = db.getAllIndividualTasks(user);
                         break;
-                    case "group":
+                    case JsonConstant.GROUP_TASK:
                         holder = db.getAllGroupTasks(user);
                         break;
-                    case "project":
+                    case JsonConstant.PROJECT_TASK:
                         holder = db.getAllProjectTasks(user);
                         break;
                 }
@@ -46,13 +46,7 @@ public class TasksServlet extends ApplicationServlet {
                     tasks.put(taskType, holder);
                 }
             }
-            resp.setContentType("json/application");
-            resp.getWriter().write(converter.toJson(tasks));
+            jsonMap.put(JsonConstant.TASKS, tasks);
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
     }
 }
