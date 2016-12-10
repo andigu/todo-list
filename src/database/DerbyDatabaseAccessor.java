@@ -36,6 +36,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
     private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME)  VALUES (?, ?, ?, ?, ?)";
+    private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
 
     @Override
     public User getUserByLogin(String username, String password) {
@@ -298,5 +299,23 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
 
     public static DerbyDatabaseAccessor getInstance() {
         return instance;
+    }
+
+    @Override
+    public Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException{
+        try(Connection conn = dataSource.getConnection();
+            PreparedStatement statement = conn.prepareStatement(createGroupSQL)){
+            String id = randomId();
+            statement.setString(1, id);
+            statement.setString(2, groupName);
+            return new Group(id, groupName);
+        } catch (SQLIntegrityConstraintViolationException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

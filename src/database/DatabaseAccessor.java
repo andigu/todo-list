@@ -39,6 +39,8 @@ public interface DatabaseAccessor {
 
     Map<User, Date> getUsersCompletedGroupTask(GroupTask task);
 
+    Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException;
+
     void complete(IndividualTask task, Date dateCompleted);
 
     void complete(GroupTask task, Date dateCompleted);
