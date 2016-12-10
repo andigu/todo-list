@@ -24,10 +24,13 @@
 </div>
 <div class="persist">
     <div class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:200px;" id="nav-bar">
+        <div id="user-info" class="w3-gray">
+            <img src="images/user_icon.png" style="margin-left: 15px"/>
+            <h4 data-bind="text: name" class="w3-text-white" style="margin-left: 15px" ></h4>
+        </div>
         <a href="" onclick="toggleNavbar()" class="w3-closenav w3-large w3-hide-large">Close &times;</a>
         <a id="app-link" class="nav-link">App</a>
         <a id="groups-link" class="nav-link">Groups</a>
-
     </div>
 </div>
 
@@ -67,14 +70,6 @@
             <a href="" id="register-button">Sign up</a>
         </div>
     </div>
-</div>
-
-
-
-<div id="user-info" class="persist w3-main" style="margin-left: 205px">
-    <h1> Your info </h1>
-    Name: <p data-bind="text: name"></p> <br/>
-    Username: <p data-bind="text: userName"></p>
 </div>
 
 
