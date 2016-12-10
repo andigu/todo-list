@@ -11,3 +11,7 @@
 p {
     display: inline;
 }
+
+.content {
+    margin-left: 200px;
+}

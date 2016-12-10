@@ -11,9 +11,26 @@
 
 </head>
 <body>
+
+
 <div id="loading" class="filler">
     Loading...
 </div>
+
+
+<!--Header and navbar-->
+<div class="persist w3-container w3-indigo w3-text-white">
+    <h1>Todolist</h1>
+</div>
+<div class="persist">
+    <div class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:200px;" id="nav-bar">
+        <a href="" onclick="toggleNavbar()" class="w3-closenav w3-large w3-hide-large">Close &times;</a>
+        <a id="app-link" class="nav-link">App</a>
+        <a id="groups-link" class="nav-link">Groups</a>
+
+    </div>
+</div>
+
 
 <div id="login-view" class="content">
     <div class="w3-container w3-card-16 w3-padding-0" style="width: 350px; margin: auto">
@@ -52,19 +69,16 @@
     </div>
 </div>
 
-<div id="nav-bar" class="persist">
-    <div id="app-link" class="nav-link">App</div>
-    <div id="groups-link" class="nav-link">Groups</div>
-</div>
 
-<div id="user-info" class="persist">
+
+<div id="user-info" class="persist w3-main" style="margin-left: 205px">
     <h1> Your info </h1>
     Name: <p data-bind="text: name"></p> <br/>
     Username: <p data-bind="text: userName"></p>
 </div>
 
 
-<div id="app-view" class="content">
+<div id="app-view" class="content w3-main" style="margin-left: 205px">
 
     <h1>Your tasks</h1>
     <h2>Individual Tasks</h2>
@@ -120,7 +134,7 @@
     </table>
 </div>
 
-<div id="groups-view" class="content">
+<div id="groups-view" class="content w3-main">
     <h1>Your Groups</h1>
     <table>
         <thead>
@@ -132,7 +146,7 @@
     </table>
 </div>
 
-<div id="projects-view" class="content">
+<div id="projects-view" class="content w3-main">
     <h1>Your Projects</h1>
     <table>
         <thead>
@@ -180,6 +194,7 @@
 <script type="text/javascript" src="scripts/hash.js"></script>
 <script type="text/javascript" src="scripts/viewModel.js"></script>
 <script type="text/javascript" src="scripts/main.js"></script>
+<script type="text/javascript" src="scripts/ui.js"></script>
 
 
 
