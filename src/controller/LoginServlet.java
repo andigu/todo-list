@@ -16,16 +16,13 @@ public class LoginServlet extends ApplicationServlet {
     @Override
     void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         User user;
-        if (hasParameter(request, JsonConstant.TOKEN)) {
-            user = db.getUserByToken(request.getParameter(JsonConstant.TOKEN));
-        } else {
-            user = db.getUserByLogin(request.getParameter(JsonConstant.USERNAME), request.getParameter(JsonConstant.PASSWORD));
-            if (user != null) {
-                if (request.getParameter(JsonConstant.STAY_LOGGED).equals("true")) {
-                    jsonMap.put(JsonConstant.TOKEN, db.storeLogin(user.getId()));
-                }
+        user = db.getUserByLogin(request.getParameter(JsonConstant.USERNAME), request.getParameter(JsonConstant.PASSWORD));
+        if (user != null) {
+            if (request.getParameter(JsonConstant.STAY_LOGGED).equals("true")) {
+                jsonMap.put(JsonConstant.TOKEN, db.storeLogin(user.getId()));
             }
         }
+
         if (user != null) {
             jsonMap.put(JsonConstant.USER, user);
             request.getSession().setAttribute(JsonConstant.USER_ID, user.getId());

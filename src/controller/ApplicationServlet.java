@@ -25,16 +25,16 @@ public abstract class ApplicationServlet extends HttpServlet {
     JsonConverter converter = JsonConverter.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(JsonConstant.JSON_CONTENT_TYPE);
         Map<String, Object> jsonMap = new HashMap<>();
-        writeResponse(req, jsonMap);
+        writeResponse(request, jsonMap);
         resp.getWriter().write(converter.toJson(jsonMap));
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        doGet(req, resp);
     }
 
     void writeError(Error error, Map<String, Object> jsonMap) {
