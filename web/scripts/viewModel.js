@@ -13,6 +13,7 @@ class ActivityViewModel {
         this.projectTasks = ko.observableArray();
         this.groups = ko.observableArray();
         this.projects = ko.observableArray();
+        this.selectedGroupID = null;
     }
 
     login(form) {
