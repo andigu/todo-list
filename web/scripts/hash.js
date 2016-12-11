@@ -56,5 +56,6 @@ $(window).on("hashchange", function () {
             });
         });
         $("#tab-name").text(getHash());
+        $("#nav-bar").hide();
     });
 });

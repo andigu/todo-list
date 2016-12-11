@@ -3,7 +3,9 @@
  */
 "use strict";
 
-//Navbar functions
+/**
+ * @deprecated Remove ?
+ */
 function toggleNavbar(){
     let navBar = document.getElementById("nav-bar");
     if(navBar.style.display == "block"){

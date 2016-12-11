@@ -1,5 +1,6 @@
 /**
  * @author Andi Gu
+ * @author Susheel Kona
  */
 "use strict";
 
@@ -25,5 +26,9 @@ $(document).ready(function () {
         let row = $(this).parent().parent().children().index($(this).parent());
         viewModel.selectedGroupID = row;
         //alert("Group page for: "+viewModel.groups()[row].name+" is coming soon");
+    });
+
+    $("#hamburger-icon").click(function () {
+        $("#nav-bar").toggle();
     });
 });

@@ -22,8 +22,7 @@
 <!--TODO Add Category titles to titlebar-->
 <div class="persist w3-container w3-indigo w3-text-white w3-card-8">
     <h1>
-        <!--<span class="w3-opennav">&#9776;</span>-->
-        <!--TODOLIST - <a data-bind="text: currentView" style="color:#C0C0C3"></a>-->
+        <span class="w3-opennav w3-hide-large" id="hamburger-icon">&#9776;</span>
         TODOLIST - <a id="tab-name" style="color:#C0C0C3"></a>
     </h1>
 </div>
@@ -33,7 +32,6 @@
             <img src="images/user_icon.png" style="margin-left: 15px"/>
             <h4 data-bind="text: name" class="w3-text-white" style="margin-left: 15px"></h4>
         </div>
-        <a href="" onclick="toggleNavbar()" class="w3-closenav w3-large w3-hide-large">Close &times;</a>
         <a id="app-link" class="nav-link">App</a>
         <a id="groups-link" class="nav-link">Groups</a>
         <a id="projects-link" class="nav-link">Projects</a>
