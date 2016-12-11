@@ -17,7 +17,7 @@ import java.util.Map;
 @WebServlet("/sessions")
 public class SessionServlet extends ApplicationServlet {
     @Override
-    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
+    public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         switch (request.getParameter(JsonConstant.CMD)) {
             case JsonConstant.PING_CMD:
                 writeStatus(new Status(JsonConstant.LOGGED_IN_STATUS, getLoggedUser(request) != null), jsonMap);

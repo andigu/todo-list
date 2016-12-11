@@ -1,6 +1,5 @@
 package model.task;
 
-import model.Completable;
 import model.User;
 
 import java.util.Date;

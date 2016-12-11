@@ -18,7 +18,7 @@ import java.util.Map;
 @WebServlet("/register")
 public class RegistrationServlet extends ApplicationServlet {
     @Override
-    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
+    public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         //TODO check for null values
         try {
             User user = db.registerUser(request.getParameter(JsonConstant.USERNAME), request.getParameter(JsonConstant.PASSWORD),

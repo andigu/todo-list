@@ -22,15 +22,17 @@
 <div class="persist w3-container w3-indigo w3-text-white">
     <h1>Todolist</h1>
 </div>
+
 <div class="persist">
     <div class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:200px;" id="nav-bar">
         <div id="user-info" class="w3-gray">
             <img src="images/user_icon.png" style="margin-left: 15px"/>
-            <h4 data-bind="text: name" class="w3-text-white" style="margin-left: 15px" ></h4>
+            <h4 data-bind="text: name" class="w3-text-white" style="margin-left: 15px"></h4>
         </div>
         <a href="" onclick="toggleNavbar()" class="w3-closenav w3-large w3-hide-large">Close &times;</a>
         <a id="app-link" class="nav-link">App</a>
         <a id="groups-link" class="nav-link">Groups</a>
+        <a id="projects-link" class="nav-link">Projects</a>
     </div>
 </div>
 
@@ -59,8 +61,9 @@
                     </div>
                 </div>
                 <div class="w3-container w3-padding-16 wd-row-padding">
-                    <input type="checkbox" name="stay" checked="checked" class="w3-checkbox"/>
-                    <label class="w3-validate">Remember Me</label>
+                    <label class="w3-validate">Remember Me
+                        <input type="checkbox" name="stay" checked="checked" class="w3-checkbox"/>
+                    </label>
                 </div>
                 <div style="text-align: center">
                     <button type="submit" class="w3-btn w3-hover-white w3-indigo" style="text-align: center">LOGIN
@@ -71,7 +74,6 @@
         </div>
     </div>
 </div>
-
 
 <div id="app-view" class="content w3-main" style="margin-left: 205px">
 
@@ -181,8 +183,6 @@
 </div>
 
 
-
-
 <script type="text/javascript" src="scripts/lib/jquery-3.1.1.js"></script>
 <script type="text/javascript" src="scripts/lib/knockout-3.4.0.js"></script>
 <script type="text/javascript" src="scripts/helper.js"></script>
@@ -190,7 +190,6 @@
 <script type="text/javascript" src="scripts/viewModel.js"></script>
 <script type="text/javascript" src="scripts/main.js"></script>
 <script type="text/javascript" src="scripts/ui.js"></script>
-
 
 
 </body>

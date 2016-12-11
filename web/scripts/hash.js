@@ -1,8 +1,8 @@
 /**
-    * @author Andi Gu
-    */
+ * @author Andi Gu
+ */
 
-
+"use strict";
 function inApp(hash) {
     if (hash !== undefined) {
         return !((hash === "login" || hash === "register"));

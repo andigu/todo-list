@@ -1,7 +1,8 @@
 /**
-    * @author Andi Gu
-    */
+ * @author Andi Gu
+ */
 
+"use strict";
 function hasProperty(object, property) {
     return property in object
 }

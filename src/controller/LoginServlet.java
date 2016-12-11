@@ -14,7 +14,7 @@ import java.util.Map;
 @WebServlet("/login")
 public class LoginServlet extends ApplicationServlet {
     @Override
-    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
+    public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         User user;
         user = db.getUserByLogin(request.getParameter(JsonConstant.USERNAME), request.getParameter(JsonConstant.PASSWORD));
         if (user != null) {

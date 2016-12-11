@@ -6,6 +6,7 @@ import model.group.Project;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
+import model.task.Task;
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -40,6 +41,14 @@ public interface DatabaseAccessor {
     Map<User, Date> getUsersCompletedGroupTask(GroupTask task);
 
     Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException;
+
+    void insertTask(Task task);
+
+    void insertIndividualTask(IndividualTask individualTask);
+
+    void insertGroupTask(GroupTask groupTask);
+
+    void insertProjectTask(ProjectTask projectTask);
 
     void complete(IndividualTask task, Date dateCompleted);
 

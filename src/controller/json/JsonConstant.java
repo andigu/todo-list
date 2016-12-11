@@ -30,4 +30,6 @@ public interface JsonConstant {
     String ERROR = "error";
     String DUPLICATE_KEY_ERROR = "duplicate-key";
     String LOGGED_IN_STATUS = "logged-in";
+    String TASK_TYPE = "task-type";
+    String TASK = "task";
 }

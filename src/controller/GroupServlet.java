@@ -15,7 +15,7 @@ import java.util.Map;
 @WebServlet("/groups")
 public class GroupServlet extends ApplicationServlet {
     @Override
-    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
+    public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         User user = getLoggedUser(request);
         if (!hasParameter(request, JsonConstant.FILTERS)) {
             if (user != null) {

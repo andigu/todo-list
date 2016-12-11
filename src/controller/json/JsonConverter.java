@@ -25,7 +25,7 @@ public class JsonConverter {
         return object == null ? null : mapper.writeValueAsString(object);
     }
 
-    public <T> T toObject(String json, Class<T> tClass) throws IOException {
+    public <T> T fromJson(String json, Class<T> tClass) throws IOException {
         return mapper.readValue(json, tClass);
     }
 }

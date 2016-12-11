@@ -28,13 +28,16 @@ public abstract class ApplicationServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(JsonConstant.JSON_CONTENT_TYPE);
         Map<String, Object> jsonMap = new HashMap<>();
-        writeResponse(request, jsonMap);
+        writeGetResponse(request, jsonMap);
         resp.getWriter().write(converter.toJson(jsonMap));
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
+        resp.setContentType(JsonConstant.JSON_CONTENT_TYPE);
+        Map<String, Object> jsonMap = new HashMap<>();
+        writePostResponse(req, jsonMap);
+        resp.getWriter().write(converter.toJson(jsonMap));
     }
 
     void writeError(Error error, Map<String, Object> jsonMap) {
@@ -45,7 +48,13 @@ public abstract class ApplicationServlet extends HttpServlet {
         jsonMap.put(JsonConstant.STATUS, status);
     }
 
-    abstract void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws IOException;
+    public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws IOException {
+
+    }
+
+    public void writePostResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws IOException {
+        writeGetResponse(request, jsonMap);
+    }
 
     boolean hasParameter(HttpServletRequest request, String parameter) {
         return request.getParameterMap().containsKey(parameter);

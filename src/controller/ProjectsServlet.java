@@ -18,7 +18,7 @@ import java.util.Map;
 @WebServlet("/projects")
 public class ProjectsServlet extends ApplicationServlet {
     @Override
-    void writeResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
+    public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         User user = getLoggedUser(request);
         if (!hasParameter(request, JsonConstant.FILTERS)) {
             if (user != null) {

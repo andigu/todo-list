@@ -6,6 +6,7 @@ import model.group.Project;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
+import model.task.Task;
 import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
 import org.apache.derby.jdbc.ClientDataSource;
 
@@ -28,15 +29,20 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
     private static final String getAllIndividualTasksSQL = "SELECT * FROM MODEL.INDIVIDUAL_TASKS WHERE USER_ID = ?";
     private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
-    private static final String getAllGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS JOIN (SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?) AS UGT ON MODEL.GROUP_TASKS.GROUP_ID = UGT.GROUP_ID";
+    private static final String getAllGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS JOIN (SELECT * FROM MODEL.USER_GROUPS" +
+            " NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?) AS UGT ON MODEL.GROUP_TASKS.GROUP_ID = UGT.GROUP_ID";
     private static final String getProjectsSQL = "SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?";
-    private static final String getAllProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS JOIN (SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?) AS UPT ON MODEL.PROJECT_TASKS.PROJECT_ID = UPT.PROJECT_ID";
+    private static final String getAllProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS JOIN (SELECT * FROM MODEL.USER_PROJECTS" +
+            " NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?) AS UPT ON MODEL.PROJECT_TASKS.PROJECT_ID = UPT.PROJECT_ID";
     private static final String getGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS WHERE GROUP_ID = ?";
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
     private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME)  VALUES (?, ?, ?, ?, ?)";
     private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
+    private static final String insertIndividualTask = "INSERT INTO MODEL.INDIVIDUAL_TASKS (TASK_ID, USER_ID, TASK_NAME, TASK_DUE_DATE) VALUES (?, ?, ?, ?)";
+    private static final String insertProjectTask = "INSERT INTO MODEL.PROJECT_TASKS (TASK_ID, PROJECT_ID, TASK_NAME, TASK_DUE_DATE) VALUES (?, ?, ?, ?)";
+    private static final String insertGroupTask = "INSERT INTO MODEL.GROUP_TASKS (TASK_ID, GROUP_ID, TASK_NAME, TASK_DUE_DATE) VALUES (?, ?, ?, ?)";
 
     @Override
     public User getUserByLogin(String username, String password) {
@@ -302,9 +308,9 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     }
 
     @Override
-    public Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException{
-        try(Connection conn = dataSource.getConnection();
-            PreparedStatement statement = conn.prepareStatement(createGroupSQL)){
+    public Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(createGroupSQL)) {
             String id = randomId();
             statement.setString(1, id);
             statement.setString(2, groupName);
@@ -317,5 +323,62 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
         }
 
         return null;
+    }
+
+    @Override
+    public void insertTask(Task task) { // TODO issues with this?
+        if (task instanceof IndividualTask) {
+            insertIndividualTask((IndividualTask) task);
+        } else if (task instanceof GroupTask) {
+            insertGroupTask((GroupTask) task);
+        } else if (task instanceof ProjectTask) {
+            insertProjectTask((ProjectTask) task);
+        }
+    }
+
+    @Override
+    public void insertIndividualTask(IndividualTask individualTask) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(insertIndividualTask)) {
+            statement.setString(1, individualTask.getId());
+            statement.setString(2, individualTask.getOwner().getId());
+            statement.setString(3, individualTask.getName());
+            statement.setDate(4, toSqlDate(individualTask.getDueDate()));
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void insertGroupTask(GroupTask groupTask) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(insertGroupTask)) {
+            statement.setString(1, groupTask.getId());
+            statement.setString(2, groupTask.getGroup().getId());
+            statement.setString(3, groupTask.getName());
+            statement.setDate(4, toSqlDate(groupTask.getDueDate()));
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void insertProjectTask(ProjectTask projectTask) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(insertProjectTask)) {
+            statement.setString(1, projectTask.getId());
+            statement.setString(2, projectTask.getProject().getId());
+            statement.setString(3, projectTask.getName());
+            statement.setDate(4, toSqlDate(projectTask.getDueDate()));
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private java.sql.Date toSqlDate(Date date) {
+        return (java.sql.Date) date;
     }
 }

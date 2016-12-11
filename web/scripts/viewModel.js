@@ -2,6 +2,8 @@
  * @author Andi Gu
  */
 
+"use strict";
+
 class ActivityViewModel {
     constructor() {
         this.name = ko.observable();
