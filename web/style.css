@@ -15,3 +15,11 @@ p {
 a {
     text-decoration: none;
 }
+
+.data-card {
+    margin-bottom: 2px;
+}
+
+.w3-main {
+    margin-left: 205px;
+}

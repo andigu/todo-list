@@ -19,11 +19,13 @@
 
 
 <!--Header and navbar-->
-<!--TODO Add Category titles to navbar-->
+<!--TODO Add Category titles to titlebar-->
 <div class="persist w3-container w3-indigo w3-text-white w3-card-8">
-    <h1>Todolist</h1>
-</div>
+    <h1>
+        TODOLIST - <a data-bind="text: currentView" style="color:#C0C0C3"></a>
+    </h1>
 
+</div>
 <div class="persist">
     <div class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:200px;" id="nav-bar">
         <div id="user-info" class="w3-gray w3-card-2">
@@ -76,7 +78,7 @@
     </div>
 </div>
 
-<div id="app-view" class="content w3-main" style="margin-left: 205px">
+<div id="app-view" class="content w3-main">
 
     <h1>Your tasks</h1>
     <h2>Individual Tasks</h2>
@@ -132,14 +134,14 @@
     </table>
 </div>
 
-<div id="groups-view" class="content w3-main" style="margin-left: 205px">
+<div id="groups-view" class="content w3-main">
     <h1>Your Groups</h1>
     <table>
         <tbody data-bind="foreach: groups">
         <tr>
             <td>
-                <a class="group-link" id="testid">
-                    <div class="w3-container w3-card-4 w3-hover-gray" style="width: 400px">
+                <a class="group-link data-card" id="testid">
+                    <div class="w3-panel w3-card-4 w3-hover-gray" style="width: 400px">
                         <h4 data-bind="text: name"></h4>
                         <h6 data-bind="text: id"/>
                     </div>

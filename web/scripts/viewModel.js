@@ -13,6 +13,11 @@ class ActivityViewModel {
         this.projectTasks = ko.observableArray();
         this.groups = ko.observableArray();
         this.projects = ko.observableArray();
+
+        //Used purely for ui
+        this.currentView = ko.observable("App");
+
+        //Do something better
         this.selectedGroupID = null;
     }
 

@@ -15,6 +15,7 @@ function getHash() {
     return location.hash.substring(1);
 }
 
+
 function setHash(hash) {
     if (hash === getHash()) {
         $(window).trigger("hashchange");
@@ -54,5 +55,6 @@ $(window).on("hashchange", function () {
                 loadingDiv.hide();
             });
         });
+        viewModel.currentView(getHash());
     });
 });

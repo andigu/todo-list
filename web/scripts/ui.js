@@ -13,3 +13,4 @@ function toggleNavbar(){
         navBar.style.display = "block"
     }
 }
+
