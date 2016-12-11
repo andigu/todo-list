@@ -55,6 +55,6 @@ $(window).on("hashchange", function () {
                 loadingDiv.hide();
             });
         });
-        viewModel.currentView(getHash());
+        $("#tab-name").text(getHash());
     });
 });
