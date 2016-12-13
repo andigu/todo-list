@@ -23,3 +23,11 @@ a {
 .w3-main {
     margin-left: 205px;
 }
+
+.profile-picture {
+    margin-top: 20px;
+    margin-left: 17px;
+    height: 50px;
+    width: 50px;
+    border-radius: 20%;
+}

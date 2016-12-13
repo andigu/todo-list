@@ -33,4 +33,13 @@ $(document).ready(function () {
     $("#hamburger-icon").click(function () {
         $("#nav-bar").toggle();
     });
+
+    //Dropdown
+    $("#logout").click(function () {
+        alert("Logout")
+    });
+
+    $("#myprofile").click(function () {
+        alert("myprofile")
+    });
 });

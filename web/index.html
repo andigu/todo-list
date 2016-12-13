@@ -28,8 +28,21 @@
 <div class="persist">
     <div class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:200px;" id="nav-bar">
         <div id="user-info" class="w3-gray w3-card-2">
-            <img src="images/user_icon.png" style="margin-left: 15px"/>
-            <h4 data-bind="text: name" class="w3-text-white" style="margin-left: 15px"></h4>
+            <div style="display: inline-block">
+                <img src="images/user_icon.png" class="profile-picture"/>
+            </div>
+            <div style="display: inline-block">
+                <div class="w3-dropdown-hover">
+                    <div style="background-color: #9E9E9E; color: white">
+                        <i class="material-icons">arrow_drop_down</i>
+                    </div>
+                    <ul class="w3-dropdown-content w3-card-4 w3-border" style="width: 100px; font-size: small" id="dropdown-options">
+                        <a href="javascript:void(0)" id="myprofile">My Profile</a>
+                        <a href="javascript:void(0)" id="logout">Logout</a>
+                    </ul>
+                </div>
+            </div>
+            <h5 data-bind="text: name" class="w3-text-white" style="margin-left: 15px"></h5>
         </div>
         <a id="app-link" class="nav-link w3-indigo">App</a>
         <a id="groups-link" class="nav-link">Groups</a>
@@ -189,7 +202,6 @@
         <button type="submit">Register</button>
     </form>
 </div>
-
 
 <script type="text/javascript" src="scripts/lib/jquery-3.1.1.js"></script>
 <script type="text/javascript" src="scripts/lib/knockout-3.4.0.js"></script>
