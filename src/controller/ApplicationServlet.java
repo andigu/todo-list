@@ -79,9 +79,11 @@ public abstract class ApplicationServlet extends HttpServlet {
     }
 
     private User getCookieUser(HttpServletRequest request) {
-        for (Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals(JsonConstant.TOKEN)) {
-                return db.getUserByToken(cookie.getValue());
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals(JsonConstant.TOKEN)) {
+                    return db.getUserByToken(cookie.getValue());
+                }
             }
         }
         return null;
