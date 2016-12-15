@@ -20,14 +20,8 @@ $(document).ready(function () {
     $(".nav-link").click(function () {
         console.log("clicked navbar");
         setHash(this.id.substring(0, this.id.indexOf("-")));
-        $(this).parent().children().removeClass("w3-indigo")
+        $(this).parent().children().removeClass("w3-indigo");
         $(this).addClass("w3-indigo");
-    });
-
-    $("#groups-view").on("click", "table tr td", function () {
-        let row = $(this).parent().parent().children().index($(this).parent());
-        viewModel.selectedGroupID = row;
-        //alert("Group page for: "+viewModel.groups()[row].name+" is coming soon");
     });
 
     $("#hamburger-icon").click(function () {

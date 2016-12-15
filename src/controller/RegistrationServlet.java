@@ -2,7 +2,7 @@ package controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import controller.json.Error;
-import controller.json.JsonConstant;
+import controller.json.JsonConstants;
 import model.User;
 
 import javax.servlet.annotation.WebServlet;
@@ -21,11 +21,11 @@ public class RegistrationServlet extends ApplicationServlet {
     public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         //TODO check for null values
         try {
-            User user = db.registerUser(request.getParameter(JsonConstant.USERNAME), request.getParameter(JsonConstant.PASSWORD),
-                    request.getParameter(JsonConstant.FIRST_NAME), request.getParameter(JsonConstant.LAST_NAME));
-            jsonMap.put(JsonConstant.USER, user);
+            User user = db.registerUser(request.getParameter(JsonConstants.USERNAME), request.getParameter(JsonConstants.PASSWORD),
+                    request.getParameter(JsonConstants.FIRST_NAME), request.getParameter(JsonConstants.LAST_NAME));
+            jsonMap.put(JsonConstants.USER, user);
         } catch (SQLIntegrityConstraintViolationException e) {
-            writeError(new Error(JsonConstant.DUPLICATE_KEY_ERROR), jsonMap);
+            writeError(new Error(JsonConstants.DUPLICATE_KEY_ERROR), jsonMap);
         }
     }
 

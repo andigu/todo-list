@@ -1,14 +1,11 @@
 package controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import controller.json.JsonConstant;
+import controller.json.JsonConstants;
 import model.User;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -20,9 +17,9 @@ public class ProjectsServlet extends ApplicationServlet {
     @Override
     public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
         User user = getLoggedUser(request);
-        if (!hasParameter(request, JsonConstant.FILTERS)) {
+        if (!hasParameter(request, JsonConstants.FILTERS)) {
             if (user != null) {
-                jsonMap.put(JsonConstant.PROJECTS, db.getProjects(user));
+                jsonMap.put(JsonConstants.PROJECTS, db.getProjects(user));
             }
         }
     }

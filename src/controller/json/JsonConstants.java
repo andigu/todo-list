@@ -5,7 +5,7 @@ package controller.json;
  *
  * @author Andi Gu
  */
-public interface JsonConstant {
+public interface JsonConstants {
     String JSON_CONTENT_TYPE = "application/json";
     String USERNAME = "username";
     String USER_ID = "user-id";
@@ -19,7 +19,9 @@ public interface JsonConstant {
     String USER_INF_CMD = "user-inf";
     String USER = "user";
     String CMD = "cmd";
-    String TASK_TYPES = "task-types";
+    String TASK_TYPES_FILTER = "task-types";
+    String TASK_ID_FILTER = "task-id";
+    String PARENT_ID_FILTER = "parent-id";
     String INDIVIDUAL_TASK = "individual";
     String GROUP_TASK = "group";
     String PROJECT_TASK = "project";

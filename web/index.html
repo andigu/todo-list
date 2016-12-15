@@ -36,9 +36,10 @@
                     <div style="background-color: #9E9E9E; color: white">
                         <i class="material-icons">arrow_drop_down</i>
                     </div>
-                    <ul class="w3-dropdown-content w3-card-4 w3-border" style="width: 100px; font-size: small" id="dropdown-options">
-                        <a href="javascript:void(0)" id="myprofile">My Profile</a>
-                        <a href="javascript:void(0)" id="logout">Logout</a>
+                    <ul class="w3-dropdown-content w3-card-4 w3-border" style="width: 100px; font-size: small"
+                        id="dropdown-options">
+                        <li><a id="myprofile">My Profile</a></li>
+                        <li><a id="logout">Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -151,13 +152,12 @@
         <tbody data-bind="foreach: groups">
         <tr>
             <td>
-                <a class="group-link data-card" id="testid">
+                <a class="group-link data-card" data-bind="click: $root.groupClicked">
                     <div class="w3-panel w3-card-4 w3-hover-gray" style="width: 400px">
                         <h4 data-bind="text: name"></h4>
-                        <h6 data-bind="text: id"/>
+                        <h6 data-bind="text: id"></h6>
                     </div>
                 </a>
-
             </td>
         </tr>
         </tbody>

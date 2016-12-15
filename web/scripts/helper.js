@@ -28,9 +28,23 @@ function mapTasks(object) {
     if (hasProperty(object, "tasks")) {
         object = object["tasks"];
     }
-    viewModel.individualTasks(object["individual"]);
-    viewModel.groupTasks(object["group"]);
-    viewModel.projectTasks(object["project"]);
+    let individualTasks = [];
+    let groupTasks = [];
+    let projectTasks = [];
+    for (let i = 0; i < object.length; i++) { // TODO quite sloppy - but no alternative solution..?
+        if (hasProperty(object[i], "owner")) {
+            individualTasks.push(object[i]);
+        }
+        else if (hasProperty(object[i], "project")) {
+            projectTasks.push(object[i]);
+        }
+        else if (hasProperty(object[i], "group")) {
+            groupTasks.push(object[i]);
+        }
+    }
+    viewModel.individualTasks(individualTasks);
+    viewModel.groupTasks(groupTasks);
+    viewModel.projectTasks(projectTasks);
 }
 
 function mapObject(object, name, observable) {

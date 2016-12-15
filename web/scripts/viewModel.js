@@ -15,7 +15,7 @@ class ActivityViewModel {
         this.projects = ko.observableArray();
 
         //Do something better
-        this.selectedGroupID = null;
+        this.selectedGroupID = ko.observable();
     }
 
     login(form) {
@@ -54,11 +54,13 @@ class ActivityViewModel {
     }
 
     getTasks(taskTypes) {
-        let json = {};
+        let filters = {};
         if (taskTypes !== undefined) {
-            json["task-types"] = taskTypes.toString();
+            filters["task-types"] = taskTypes.toString();
         }
-        $.get("/tasks", json, function (response) {
+        $.get("/tasks", {
+            "filters": filters
+        }, function (response) {
             mapTasks(response);
         });
     };
@@ -75,5 +77,10 @@ class ActivityViewModel {
         $.get("/projects", {}, function (response) {
             mapObject(response, "projects", self.projects);
         });
+    }
+
+    groupClicked(group) {
+        this.selectedGroupID(group.id);
+        console.log(this.selectedGroupID())
     }
 }

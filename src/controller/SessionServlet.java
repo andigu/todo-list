@@ -1,7 +1,7 @@
 package controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import controller.json.JsonConstant;
+import controller.json.JsonConstants;
 import controller.json.Status;
 
 import javax.servlet.annotation.WebServlet;
@@ -18,13 +18,13 @@ import java.util.Map;
 public class SessionServlet extends ApplicationServlet {
     @Override
     public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
-        switch (request.getParameter(JsonConstant.CMD)) {
-            case JsonConstant.PING_CMD:
-                writeStatus(new Status(JsonConstant.LOGGED_IN_STATUS, getLoggedUser(request) != null), jsonMap);
+        switch (request.getParameter(JsonConstants.CMD)) {
+            case JsonConstants.PING_CMD:
+                writeStatus(new Status(JsonConstants.LOGGED_IN_STATUS, getLoggedUser(request) != null), jsonMap);
                 break;
-            case JsonConstant.USER_INF_CMD:
+            case JsonConstants.USER_INF_CMD:
                 if (getLoggedUser(request) != null) {
-                    jsonMap.put(JsonConstant.USER, getLoggedUser(request));
+                    jsonMap.put(JsonConstants.USER, getLoggedUser(request));
                 }
                 break;
         }

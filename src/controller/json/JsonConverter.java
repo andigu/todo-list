@@ -26,6 +26,11 @@ public class JsonConverter {
     }
 
     public <T> T fromJson(String json, Class<T> tClass) throws IOException {
-        return mapper.readValue(json, tClass);
+        if (json == null) {
+            return null;
+        }
+        else {
+            return mapper.readValue(json, tClass);
+        }
     }
 }

@@ -8,7 +8,6 @@ import model.task.IndividualTask;
 import model.task.ProjectTask;
 import model.task.Task;
 
-import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.Map;
@@ -24,11 +23,7 @@ public interface DatabaseAccessor {
 
     User getUserByToken(String token);
 
-    Set<IndividualTask> getAllIndividualTasks(User user);
-
-    Set<GroupTask> getAllGroupTasks(User user);
-
-    Set<ProjectTask> getAllProjectTasks(User user);
+    Set<Task> getTasks(User user, Filter filter);
 
     Set<Group> getGroups(User user);
 
@@ -43,12 +38,6 @@ public interface DatabaseAccessor {
     Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException;
 
     void insertTask(Task task);
-
-    void insertIndividualTask(IndividualTask individualTask);
-
-    void insertGroupTask(GroupTask groupTask);
-
-    void insertProjectTask(ProjectTask projectTask);
 
     void complete(IndividualTask task, Date dateCompleted);
 

@@ -1,7 +1,7 @@
 package controller;
 
 import controller.json.Error;
-import controller.json.JsonConstant;
+import controller.json.JsonConstants;
 import controller.json.JsonConverter;
 import controller.json.Status;
 import database.DatabaseAccessor;
@@ -26,7 +26,7 @@ public abstract class ApplicationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType(JsonConstant.JSON_CONTENT_TYPE);
+        resp.setContentType(JsonConstants.JSON_CONTENT_TYPE);
         Map<String, Object> jsonMap = new HashMap<>();
         writeGetResponse(request, jsonMap);
         resp.getWriter().write(converter.toJson(jsonMap));
@@ -34,23 +34,21 @@ public abstract class ApplicationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType(JsonConstant.JSON_CONTENT_TYPE);
+        resp.setContentType(JsonConstants.JSON_CONTENT_TYPE);
         Map<String, Object> jsonMap = new HashMap<>();
         writePostResponse(req, jsonMap);
         resp.getWriter().write(converter.toJson(jsonMap));
     }
 
     void writeError(Error error, Map<String, Object> jsonMap) {
-        jsonMap.put(JsonConstant.ERROR, error);
+        jsonMap.put(JsonConstants.ERROR, error);
     }
 
     void writeStatus(Status status, Map<String, Object> jsonMap) {
-        jsonMap.put(JsonConstant.STATUS, status);
+        jsonMap.put(JsonConstants.STATUS, status);
     }
 
-    public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws IOException {
-
-    }
+    public abstract void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws IOException;
 
     public void writePostResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws IOException {
         writeGetResponse(request, jsonMap);
@@ -70,7 +68,7 @@ public abstract class ApplicationServlet extends HttpServlet {
     }
 
     private User getSessionUser(HttpServletRequest request) {
-        Object userId = request.getSession().getAttribute(JsonConstant.USER_ID);
+        Object userId = request.getSession().getAttribute(JsonConstants.USER_ID);
         if (userId != null) {
             return db.getUserById(userId.toString());
         } else {
@@ -81,7 +79,7 @@ public abstract class ApplicationServlet extends HttpServlet {
     private User getCookieUser(HttpServletRequest request) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals(JsonConstant.TOKEN)) {
+                if (cookie.getName().equals(JsonConstants.TOKEN)) {
                     return db.getUserByToken(cookie.getValue());
                 }
             }

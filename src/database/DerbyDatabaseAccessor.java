@@ -1,5 +1,9 @@
 package database;
 
+import database.dao.GroupTaskDAO;
+import database.dao.IndividualTaskDAO;
+import database.dao.ProjectTaskDAO;
+import database.dao.TaskDAO;
 import model.User;
 import model.group.Group;
 import model.group.Project;
@@ -10,6 +14,7 @@ import model.task.Task;
 import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
 import org.apache.derby.jdbc.ClientDataSource;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -27,22 +32,20 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getUserByLoginSQL = "SELECT * FROM MODEL.USERS WHERE USERNAME = ? AND PASSWORD = ?";
     private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
-    private static final String getAllIndividualTasksSQL = "SELECT * FROM MODEL.INDIVIDUAL_TASKS WHERE USER_ID = ?";
     private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
-    private static final String getAllGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS JOIN (SELECT * FROM MODEL.USER_GROUPS" +
-            " NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?) AS UGT ON MODEL.GROUP_TASKS.GROUP_ID = UGT.GROUP_ID";
+
     private static final String getProjectsSQL = "SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?";
-    private static final String getAllProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS JOIN (SELECT * FROM MODEL.USER_PROJECTS" +
-            " NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?) AS UPT ON MODEL.PROJECT_TASKS.PROJECT_ID = UPT.PROJECT_ID";
-    private static final String getGroupTasksSQL = "SELECT * FROM MODEL.GROUP_TASKS WHERE GROUP_ID = ?";
+
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
     private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME)  VALUES (?, ?, ?, ?, ?)";
     private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
-    private static final String insertIndividualTask = "INSERT INTO MODEL.INDIVIDUAL_TASKS (TASK_ID, USER_ID, TASK_NAME, TASK_DUE_DATE) VALUES (?, ?, ?, ?)";
-    private static final String insertProjectTask = "INSERT INTO MODEL.PROJECT_TASKS (TASK_ID, PROJECT_ID, TASK_NAME, TASK_DUE_DATE) VALUES (?, ?, ?, ?)";
-    private static final String insertGroupTask = "INSERT INTO MODEL.GROUP_TASKS (TASK_ID, GROUP_ID, TASK_NAME, TASK_DUE_DATE) VALUES (?, ?, ?, ?)";
+    private final Map<Class<? extends Task>, TaskDAO> taskDAOMap = new HashMap<Class<? extends Task>, TaskDAO>() {{
+        put(GroupTask.class, new GroupTaskDAO(dataSource));
+        put(IndividualTask.class, new IndividualTaskDAO(dataSource));
+        put(ProjectTask.class, new ProjectTaskDAO(dataSource));
+    }};
 
     @Override
     public User getUserByLogin(String username, String password) {
@@ -68,6 +71,23 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
         return getUserByIdentification(token, "token");
     }
 
+    @Override
+    public Set<Task> getTasks(User user, Filter filter) {
+        Set<Task> tasks = new HashSet<>();
+        for (TaskDAO dao : taskDAOMap.values()) {
+            tasks.addAll(dao.getAllTasks(user));
+        }
+        try {
+            if (filter != null) {
+                tasks = filter.doFilter(tasks);
+            }
+            return tasks;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * Functionality that is shared between getUserById and getUserByToken
      *
@@ -88,68 +108,6 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
         return null;
     }
 
-    @Override
-    public Set<IndividualTask> getAllIndividualTasks(User user) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(getAllIndividualTasksSQL)) {
-            statement.setString(1, user.getId());
-            ResultSet resultSet = statement.executeQuery();
-            Set<IndividualTask> tasks = new HashSet<>();
-            while (resultSet.next()) {
-                tasks.add(ResultSetConverter.getIndividualTask(resultSet, user));
-            }
-            return tasks;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public Set<GroupTask> getAllGroupTasks(User user) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(getAllGroupTasksSQL)) {
-            statement.setString(1, user.getId());
-            ResultSet resultSet = statement.executeQuery();
-            Set<GroupTask> groupTasks = new HashSet<>();
-            Map<String, Group> groupMap = new HashMap<>();
-            String id;
-            while (resultSet.next()) {
-                id = resultSet.getString("GROUP_ID");
-                if (!groupMap.containsKey(id)) {
-                    groupMap.put(id, ResultSetConverter.getGroup(resultSet));
-                }
-                groupTasks.add(ResultSetConverter.getGroupTask(resultSet, groupMap.get(id)));
-            }
-            return groupTasks;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public Set<ProjectTask> getAllProjectTasks(User user) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(getAllProjectTasksSQL)) {
-            statement.setString(1, user.getId());
-            ResultSet resultSet = statement.executeQuery();
-            Set<ProjectTask> projectTasks = new HashSet<>();
-            Map<String, Project> projectMap = new HashMap<>();
-            String id;
-            while (resultSet.next()) {
-                id = resultSet.getString("PROJECT_ID");
-                if (!projectMap.containsKey(id)) {
-                    projectMap.put(id, ResultSetConverter.getProject(resultSet));
-                }
-                projectTasks.add(ResultSetConverter.getProjectTask(resultSet, projectMap.get(id)));
-            }
-            return projectTasks;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @Override
     public Set<Group> getGroups(User user) {
@@ -187,18 +145,6 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
 
     @Override
     public Set<GroupTask> getGroupTasks(Group group) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(getGroupTasksSQL)) {
-            statement.setString(1, group.getId());
-            ResultSet result = statement.executeQuery();
-            Set<GroupTask> tasks = new HashSet<>();
-            while (result.next()) {
-                tasks.add(ResultSetConverter.getGroupTask(result, group));
-            }
-            return tasks;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return null;
     }
 
@@ -327,58 +273,6 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
 
     @Override
     public void insertTask(Task task) { // TODO issues with this?
-        if (task instanceof IndividualTask) {
-            insertIndividualTask((IndividualTask) task);
-        } else if (task instanceof GroupTask) {
-            insertGroupTask((GroupTask) task);
-        } else if (task instanceof ProjectTask) {
-            insertProjectTask((ProjectTask) task);
-        }
-    }
-
-    @Override
-    public void insertIndividualTask(IndividualTask individualTask) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(insertIndividualTask)) {
-            statement.setString(1, individualTask.getId());
-            statement.setString(2, individualTask.getOwner().getId());
-            statement.setString(3, individualTask.getName());
-            statement.setDate(4, toSqlDate(individualTask.getDueDate()));
-            statement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void insertGroupTask(GroupTask groupTask) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(insertGroupTask)) {
-            statement.setString(1, groupTask.getId());
-            statement.setString(2, groupTask.getGroup().getId());
-            statement.setString(3, groupTask.getName());
-            statement.setDate(4, toSqlDate(groupTask.getDueDate()));
-            statement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void insertProjectTask(ProjectTask projectTask) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(insertProjectTask)) {
-            statement.setString(1, projectTask.getId());
-            statement.setString(2, projectTask.getProject().getId());
-            statement.setString(3, projectTask.getName());
-            statement.setDate(4, toSqlDate(projectTask.getDueDate()));
-            statement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private java.sql.Date toSqlDate(Date date) {
-        return (java.sql.Date) date;
+        taskDAOMap.get(task.getClass()).insertTask(task);
     }
 }
