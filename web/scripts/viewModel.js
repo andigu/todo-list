@@ -4,6 +4,7 @@
 
 "use strict";
 
+
 class ActivityViewModel {
     constructor() {
         this.name = ko.observable();
@@ -13,38 +14,36 @@ class ActivityViewModel {
         this.projectTasks = ko.observableArray();
         this.groups = ko.observableArray();
         this.projects = ko.observableArray();
-
-        //Do something better
         this.selectedGroupID = ko.observable();
     }
 
     login(form) {
-        const self = this;
-        $.post("/login", {
-            "username": form.username.value,
-            "password": form.password.value,
-            "stay-logged": form.stay.checked
-        }, function (response) {
-            if (response.hasOwnProperty("user")) {
-                mapUser(response["user"]);
-                if (response.hasOwnProperty("token")) {
-                    document.cookie = "token=" + response["token"];
+        request("/login",
+            "POST", {
+                user: {
+                    username: form.username.value,
+                    password: form.password.value
+                },
+                stayLogged: form.stay.checked
+            }, (response) => {
+                console.log(response);
+                if (response.hasOwnProperty("data")) {
+                    mapUser(response["data"]); // TODO fix
+                    setHash("app");
+                    this.getTasks();
+                } else {
+                    alert("Wrong login");
                 }
-                setHash("app");
-                self.getTasks();
-            } else {
-                alert("Wrong login");
-            }
-        });
+            });
     };
 
     register(form) {
-        $.get("/register", {
-            "first-name": form.firstname.value,
-            "last-name": form.lastname.value,
+        request("/register", "GET", {
+            "firstName": form.firstName.value,
+            "lastName": form.lastName.value,
             "username": form.username.value,
             "password": form.password.value
-        }, function (response) {
+        }, (response) => {
             if (response.hasOwnProperty("error")) {
                 alert(response["error"]);
             } else {
@@ -56,31 +55,36 @@ class ActivityViewModel {
     getTasks(taskTypes) {
         let filters = {};
         if (taskTypes !== undefined) {
-            filters["task-types"] = taskTypes.toString();
+            filters["taskTypes"] = taskTypes.toString();
         }
-        $.get("/tasks", {
-            "filters": filters
-        }, function (response) {
-            mapTasks(response);
-        });
+        request("/tasks",
+            "GET",
+            {filters: filters},
+            (response) => {
+                mapTasks(response["data"])
+            }
+        )
     };
 
     getGroups() {
-        const self = this;
-        $.get("/groups", {}, function (response) {
-            mapObject(response, "groups", self.groups);
+        request("/groups", "GET", {}, (response) => {
+            this.groups(response.data);
         });
     }
 
     getProjects() {
-        const self = this;
-        $.get("/projects", {}, function (response) {
-            mapObject(response, "projects", self.projects);
+        request("/projects", "GET", {}, (response) => {
+            this.projects(response.data);
         });
     }
 
+    addTask(form) {
+        alert("TODO!!!");
+    }
+
+
     groupClicked(group) {
-        this.selectedGroupID(group.id);
-        console.log(this.selectedGroupID())
+        alert("Not implemented");
     }
 }
+

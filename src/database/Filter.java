@@ -1,7 +1,8 @@
 package database;
 
 import controller.json.JsonConstants;
-import controller.json.JsonConverter;
+import controller.json.StateConverter;
+import controller.json.SupportedTypeReference;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
@@ -66,7 +67,7 @@ public class Filter {
     }
 
     private Set<Task> taskTypes(Set<Task> tasks, String taskTypesArray) throws IOException {
-        String[] taskTypes = JsonConverter.getInstance().fromJson(taskTypesArray, String[].class); // TODO Sloppy
+        String[] taskTypes = StateConverter.getInstance().fromJson(taskTypesArray, SupportedTypeReference.StringArray); // TODO Sloppy
         return tasks.stream().filter(task -> Stream.of(taskTypes).anyMatch(s -> s.equals(classJsonMap.get(task.getClass())))).collect(Collectors.toSet());
     }
 }

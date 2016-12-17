@@ -1,9 +1,8 @@
 package controller;
 
-import controller.json.Error;
 import controller.json.JsonConstants;
-import controller.json.JsonConverter;
-import controller.json.Status;
+import controller.json.StateConverter;
+import controller.json.SupportedTypeReference;
 import database.DatabaseAccessor;
 import database.DerbyDatabaseAccessor;
 import model.User;
@@ -13,8 +12,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,68 +21,69 @@ import java.util.Map;
  */
 public abstract class ApplicationServlet extends HttpServlet {
     DatabaseAccessor db = DerbyDatabaseAccessor.getInstance();
-    JsonConverter converter = JsonConverter.getInstance();
+    StateConverter converter = StateConverter.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType(JsonConstants.JSON_CONTENT_TYPE);
-        Map<String, Object> jsonMap = new HashMap<>();
-        writeGetResponse(request, jsonMap);
-        resp.getWriter().write(converter.toJson(jsonMap));
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType(JsonConstants.JSON_CONTENT_TYPE);
+        response.getWriter().write(converter.toJson(processGetRequest(request, response)));
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType(JsonConstants.JSON_CONTENT_TYPE);
-        Map<String, Object> jsonMap = new HashMap<>();
-        writePostResponse(req, jsonMap);
-        resp.getWriter().write(converter.toJson(jsonMap));
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType(JsonConstants.JSON_CONTENT_TYPE);
+        Map<String, Object> requestData = converter.fromJson(requestDataToString(request), SupportedTypeReference.ObjectMap);
+        response.getWriter().write(converter.toJson(processPostResponse(request, response, requestData)));
     }
 
-    void writeError(Error error, Map<String, Object> jsonMap) {
-        jsonMap.put(JsonConstants.ERROR, error);
+    public ResponseEntity<?> processGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return new ResponseEntity<>();
     }
 
-    void writeStatus(Status status, Map<String, Object> jsonMap) {
-        jsonMap.put(JsonConstants.STATUS, status);
-    }
-
-    public abstract void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws IOException;
-
-    public void writePostResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws IOException {
-        writeGetResponse(request, jsonMap);
-    }
-
-    boolean hasParameter(HttpServletRequest request, String parameter) {
-        return request.getParameterMap().containsKey(parameter);
+    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
+        return new ResponseEntity<>();
     }
 
     User getLoggedUser(HttpServletRequest request) {
-        User sessionUser = getSessionUser(request), cookieUser = getCookieUser(request);
-        if (sessionUser != null) {
-            return sessionUser;
-        } else {
-            return cookieUser;
-        }
-    }
-
-    private User getSessionUser(HttpServletRequest request) {
         Object userId = request.getSession().getAttribute(JsonConstants.USER_ID);
-        if (userId != null) {
+        if (userId != null) { // Checks session
             return db.getUserById(userId.toString());
         } else {
+            if (request.getCookies() != null) { // Checks cookies
+                for (Cookie cookie : request.getCookies()) {
+                    if (cookie.getName().equals(JsonConstants.TOKEN)) {
+                        return db.getUserByToken(cookie.getValue());
+                    }
+                }
+            }
             return null;
         }
     }
 
-    private User getCookieUser(HttpServletRequest request) {
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals(JsonConstants.TOKEN)) {
-                    return db.getUserByToken(cookie.getValue());
-                }
+    private String requestDataToString(HttpServletRequest request) throws IOException {
+        String data = "";
+        try (BufferedReader buffer = request.getReader()) {
+            String temp = buffer.readLine();
+            while (temp != null) {
+                data += temp;
+                temp = buffer.readLine();
             }
         }
-        return null;
+        return data;
+    }
+
+    boolean hasParameter(HttpServletRequest request, String parameter) {
+        return request.getParameter(parameter) != null;
+    }
+
+    void deleteCookie(HttpServletRequest request, String name, HttpServletResponse response) {
+        for (Cookie cookie : request.getCookies()) {
+            if (cookie.getName().equals(name)) {
+                cookie.setValue("");
+                cookie.setPath("/");
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        }
     }
 }

@@ -1,8 +1,7 @@
 package model;
 
-import com.fasterxml.jackson.annotation.*;
-
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * All named entities and those that interact [are stored in] the database are identifiable. They have a unique id
@@ -19,8 +18,9 @@ public abstract class Identifiable implements Comparable<Identifiable> {
     private final String id;
     private String name;
 
-    public Identifiable() {
+    public Identifiable(String name) {
         id = null;
+        this.name = name;
     }
 
     public Identifiable(String id, String name) {

@@ -9,13 +9,13 @@ package model;
 public class User extends Identifiable {
     private String username;
 
-    public User(String id, String name, String username) {
-        super(id, name);
+    public User(String id, String firstName, String lastName, String username) {
+        super(id, firstName + " " + lastName);
         this.username = username;
     }
 
-    public User(String id, String firstName, String lastName, String username) {
-        super(id, firstName + " " + lastName);
+    public User(String firstName, String lastName, String username) {
+        super(firstName + " " + lastName);
         this.username = username;
     }
 

@@ -144,6 +144,59 @@
         </tr>
         </tbody>
     </table>
+
+    <button id="add-task-button">Add task</button>
+    <div id="add-task-container" class="w3-modal default-hide">
+        <div class="w3-modal-content w3-animate-top w3-card-8">
+            <header class="w3-container w3-teal">
+                <span id="add-task-close" class="w3-closebtn">&times;</span>
+                <h2>Add Task</h2>
+            </header>
+
+            <div class="w3-modal-content w3-container">
+                <form data-bind="submit: addTask" id="add-task">
+                    <label> Your task type:
+                        <select name="taskType" id="add-task-type" class="w3-input">
+                            <option value="individual">Individual Task</option>
+                            <option value="group">Group Task</option>
+                            <option value="project">Project Task</option>
+                        </select>
+                    </label>
+                    <div id="add-task-name-container" class="w3-input">
+                        <label>
+                            Name:
+                            <input name="name" type="text" id="add-task-name">
+                        </label>
+                    </div>
+                    <div id="add-task-due-date-container" class="w3-input">
+                        <label>
+                            Due Date:
+                            <input name="dueDate" type="date" id="add-task-due-date">
+                        </label>
+                    </div>
+
+                    <div id="add-task-group-container" class="w3-input">
+                        <label> Group:
+                            <select name="group" data-bind="foreach: groups" id="add-task-group">
+                                <option data-bind="value: id, text: name"></option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div id="add-task-project-container" class="w3-input">
+                        <label> Project:
+                            <select name="project" id="add-task-project" data-bind="foreach: projects">
+                                <option data-bind="value: id, text: name"></option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w3-btn w3-hover-white w3-indigo">Add Task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <div id="groups-view" class="content w3-main">
@@ -184,10 +237,10 @@
     <h1>Sign up</h1>
     <form data-bind="submit: register">
         <label>
-            First Name: <br/> <input type="text" name="firstname"/> <br/>
+            First Name: <br/> <input type="text" name="firstName"/> <br/>
         </label>
         <label>
-            Last Name: <br/> <input type="text" name="lastname"/> <br/>
+            Last Name: <br/> <input type="text" name="lastName"/> <br/>
         </label>
         <label>
             Username: <br/> <input type="text" name="username"/> <br/>
@@ -204,12 +257,14 @@
 </div>
 
 <script type="text/javascript" src="scripts/lib/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="scripts/lib/serialize-json.js"></script>
 <script type="text/javascript" src="scripts/lib/knockout-3.4.0.js"></script>
 <script type="text/javascript" src="scripts/helper.js"></script>
 <script type="text/javascript" src="scripts/hash.js"></script>
+<script type="text/javascript" src="scripts/ajax.js"></script>
 <script type="text/javascript" src="scripts/viewModel.js"></script>
-<script type="text/javascript" src="scripts/main.js"></script>
 <script type="text/javascript" src="scripts/ui.js"></script>
+<script type="text/javascript" src="scripts/formHandlers.js"></script>
 
 
 </body>

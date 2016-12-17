@@ -26,10 +26,8 @@ function setHash(hash) {
 
 $(window).on("hashchange", function () {
     let hash = getHash();
-    $.get("/sessions", {
-        "cmd": "ping"
-    }, function (response) {
-        let loggedIn = getStatus(response, "logged-in");
+    request("/sessions", "GET", {cmd: "ping"}, (response) => {
+        let loggedIn = getStatus(response, "loggedIn");
         if (loggedIn && !inApp(hash)) {
             location.hash = "app";
         } else if (!loggedIn && inApp(hash)) {

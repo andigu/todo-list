@@ -9,10 +9,10 @@ function hasProperty(object, property) {
 
 function getStatus(object, name) {
     if (hasProperty(object, "status")) {
-        object = object["status"];
+        object = object.status;
     }
     if (object["name"] === name) {
-        return object["status"]
+        return object.status
     }
 }
 
@@ -25,9 +25,6 @@ function mapUser(object) {
 }
 
 function mapTasks(object) {
-    if (hasProperty(object, "tasks")) {
-        object = object["tasks"];
-    }
     let individualTasks = [];
     let groupTasks = [];
     let projectTasks = [];
@@ -45,12 +42,6 @@ function mapTasks(object) {
     viewModel.individualTasks(individualTasks);
     viewModel.groupTasks(groupTasks);
     viewModel.projectTasks(projectTasks);
-}
-
-function mapObject(object, name, observable) {
-    if (hasProperty(object, name)) {
-        observable(object[name]);
-    }
 }
 
 

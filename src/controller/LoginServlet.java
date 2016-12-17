@@ -1,11 +1,14 @@
 package controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import controller.json.JsonConstants;
+import controller.json.SupportedTypeReference;
 import model.User;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -14,18 +17,17 @@ import java.util.Map;
 @WebServlet("/login")
 public class LoginServlet extends ApplicationServlet {
     @Override
-    public void writeGetResponse(HttpServletRequest request, Map<String, Object> jsonMap) throws JsonProcessingException {
-        User user;
-        user = db.getUserByLogin(request.getParameter(JsonConstants.USERNAME), request.getParameter(JsonConstants.PASSWORD));
+    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
+        ResponseEntity<User> responseEntity = new ResponseEntity<>();
+        Map<String, String> userData = converter.cast(requestData.get(JsonConstants.USER), SupportedTypeReference.StringMap);
+        User user = db.getUserByLogin(userData.get(JsonConstants.USERNAME), userData.get(JsonConstants.PASSWORD));
+        responseEntity.setData(user);
         if (user != null) {
-            if (request.getParameter(JsonConstants.STAY_LOGGED).equals("true")) {
-                jsonMap.put(JsonConstants.TOKEN, db.storeLogin(user.getId()));
+            if (converter.cast(requestData.get(JsonConstants.STAY_LOGGED), SupportedTypeReference.Boolean)) {
+                response.addCookie(new Cookie(JsonConstants.TOKEN, db.storeLogin(user.getId())));
             }
-        }
-
-        if (user != null) {
-            jsonMap.put(JsonConstants.USER, user);
             request.getSession().setAttribute(JsonConstants.USER_ID, user.getId());
         }
+        return responseEntity;
     }
 }
