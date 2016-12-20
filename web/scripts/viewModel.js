@@ -52,10 +52,15 @@ class ActivityViewModel {
         });
     }
 
-    getTasks(taskTypes) {
+    getTasks(taskTypes, parentID) {
         let filters = {};
         if (taskTypes !== undefined) {
             filters["taskTypes"] = taskTypes.toString();
+
+            //Specifies which group/project to get tasks from
+            if(parentID !== undefined){
+                filters["parentID"] = parentID.toString();
+            }
         }
         request("/tasks",
             "GET",
@@ -84,6 +89,7 @@ class ActivityViewModel {
 
 
     groupClicked(group) {
+        let groupID = group["id"];
         alert("Not implemented");
     }
 }
