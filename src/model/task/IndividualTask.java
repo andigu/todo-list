@@ -33,4 +33,8 @@ public class IndividualTask extends Task {
         assert user == owner: "User given is not the owner of the task";
         complete = true;
     }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 }

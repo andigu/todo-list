@@ -8,13 +8,13 @@ let viewModel = new ActivityViewModel();
 
 $(document).ready(function () {
     ko.applyBindings(viewModel);
-    $("#register-button").click(function () {  // TODO Put this in html
+    $("#register-button").click(function () {
         setHash("register");
     });
 
     $(".default-hide").hide();
 
-    setHash(getHash());// TODO sloppy
+    setHash(getHash());
     request("/sessions", "GET", {cmd: "userInf"}, (response) => {
         mapUser(response)
     });

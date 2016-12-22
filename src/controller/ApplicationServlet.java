@@ -32,7 +32,7 @@ public abstract class ApplicationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(JsonConstants.JSON_CONTENT_TYPE);
-        Map<String, Object> requestData = converter.fromJson(requestDataToString(request), SupportedTypeReference.ObjectMap);
+        Map<String, Object> requestData = converter.fromJson(requestDataToString(request), SupportedTypeReference.OBJECT_MAP);
         response.getWriter().write(converter.toJson(processPostResponse(request, response, requestData)));
     }
 
@@ -79,7 +79,7 @@ public abstract class ApplicationServlet extends HttpServlet {
     void deleteCookie(HttpServletRequest request, String name, HttpServletResponse response) {
         for (Cookie cookie : request.getCookies()) {
             if (cookie.getName().equals(name)) {
-                cookie.setValue("");
+                cookie.setValue(null);
                 cookie.setPath("/");
                 cookie.setMaxAge(0);
                 response.addCookie(cookie);

@@ -35,4 +35,6 @@ public interface JsonConstants {
     String TASK_TYPE = "taskType";
     String TASK = "task";
     String USER_INF = "userInf";
+    String GROUP_ID = "groupId";
+    String PROJECT_ID = "projectId";
 }

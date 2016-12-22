@@ -22,7 +22,7 @@ import java.util.Date;
 /**
  * @author Andi Gu
  */
-public final class DerbyDatabaseAccessor implements DatabaseAccessor {
+public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO possible to template this?
     private static final String databaseName = "db";
     private static final ClientDataSource dataSource = new ClientConnectionPoolDataSource() {{
         setDatabaseName(databaseName);
@@ -33,14 +33,15 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
     private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
-
     private static final String getProjectsSQL = "SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?";
-
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
     private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME)  VALUES (?, ?, ?, ?, ?)";
     private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
+    private static final String getGroupSQL = "SELECT * FROM MODEL.GROUPS WHERE GROUP_ID = ?";
+    private static final String getProjectSQL = "SELECT * FROM MODEL.PROJECTS WHERE PROJECT_ID = ?";
+
     private final Map<Class<? extends Task>, TaskDAO> taskDAOMap = new HashMap<Class<? extends Task>, TaskDAO>() {{
         put(GroupTask.class, new GroupTaskDAO(dataSource));
         put(IndividualTask.class, new IndividualTaskDAO(dataSource));
@@ -272,7 +273,29 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor {
     }
 
     @Override
-    public void insertTask(Task task) { // TODO issues with this?
+    public Group getGroupById(String id) {
+        try (Connection conn = dataSource.getConnection(); PreparedStatement statement = conn.prepareStatement(getGroupSQL)) {
+            statement.setString(1, id);
+            return ResultSetConverter.getGroup(statement.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Project getProjectById(String id) {
+        try (Connection conn = dataSource.getConnection(); PreparedStatement statement = conn.prepareStatement(getProjectSQL)) {
+            statement.setString(1, id);
+            return ResultSetConverter.getProject(statement.executeQuery());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void insertTask(Task task) {
         taskDAOMap.get(task.getClass()).insertTask(task);
     }
 }

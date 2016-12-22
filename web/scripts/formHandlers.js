@@ -4,10 +4,10 @@
  * @author Andi Gu
  */
 
-requiredTaskFields = {
-    individual: ["name", "dueDate"],
-    group: ["name", "dueDate", "group"],
-    project: ["name", "dueDate", "project"]
+requiredTaskFieldsIds = {
+    individual: ["name", "due-date"],
+    group: ["name", "due-date", "group"],
+    project: ["name", "due-date", "project"]
 };
 
 $("#add-task-type").change(function () {
@@ -17,7 +17,7 @@ $("#add-task-type").change(function () {
         let id = processId(value.id);
         let elem = $(this);
         let inputElem = $("#add-task-" + id);
-        if (requiredTaskFields[chosenType].indexOf(id) != -1) {
+        if (requiredTaskFieldsIds[chosenType].indexOf(id) != -1) {
             elem.show();
             inputElem.prop('disabled', false);
         }

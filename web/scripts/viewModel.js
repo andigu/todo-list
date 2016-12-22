@@ -28,7 +28,7 @@ class ActivityViewModel {
             }, (response) => {
                 console.log(response);
                 if (response.hasOwnProperty("data")) {
-                    mapUser(response["data"]); // TODO fix
+                    mapUser(response["data"]);
                     setHash("app");
                     this.getTasks();
                 } else {
@@ -79,7 +79,21 @@ class ActivityViewModel {
     }
 
     addTask(form) {
-        alert("TODO!!!");
+        console.log(form);
+        request("/tasks", "POST",
+            {
+                taskType: form.taskType.value,
+                task: {
+                    name: form.name.value,
+                    dueDate: form.dueDate.value,
+                    groupId: form.group.value,
+                    projectId: form.project.value
+                }
+            },
+            (response) => {
+                console.log(response);
+            });
+
     }
 
 

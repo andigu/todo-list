@@ -37,6 +37,10 @@ public interface DatabaseAccessor {
 
     Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException;
 
+    Group getGroupById(String id);
+
+    Project getProjectById(String id);
+
     void insertTask(Task task);
 
     void complete(IndividualTask task, Date dateCompleted);

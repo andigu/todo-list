@@ -67,7 +67,7 @@ public class Filter {
     }
 
     private Set<Task> taskTypes(Set<Task> tasks, String taskTypesArray) throws IOException {
-        String[] taskTypes = StateConverter.getInstance().fromJson(taskTypesArray, SupportedTypeReference.StringArray); // TODO Sloppy
+        String[] taskTypes = StateConverter.getInstance().fromJson(taskTypesArray, SupportedTypeReference.STRING_ARRAY); // TODO Sloppy
         return tasks.stream().filter(task -> Stream.of(taskTypes).anyMatch(s -> s.equals(classJsonMap.get(task.getClass())))).collect(Collectors.toSet());
     }
 }

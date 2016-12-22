@@ -12,21 +12,21 @@ import java.util.Map;
  * @author Andi Gu
  */
 public enum SupportedTypeReference {
-    ObjectMap(new TypeReference<Map<String, Object>>() {
+    OBJECT_MAP(new TypeReference<Map<String, Object>>() {
     }),
-    StringMap(new TypeReference<Map<String, Object>>() {
+    STRING_MAP(new TypeReference<Map<String, Object>>() {
     }),
-    Boolean(new TypeReference<Boolean>() {
+    BOOLEAN(new TypeReference<Boolean>() {
     }),
-    Filter(new TypeReference<Filter>() {
+    FILTER(new TypeReference<Filter>() {
     }),
-    IndividualTask(new TypeReference<IndividualTask>() {
+    INDIVIDUAL_TASK(new TypeReference<IndividualTask>() {
     }),
-    ProjectTask(new TypeReference<ProjectTask>() {
+    PROJECT_TASK(new TypeReference<ProjectTask>() {
     }),
-    GroupTask(new TypeReference<GroupTask>() {
+    GROUP_TASK(new TypeReference<GroupTask>() {
     }),
-    StringArray(new TypeReference<String[]>() {
+    STRING_ARRAY(new TypeReference<String[]>() {
     });
 
     private TypeReference<?> typeReference;

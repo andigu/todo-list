@@ -29,7 +29,6 @@ public class StateConverter {
         return json == null ? null: mapper.readValue(json, typeReference.getTypeReference());
     }
 
-
     public <T> T cast(Object object, SupportedTypeReference typeReference) {
         return object == null ? null : mapper.convertValue(object, typeReference.getTypeReference());
     }

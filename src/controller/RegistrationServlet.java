@@ -22,7 +22,7 @@ public class RegistrationServlet extends ApplicationServlet {
     @Override
     public ResponseEntity<?> processGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ResponseEntity<User> responseEntity = new ResponseEntity<>();
-        Map<String, String> registerInf = converter.cast(request.getParameter(JsonConstants.USER_INF), SupportedTypeReference.StringMap);
+        Map<String, String> registerInf = converter.cast(request.getParameter(JsonConstants.USER_INF), SupportedTypeReference.STRING_MAP);
         try {
             User user = db.registerUser(registerInf.get(JsonConstants.USERNAME), registerInf.get(JsonConstants.PASSWORD),
                     registerInf.get(JsonConstants.FIRST_NAME), registerInf.get(JsonConstants.LAST_NAME));

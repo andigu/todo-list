@@ -37,7 +37,7 @@
                         <i class="material-icons">arrow_drop_down</i>
                     </div>
                     <div class="w3-dropdown-content w3-card-4 w3-border" style="width: 100px; font-size: small"
-                        id="dropdown-options">
+                         id="dropdown-options">
                         <a id="myprofile">My Profile</a>
                         <a id="logout">Logout</a>
                     </div>
@@ -177,17 +177,17 @@
 
                     <div id="add-task-group-container" class="w3-input">
                         <label> Group:
-                            <select name="group" data-bind="foreach: groups" id="add-task-group">
-                                <option data-bind="value: id, text: name"></option>
-                            </select>
+                            <select name="group"
+                                    data-bind="options: groups, optionsText: 'name', value: 'id', optionsCaption: 'Choose a group'"
+                                    id="add-task-group"></select>
                         </label>
                     </div>
 
                     <div id="add-task-project-container" class="w3-input">
                         <label> Project:
-                            <select name="project" id="add-task-project" data-bind="foreach: projects">
-                                <option data-bind="value: id, text: name"></option>
-                            </select>
+                            <select name="project"
+                                    data-bind="options: projects, optionsText: 'name', value: 'id', optionsCaption: 'Choose...'"
+                                    id="add-task-project"></select>
                         </label>
                     </div>
 
