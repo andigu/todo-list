@@ -5,9 +5,7 @@
 "use strict";
 function inApp(hash) {
     if (hash !== undefined) {
-        return !((hash === "login" || hash === "register"));
-    } else {
-        return !((getHash() === "login" || getHash() === "register"));
+        return !((hash === "login" || hash === "register" || hash === ""));
     }
 }
 
@@ -17,11 +15,10 @@ function getHash() {
 
 
 function setHash(hash) {
-    if (hash === getHash()) {
-        $(window).trigger("hashchange");
-    } else {
+    if (hash !== getHash()) {
         location.hash = hash;
     }
+    $(window).trigger("hashchange");
 }
 
 $(window).on("hashchange", function () {
@@ -30,7 +27,7 @@ $(window).on("hashchange", function () {
         let loggedIn = getStatus(response, "loggedIn");
         if (loggedIn && !inApp(hash)) {
             location.hash = "app";
-        } else if (!loggedIn && inApp(hash)) {
+        } else if (!loggedIn) {
             location.hash = "login";
         } else {
             location.hash = hash;

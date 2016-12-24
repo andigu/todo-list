@@ -1,7 +1,6 @@
 package model.task;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import model.Completable;
 import model.User;
 import model.group.Project;
 
@@ -36,6 +35,8 @@ public class ProjectTask extends Task {
         complete = false;
         assignees = new HashSet<>();
     }
+
+    public ProjectTask(){}
 
     public void addAssignee(User user) {
         assignees.add(user);

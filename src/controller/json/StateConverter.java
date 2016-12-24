@@ -2,8 +2,10 @@ package controller.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 /**
  * @author Andi Gu
@@ -19,6 +21,8 @@ public class StateConverter {
 
     private StateConverter() {
         mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
     }
 
     public String toJson(Object object) throws JsonProcessingException {
@@ -30,6 +34,13 @@ public class StateConverter {
     }
 
     public <T> T cast(Object object, SupportedTypeReference typeReference) {
+        if (object != null) {
+            System.out.println(mapper.convertValue(object, typeReference.getTypeReference()).toString());
+        }
         return object == null ? null : mapper.convertValue(object, typeReference.getTypeReference());
+    }
+
+    public <T> T cast(Object object, Class<T> tClass) {
+        return object == null ? null : mapper.convertValue(object, tClass);
     }
 }

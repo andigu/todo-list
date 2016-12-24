@@ -20,6 +20,8 @@ public class IndividualTask extends Task {
         complete = false;
     }
 
+    public IndividualTask() {super();}
+
     public User getOwner() {
         return owner;
     }

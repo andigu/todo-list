@@ -77,7 +77,7 @@ public class GroupTaskDAO extends TaskDAO {
             statement.setString(1, groupTask.getId());
             statement.setString(2, groupTask.getGroup().getId());
             statement.setString(3, groupTask.getName());
-            statement.setDate(4, (java.sql.Date) groupTask.getDueDate());
+            statement.setDate(4, toSqlDate(groupTask.getDueDate()));
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,7 +1,6 @@
 package model.task;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import model.Completable;
 import model.User;
 import model.group.Group;
 
@@ -35,6 +34,8 @@ public class GroupTask extends Task {
         this.group = group;
         completed = new HashSet<>();
     }
+
+    public GroupTask() {}
 
     public Set<User> getCompleted() {
         return completed;

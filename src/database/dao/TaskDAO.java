@@ -24,6 +24,6 @@ public abstract class TaskDAO {
     public abstract <T extends Task> void insertTask(T task);
 
     public java.sql.Date toSqlDate(Date date) {
-        return (java.sql.Date) date;
+        return new java.sql.Date(date.getTime());
     }
 }

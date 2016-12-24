@@ -14,7 +14,6 @@ class ActivityViewModel {
         this.projectTasks = ko.observableArray();
         this.groups = ko.observableArray();
         this.projects = ko.observableArray();
-        this.selectedGroupID = ko.observable();
     }
 
     login(form) {
@@ -84,7 +83,6 @@ class ActivityViewModel {
     }
 
     addTask(form) {
-        console.log(form);
         request("/tasks", "POST",
             {
                 taskType: form.taskType.value,
@@ -96,15 +94,19 @@ class ActivityViewModel {
                 }
             },
             (response) => {
-                console.log(response);
+                $("#add-task-container").hide();
+                response = response["data"];
+                if (hasProperty(response, "group")) {
+                    this.groupTasks.push(response);
+                }
+                else if (hasProperty(response, "project")) {
+                    this.projectTasks.push(response);
+                }
+                else {
+                    this.individualTasks.push(response);
+                }
             });
 
-    }
-
-
-    groupClicked(group) {
-        let groupID = group["id"];
-        alert("Not implemented");
     }
 }
 

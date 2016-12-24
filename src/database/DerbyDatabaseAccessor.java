@@ -255,7 +255,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
     }
 
     @Override
-    public Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException {
+    public Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException { // TODO change to create by Group
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(createGroupSQL)) {
             String id = randomId();
@@ -276,7 +276,8 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
     public Group getGroupById(String id) {
         try (Connection conn = dataSource.getConnection(); PreparedStatement statement = conn.prepareStatement(getGroupSQL)) {
             statement.setString(1, id);
-            return ResultSetConverter.getGroup(statement.executeQuery());
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next() ? ResultSetConverter.getGroup(resultSet) : null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -287,7 +288,8 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
     public Project getProjectById(String id) {
         try (Connection conn = dataSource.getConnection(); PreparedStatement statement = conn.prepareStatement(getProjectSQL)) {
             statement.setString(1, id);
-            return ResultSetConverter.getProject(statement.executeQuery());
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next() ? ResultSetConverter.getProject(resultSet) : null;
         } catch (SQLException e) {
             e.printStackTrace();
         }

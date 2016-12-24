@@ -44,7 +44,6 @@ function mapTasks(object) {
     viewModel.projectTasks(projectTasks);
 }
 
-
 const hashHandlers = {
     "app": function () {
         viewModel.getTasks()

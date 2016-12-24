@@ -16,6 +16,8 @@ public abstract class Completable extends Identifiable {
         this.dueDate = dueDate;
     }
 
+    public Completable() {super();}
+
     public abstract void complete(User user, Date completed);
 
     public Date getDueDate() {

@@ -3,7 +3,6 @@
  */
 
 function request(url, method, jsonData, success) {
-
     if (method === "GET") {
         jsonData = jQuery.param(jsonData);
     }

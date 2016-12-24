@@ -19,11 +19,9 @@ $("#add-task-type").change(function () {
         let inputElem = $("#add-task-" + id);
         if (requiredTaskFieldsIds[chosenType].indexOf(id) != -1) {
             elem.show();
-            inputElem.prop('disabled', false);
         }
         else {
             elem.hide();
-            inputElem.prop('disabled', true);
         }
     });
 
