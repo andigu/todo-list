@@ -106,7 +106,7 @@ class ActivityViewModel {
                     this.individualTasks.push(response);
                 }
             });
-
+        $(form)[0].reset();
     }
 }
 
