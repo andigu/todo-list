@@ -40,7 +40,6 @@ public class TasksServlet extends ApplicationServlet {
         Task task = getTask(getLoggedUser(request), taskJson, requestData.get(JsonConstants.TASK_TYPE).toString());
         db.insertTask(task);
         responseEntity.setData(task);
-        System.out.println(task.getDueDate().getTime());
         return responseEntity;
     }
 

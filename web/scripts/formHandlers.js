@@ -16,7 +16,6 @@ $("#add-task-type").change(function () {
     $.each($("#add-task").children("div"), function (index, value) {
         let id = processId(value.id);
         let elem = $(this);
-        let inputElem = $("#add-task-" + id);
         if (requiredTaskFieldsIds[chosenType].indexOf(id) != -1) {
             elem.show();
         }
@@ -24,8 +23,26 @@ $("#add-task-type").change(function () {
             elem.hide();
         }
     });
-
 });
+
+$("#add-task-group").change(function() {
+    if (this.value.length === 0 && $(this).is(":visible")) {
+        this.setCustomValidity("You must choose a group");
+    }
+    else {
+        this.setCustomValidity("");
+    }
+});
+
+$("#add-task-project").change(function() {
+    if (this.value.length === 0 && $(this).is(":visible")) {
+        this.setCustomValidity("You must choose a project");
+    }
+    else {
+        this.setCustomValidity("");
+    }
+});
+
 
 function processId(id) {
     return id.replace("add-task-", "").replace("-container", "");
