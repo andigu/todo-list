@@ -13,7 +13,9 @@ class ActivityViewModel {
         this.groupTasks = ko.observableArray();
         this.projectTasks = ko.observableArray();
         this.groups = ko.observableArray();
+        this.availableGroups = ko.observableArray();
         this.projects = ko.observableArray();
+
     }
 
     login(form) {
@@ -51,14 +53,14 @@ class ActivityViewModel {
         });
     }
 
-    getTasks(taskTypes, parentID) {
+    getTasks(taskTypes, parentId) {
         let filters = {};
         if (taskTypes !== undefined) {
             filters["taskTypes"] = taskTypes.toString();
 
             //Specifies which group/project to get tasks from
-            if(parentID !== undefined){
-                filters["parentID"] = parentID.toString();
+            if(parentId !== undefined){
+                filters["parentId"] = parentId.toString();
             }
         }
         request("/tasks",
@@ -71,8 +73,14 @@ class ActivityViewModel {
     };
 
     getGroups() {
-        request("/groups", "GET", {}, (response) => {
+        request("/groups", "GET", {cmd: ""}, (response) => {
             this.groups(response.data);
+        });
+    }
+
+    getAvailableGroups(){
+        request("/groups", "GET", {cmd: "getAvailableGroups"}, response => {
+            this.availableGroups(response.data);
         });
     }
 
@@ -107,6 +115,18 @@ class ActivityViewModel {
                 }
             });
         $(form)[0].reset();
+    }
+
+    joinGroup(group){
+        request("/groups", "GET", {cmd: "joinGroup", groupId: group.id}, response =>{
+        });
+        viewModel.fetchEverything() //Sloppy: 'const self = this' does not work
+    }
+
+    fetchEverything(){
+        this.getAvailableGroups();
+        this.getGroups();
+        this.getProjects();
     }
 }
 

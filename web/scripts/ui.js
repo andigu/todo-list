@@ -59,4 +59,15 @@ $(document).ready(function () {
     $("#add-task-close").click(function () {
         $("#add-task-container").hide();
     });
+
+    //Opens a modal //TODO add other modals to this
+    $(".modal-toggle").click(function () {
+        viewModel.fetchEverything();
+        let modalName = ((this.id).replace("-opener", "-modal")).replace("-closer", "-modal");
+        $("#"+modalName).toggle();
+    });
+
+
+
 });
+

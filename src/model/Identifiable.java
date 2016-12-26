@@ -3,6 +3,7 @@ package model;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -50,5 +51,15 @@ public abstract class Identifiable implements Comparable<Identifiable> {
     public int compareTo(Identifiable o) {
         assert id != null;
         return id.compareTo(o.getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (((Identifiable)(obj)).getId().matches(id));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

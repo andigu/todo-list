@@ -145,57 +145,7 @@
         </tbody>
     </table>
 
-    <button id="add-task-button">Add task</button>
-    <div id="add-task-container" class="w3-modal default-hide">
-        <div class="w3-modal-content w3-animate-top w3-card-8">
-            <header class="w3-container w3-teal">
-                <span id="add-task-close" class="w3-closebtn">&times;</span>
-                <h2>Add Task</h2>
-            </header>
-
-            <div class="w3-modal-content w3-container">
-                <form data-bind="submit: addTask" id="add-task">
-                    <label> Your task type:
-                        <select name="taskType" id="add-task-type" class="w3-input">
-                            <option value="individual">Individual Task</option>
-                            <option value="group">Group Task</option>
-                            <option value="project">Project Task</option>
-                        </select>
-                    </label>
-                    <div id="add-task-name-container" class="w3-input">
-                        <label>
-                            Name:
-                            <input name="name" type="text" id="add-task-name" required>
-                        </label>
-                    </div>
-                    <div id="add-task-due-date-container" class="w3-input">
-                        <label>
-                            Due Date:
-                            <input name="dueDate" type="date" id="add-task-due-date" required>
-                        </label>
-                    </div>
-
-                    <div id="add-task-group-container" class="w3-input">
-                        <label> Group:
-                            <select name="group"
-                                    data-bind="options: groups, optionsText: 'name', optionsValue: 'id', optionsCaption: 'Choose a group'"
-                                    id="add-task-group"></select>
-                        </label>
-                    </div>
-
-                    <div id="add-task-project-container" class="w3-input">
-                        <label> Project:
-                            <select name="project"
-                                    data-bind="options: projects, optionsText: 'name', optionsValue: 'id', optionsCaption: 'Choose a project'"
-                                    id="add-task-project"></select>
-                        </label>
-                    </div>
-
-                    <button type="submit" class="w3-btn w3-hover-white w3-indigo">Add Task</button>
-                </form>
-            </div>
-        </div>
-    </div>
+    <button id="add-task-button">Add  task</button>
 
 </div>
 
@@ -215,6 +165,7 @@
         </tr>
         </tbody>
     </table>
+    <button id="join-group-opener" class="w3-btn w3-indigo modal-toggle" style="margin-left: 4px">Join a group</button>
 </div>
 
 <div id="projects-view" class="content w3-main">
@@ -254,6 +205,84 @@
         </label>
         <button type="submit">Register</button>
     </form>
+</div>
+
+
+<div id="add-task-container" class="w3-modal default-hide">
+    <div class="w3-modal-content w3-animate-top w3-card-8">
+        <header class="w3-container w3-teal">
+            <span id="add-task-close" class="w3-closebtn">&times;</span>
+            <h2>Add Task</h2>
+        </header>
+
+        <div class="w3-modal-content w3-container">
+            <form data-bind="submit: addTask" id="add-task">
+                <label> Your task type:
+                    <select name="taskType" id="add-task-type" class="w3-input">
+                        <option value="individual">Individual Task</option>
+                        <option value="group">Group Task</option>
+                        <option value="project">Project Task</option>
+                    </select>
+                </label>
+                <div id="add-task-name-container" class="w3-input">
+                    <label>
+                        Name:
+                        <input name="name" type="text" id="add-task-name" required>
+                    </label>
+                </div>
+                <div id="add-task-due-date-container" class="w3-input">
+                    <label>
+                        Due Date:
+                        <input name="dueDate" type="date" id="add-task-due-date" required>
+                    </label>
+                </div>
+
+                <div id="add-task-group-container" class="w3-input">
+                    <label> Group:
+                        <select name="group"
+                                data-bind="options: groups, optionsText: 'name', optionsValue: 'id', optionsCaption: 'Choose a group'"
+                                id="add-task-group"></select>
+                    </label>
+                </div>
+
+                <div id="add-task-project-container" class="w3-input">
+                    <label> Project:
+                        <select name="project"
+                                data-bind="options: projects, optionsText: 'name', optionsValue: 'id', optionsCaption: 'Choose a project'"
+                                id="add-task-project"></select>
+                    </label>
+                </div>
+
+                <button type="submit" class="w3-btn w3-hover-white w3-indigo">Add Task</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="join-group-modal" class="w3-modal default-hide">
+    <div class="w3-modal-content w3-card-8">
+        <header class="w3-container w3-indigo">
+            <span id="join-group-closer" class="modal-toggle w3-closebtn">&times;</span>
+            <h2>Join a group</h2>
+        </header>
+        <div id="w3-container">
+            <h4 style="margin-left: 5px">Click a group to join it</h4>
+            <table>
+                <tbody data-bind="foreach: availableGroups">
+                <tr>
+                    <td>
+                        <a class="group-join-link data-card " data-bind="click: $root.joinGroup">
+                            <div class="w3-panel w3-card-4 w3-hover-gray" style="width: 400px">
+                                <h4 data-bind="text: name"></h4>
+                                <h6 data-bind="text: id"></h6>
+                            </div>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript" src="scripts/lib/jquery-3.1.1.js"></script>

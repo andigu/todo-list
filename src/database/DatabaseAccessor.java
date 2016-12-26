@@ -27,6 +27,8 @@ public interface DatabaseAccessor {
 
     Set<Group> getGroups(User user);
 
+    Set<Group> getAllGroups();
+
     Set<Project> getProjects(User user);
 
     Set<GroupTask> getGroupTasks(Group group);
@@ -36,6 +38,8 @@ public interface DatabaseAccessor {
     Map<User, Date> getUsersCompletedGroupTask(GroupTask task);
 
     Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException;
+
+    void joinGroup (String id, User user);
 
     Group getGroupById(String id);
 

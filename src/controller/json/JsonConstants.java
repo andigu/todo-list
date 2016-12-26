@@ -37,4 +37,7 @@ public interface JsonConstants {
     String USER_INF = "userInf";
     String GROUP_ID = "groupId";
     String PROJECT_ID = "projectId";
+    String ALL_GROUPS_CMD = "getAllGroups";
+    String AVAILABLE_GROUPS_CMD = "getAvailableGroups";
+    String JOIN_GROUP_CMD = "joinGroup";
 }

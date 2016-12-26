@@ -1,5 +1,6 @@
 package database;
 
+import com.sun.prism.GraphicsPipeline;
 import database.dao.GroupTaskDAO;
 import database.dao.IndividualTaskDAO;
 import database.dao.ProjectTaskDAO;
@@ -33,6 +34,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
     private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
     private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
+    private static final String getAllGroupsSQL = "SELECT * FROM MODEL.GROUPS";
     private static final String getProjectsSQL = "SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?";
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
@@ -41,6 +43,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
     private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
     private static final String getGroupSQL = "SELECT * FROM MODEL.GROUPS WHERE GROUP_ID = ?";
     private static final String getProjectSQL = "SELECT * FROM MODEL.PROJECTS WHERE PROJECT_ID = ?";
+    private static final String joinGroupSQL =   "INSERT INTO MODEL.USER_GROUPS (USER_ID, GROUP_ID) VALUES (?, ?)";
 
     private final Map<Class<? extends Task>, TaskDAO> taskDAOMap = new HashMap<Class<? extends Task>, TaskDAO>() {{
         put(GroupTask.class, new GroupTaskDAO(dataSource));
@@ -125,6 +128,35 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public Set<Group> getAllGroups() {
+        try(Connection conn = dataSource.getConnection();
+            Statement statement = conn.createStatement()){
+            ResultSet resultSet = statement.executeQuery(getAllGroupsSQL);
+            Set<Group> groupSet = new HashSet<>();
+            while(resultSet.next()) {
+                groupSet.add(ResultSetConverter.getGroup(resultSet));
+            }
+            return groupSet;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void joinGroup(String id, User user) {
+        try(Connection conn = dataSource.getConnection();
+            PreparedStatement statement = conn.prepareStatement(joinGroupSQL)) {
+            System.out.println("Reached db for joinGroup");
+            statement.setString(1, user.getId());
+            statement.setString(2, id);
+            statement.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
