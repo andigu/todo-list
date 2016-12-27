@@ -26,8 +26,13 @@ $(document).ready(function () {
         $(this).addClass("w3-indigo");
     });
 
+    //Menu bar icons
     $("#hamburger-icon").click(function () {
         $("#nav-bar").toggle();
+    });
+    $("#notification-icon").click(function () {
+        console.log("toggle notif bar");
+        $("#notification-bar").toggle();
     });
 
     //Dropdown
