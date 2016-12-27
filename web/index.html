@@ -55,8 +55,20 @@
 </div>
 
 <div class="persist">
-    <div class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-right" style="width:200px; display:none;right:0;" id="notification-bar">
+    <div class="w3-sidenav w3-collapse w3-white w3-card-4 w3-animate-right" style="width:200px; display:none;right:0;" id="notification-bar">
         <h4 style="margin-left: 10px; color:#C0C0C3">Notifications</h4>
+        <div class="w3-container w3-padding-0" style="margin-left: 5px">
+            <table>
+                <thead></thead>
+                <tbody data-bind="foreach: notifications">
+                    <td>
+                        <div class="w3-card-2 w3-white" style="width: 100%; font-size: small">
+                            <a data-bind="text: content"></a>
+                        </div>
+                    </td>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

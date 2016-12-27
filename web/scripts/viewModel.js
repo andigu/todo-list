@@ -4,7 +4,6 @@
 
 "use strict";
 
-
 class ActivityViewModel {
     constructor() {
         this.name = ko.observable();
@@ -15,7 +14,10 @@ class ActivityViewModel {
         this.groups = ko.observableArray();
         this.availableGroups = ko.observableArray();
         this.projects = ko.observableArray();
-
+        this.notifications = ko.observableArray([
+            new Notification("Name", "This is a sample notification body"),
+            new Notification("Second", "This is the second sample notification body")
+        ]);
     }
 
     login(form) {
@@ -130,3 +132,9 @@ class ActivityViewModel {
     }
 }
 
+class Notification {
+    constructor(name, content) {
+        this.name = name;
+        this.content = content;
+    }
+}
