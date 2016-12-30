@@ -31,3 +31,14 @@ a {
     width: 50px;
     border-radius: 20%;
 }
+
+#muted-input {
+    border: 0px solid;
+    height: 75%;
+    width: 95%;
+    color: gray;
+}
+
+.pad {
+    padding: 4px;
+}
