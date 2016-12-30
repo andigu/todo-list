@@ -19,17 +19,17 @@
 </div>
 
 
-<!--HEADER, NOTIFICATION BAR, SIDEBAR-->
+<!--Header, navbar and notification bar-->
 <div class="persist w3-container w3-indigo w3-text-white w3-card-8">
     <h1>
         <span class="w3-opennav w3-hide-large" id="hamburger-icon">&#9776;</span>
         TODOLIST - <a id="tab-name" style="color:#C0C0C3"></a>
-        <span class="w3-opennav w3-right fa" style="font-size: large; margin-top: 22px"
+        <span class="w3-opennav w3-hide-large w3-right fa" style="font-size: large; margin-top: 22px"
               id="notification-icon">&#xf0f3;</span>
     </h1>
 </div>
 <div class="persist">
-    <div class="w3-sidenav w3-collapse w3-white w3-card-8 w3-animate-left" style="width:200px;" id="nav-bar">
+    <div class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:200px;" id="nav-bar">
         <div id="user-info" class="w3-gray w3-card-2">
             <div style="display: inline-block">
                 <img src="images/user_icon.png" class="profile-picture"/>
@@ -41,19 +41,25 @@
                     </div>
                     <div class="w3-dropdown-content w3-card-4 w3-border" style="width: 100px; font-size: small"
                          id="dropdown-options">
-                        <a id="myprofile">My Profile</a>
+                        <a id="my-profile">My Profile</a>
                         <a id="logout">Logout</a>
                     </div>
                 </div>
             </div>
             <h5 data-bind="text: name" class="w3-text-white" style="margin-left: 15px"></h5>
         </div>
-        <a id="app-link" class="nav-link w3-indigo">App</a>
-        <a id="groups-link" class="nav-link">Groups</a>
+        <a id="app-link" class="nav-link w3-indigo">Main</a>
+        <div class="w3-accordion">
+            <a data-bind="click: expandAccordion">Groups <i class="fa fa-caret-down"></i></a>
+            <div id="groupsNav" class="w3-accordion-content w3-white">
+                <ul data-bind="foreach: groups" style="margin: 0; list-style-type: none">
+                    <li data-bind="text: name"></li>
+                </ul>
+            </div>
+        </div>
         <a id="projects-link" class="nav-link">Projects</a>
     </div>
 </div>
-
 <div class="persist">
     <div class="w3-sidenav w3-white w3-card-4 w3-animate-right" style="width:200px; display:none;right:0;" id="notification-bar">
         <h4 style="margin-left: 10px; color:#C0C0C3">Notifications</h4>
@@ -71,7 +77,6 @@
         </div>
     </div>
 </div>
-
 
 <div id="login-view" class="content">
     <div class="w3-container w3-card-16 w3-padding-0" style="width: 350px; margin: auto">
@@ -160,80 +165,8 @@
         </div>
     </div>
 
-    <!--<h1>Your tasks</h1>-->
-    <!--<h2>Individual Tasks</h2>-->
-    <!--<table>-->
-    <!--<thead>-->
-    <!--<tr>-->
-    <!--<th>Name</th>-->
-    <!--<th>Due date</th>-->
-    <!--</tr>-->
-    <!--</thead>-->
-    <!--<tbody data-bind="foreach: individualTasks">-->
-    <!--<tr>-->
-    <!--<td data-bind="text: name"></td>-->
-    <!--<td data-bind="text: dueDate"></td>-->
-    <!--</tr>-->
-    <!--</tbody>-->
-    <!--</table>-->
-
-    <!--<h2>Group Tasks</h2>-->
-    <!--<table>-->
-    <!--<thead>-->
-    <!--<tr>-->
-    <!--<th>Name</th>-->
-    <!--<th>Due date</th>-->
-    <!--<th>Group</th>-->
-    <!--</tr>-->
-    <!--</thead>-->
-    <!--<tbody data-bind="foreach: groupTasks">-->
-    <!--<tr>-->
-    <!--<td data-bind="text: name"></td>-->
-    <!--<td data-bind="text: dueDate"></td>-->
-    <!--<td data-bind="text: group.name"></td>-->
-    <!--</tr>-->
-    <!--</tbody>-->
-    <!--</table>-->
-
-    <!--<h2>Project Tasks</h2>-->
-    <!--<table>-->
-    <!--<thead>-->
-    <!--<tr>-->
-    <!--<th>Name</th>-->
-    <!--<th>Due date</th>-->
-    <!--<th>Project Name</th>-->
-    <!--</tr>-->
-    <!--</thead>-->
-    <!--<tbody data-bind="foreach: projectTasks">-->
-    <!--<tr>-->
-    <!--<td data-bind="text: name"></td>-->
-    <!--<td data-bind="text: dueDate"></td>-->
-    <!--<td data-bind="text: project.name"></td>-->
-    <!--</tr>-->
-    <!--</tbody>-->
-    <!--</table>-->
-
     <button id="add-task-button">Add  task</button>
 
-</div>
-
-<div id="groups-view" class="content w3-main">
-    <h1>Your Groups</h1>
-    <table>
-        <tbody data-bind="foreach: groups">
-        <tr>
-            <td>
-                <a class="group-link data-card" data-bind="click: $root.groupClicked">
-                    <div class="w3-panel w3-card-4 w3-hover-gray" style="width: 400px">
-                        <h4 data-bind="text: name"></h4>
-                        <h6 data-bind="text: id"></h6>
-                    </div>
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <button id="join-group-opener" class="w3-btn w3-indigo modal-toggle" style="margin-left: 4px">Join a group</button>
 </div>
 
 <div id="projects-view" class="content w3-main">
@@ -321,7 +254,7 @@
                     </label>
                 </div>
 
-                <button type="submit" class="w3-btn w3-hover-white w3-indigo">Add Task</button>
+                <button type="submit" class="w3-btnf w3-hover-white w3-indigo">Add Task</button>
             </form>
         </div>
     </div>
