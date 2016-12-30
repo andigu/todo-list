@@ -1,8 +1,16 @@
 /**
  * @author Andi Gu
+ * @author Susheel Kona
  */
 
 "use strict";
+
+var titleMap = {
+    app: "Dashboard",
+    groups: "My Groups",
+    projects: "My Projects"
+};
+
 function inApp(hash) {
     if (hash !== undefined) {
         return !((hash === "login" || hash === "register" || hash === ""));
@@ -50,7 +58,8 @@ $(window).on("hashchange", function () {
                 loadingDiv.hide();
             });
         });
-        $("#tab-name").text(getHash());
+        $("#tab-name").text(titleMap[getHash()]);
+        document.title = "Todolist | "+(titleMap[getHash()]);
         $("#nav-bar").hide();
     });
 });
