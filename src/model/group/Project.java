@@ -27,6 +27,8 @@ public class Project extends Completable {
         tasks = new HashSet<>();
     }
 
+    public void setCollaborators(Set<User> collaborators) {this.collaborators = collaborators;}
+
     public void addCollaborator(User collaborator) {
         collaborators.add(collaborator);
     }

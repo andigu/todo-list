@@ -19,17 +19,9 @@ public interface JsonConstants {
     String USER_INF_CMD = "userInf";
     String USER = "user";
     String CMD = "cmd";
-    String TASK_TYPES_FILTER = "taskTypes";
-    String TASK_ID_FILTER = "taskId";
-    String PARENT_ID_FILTER = "parentId";
     String INDIVIDUAL_TASK = "individual";
-    String GROUP_TASK = "group";
-    String PROJECT_TASK = "project";
-    String GROUPS = "groups";
-    String PROJECTS = "projects";
-    String STATUS = "status";
-    String TASKS = "tasks";
-    String ERROR = "error";
+    String GROUP_TASK = "groupTask";
+    String PROJECT_TASK = "projectTask";
     String DUPLICATE_KEY_ERROR = "duplicateKey";
     String LOGGED_IN_STATUS = "loggedIn";
     String TASK_TYPE = "taskType";
@@ -40,4 +32,12 @@ public interface JsonConstants {
     String ALL_GROUPS_CMD = "getAllGroups";
     String AVAILABLE_GROUPS_CMD = "getAvailableGroups";
     String JOIN_GROUP_CMD = "joinGroup";
+    String GROUP = "group";
+    String PROJECT = "project";
+
+    String FILTER_TYPE = "filterType";
+    String TASK_TYPES_FILTER = "taskTypes";
+    String TASK_ID_FILTER = "taskId";
+    String PARENT_ID_FILTER = "parentId";
+    String NOT_JOINED_FILTER = "notJoined";
 }

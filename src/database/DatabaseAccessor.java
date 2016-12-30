@@ -1,5 +1,7 @@
 package database;
 
+import database.filter.Filter;
+import database.filter.TaskFilter;
 import model.User;
 import model.group.Group;
 import model.group.Project;
@@ -23,17 +25,19 @@ public interface DatabaseAccessor {
 
     User getUserByToken(String token);
 
-    Set<Task> getTasks(User user, Filter filter);
+    Set<Task> getTasks(User user, TaskFilter taskFilter);
 
-    Set<Group> getGroups(User user);
-
-    Set<Group> getAllGroups();
+    Set<Group> getGroups(User user, Filter<Group> filter);
 
     Set<Project> getProjects(User user);
 
     Set<GroupTask> getGroupTasks(Group group);
 
     Set<ProjectTask> getProjectTasks(Project project);
+
+    Set<User> getMembersOf(Group group);
+
+    Set<User> getMembersOf(Project project);
 
     Map<User, Date> getUsersCompletedGroupTask(GroupTask task);
 

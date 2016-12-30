@@ -1,7 +1,7 @@
 package controller.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import database.Filter;
+import database.filter.TaskFilter;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
@@ -18,7 +18,7 @@ public enum SupportedTypeReference {
     }),
     BOOLEAN(new TypeReference<Boolean>() {
     }),
-    FILTER(new TypeReference<Filter>() {
+    FILTER(new TypeReference<TaskFilter>() {
     }),
     INDIVIDUAL_TASK(new TypeReference<IndividualTask>() {
     }),

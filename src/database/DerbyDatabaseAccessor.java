@@ -1,10 +1,11 @@
 package database;
 
-import com.sun.prism.GraphicsPipeline;
 import database.dao.GroupTaskDAO;
 import database.dao.IndividualTaskDAO;
 import database.dao.ProjectTaskDAO;
 import database.dao.TaskDAO;
+import database.filter.Filter;
+import database.filter.TaskFilter;
 import model.User;
 import model.group.Group;
 import model.group.Project;
@@ -17,8 +18,8 @@ import org.apache.derby.jdbc.ClientDataSource;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.*;
 import java.util.Date;
+import java.util.*;
 
 /**
  * @author Andi Gu
@@ -32,9 +33,10 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
 
     private static final String getUserByLoginSQL = "SELECT * FROM MODEL.USERS WHERE USERNAME = ? AND PASSWORD = ?";
     private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
+    private static final String getMembersOfGroup = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_GROUPS WHERE GROUP_ID = ?";
+    private static final String getMembersOfProject = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_PROJECTS WHERE PROJECT_ID = ?";
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
     private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
-    private static final String getAllGroupsSQL = "SELECT * FROM MODEL.GROUPS";
     private static final String getProjectsSQL = "SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?";
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
@@ -43,7 +45,7 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
     private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
     private static final String getGroupSQL = "SELECT * FROM MODEL.GROUPS WHERE GROUP_ID = ?";
     private static final String getProjectSQL = "SELECT * FROM MODEL.PROJECTS WHERE PROJECT_ID = ?";
-    private static final String joinGroupSQL =   "INSERT INTO MODEL.USER_GROUPS (USER_ID, GROUP_ID) VALUES (?, ?)";
+    private static final String joinGroupSQL = "INSERT INTO MODEL.USER_GROUPS (USER_ID, GROUP_ID) VALUES (?, ?)";
 
     private final Map<Class<? extends Task>, TaskDAO> taskDAOMap = new HashMap<Class<? extends Task>, TaskDAO>() {{
         put(GroupTask.class, new GroupTaskDAO(dataSource));
@@ -76,14 +78,14 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
     }
 
     @Override
-    public Set<Task> getTasks(User user, Filter filter) {
+    public Set<Task> getTasks(User user, TaskFilter taskFilter) {
         Set<Task> tasks = new HashSet<>();
         for (TaskDAO dao : taskDAOMap.values()) {
             tasks.addAll(dao.getAllTasks(user));
         }
         try {
-            if (filter != null) {
-                tasks = filter.doFilter(tasks);
+            if (taskFilter != null) {
+                tasks = taskFilter.doFilter(tasks);
             }
             return tasks;
         } catch (IOException e) {
@@ -114,33 +116,19 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
 
 
     @Override
-    public Set<Group> getGroups(User user) {
+    public Set<Group> getGroups(User user, Filter<Group> filter) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(getGroupsSQL)) {
             statement.setString(1, user.getId());
             ResultSet result = statement.executeQuery();
             Set<Group> groups = new HashSet<>();
             while (result.next()) {
-                groups.add(ResultSetConverter.getGroup(result));
+                Group group = ResultSetConverter.getGroup(result);
+                group.setMembers(getMembersOf(group));
+                groups.add(group);
             }
-            return groups;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public Set<Group> getAllGroups() {
-        try(Connection conn = dataSource.getConnection();
-            Statement statement = conn.createStatement()){
-            ResultSet resultSet = statement.executeQuery(getAllGroupsSQL);
-            Set<Group> groupSet = new HashSet<>();
-            while(resultSet.next()) {
-                groupSet.add(ResultSetConverter.getGroup(resultSet));
-            }
-            return groupSet;
-        } catch (SQLException e) {
+            return filter.doFilter(groups);
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -148,13 +136,12 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
 
     @Override
     public void joinGroup(String id, User user) {
-        try(Connection conn = dataSource.getConnection();
-            PreparedStatement statement = conn.prepareStatement(joinGroupSQL)) {
-            System.out.println("Reached db for joinGroup");
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(joinGroupSQL)) {
             statement.setString(1, user.getId());
             statement.setString(2, id);
             statement.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -167,7 +154,9 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
             ResultSet result = statement.executeQuery();
             Set<Project> projects = new HashSet<>();
             while (result.next()) {
-                projects.add(ResultSetConverter.getProject(result));
+                Project project = ResultSetConverter.getProject(result);
+                project.setCollaborators(getMembersOf(project));
+                projects.add(project);
             }
             return projects;
         } catch (SQLException e) {
@@ -196,6 +185,37 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public Set<User> getMembersOf(Group group) {
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(getMembersOfGroup)) {
+            statement.setString(1, group.getId());
+            return getMembers(statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Set<User> getMembersOf(Project project) {
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(getMembersOfProject)) {
+            statement.setString(1, project.getId());
+            return getMembers(statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Set<User> getMembers(PreparedStatement statement) throws SQLException {
+        ResultSet result = statement.executeQuery();
+        Set<User> members = new HashSet<>();
+        while (result.next()) {
+            members.add(ResultSetConverter.getUser(result));
+        }
+        return members;
     }
 
     @Override

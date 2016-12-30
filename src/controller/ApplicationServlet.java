@@ -5,6 +5,8 @@ import controller.json.StateConverter;
 import controller.json.SupportedTypeReference;
 import database.DatabaseAccessor;
 import database.DerbyDatabaseAccessor;
+import database.filter.Filter;
+import database.filter.FilterType;
 import model.User;
 
 import javax.servlet.ServletException;
@@ -85,5 +87,17 @@ public abstract class ApplicationServlet extends HttpServlet {
                 response.addCookie(cookie);
             }
         }
+    }
+
+    <T> Filter<T> addConstraints(Filter<T> filter, HttpServletRequest request) {
+        if (filter != null) {
+            for (String key : request.getParameterMap().keySet()) {
+                FilterType filterType = FilterType.fromValue(key);
+                if (filterType != null) {
+                    filter.addConstraint(filterType, request.getParameter(key));
+                }
+            }
+        }
+        return filter;
     }
 }

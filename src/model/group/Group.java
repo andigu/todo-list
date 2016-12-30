@@ -25,6 +25,9 @@ public class Group extends Identifiable {
         tasks = new HashSet<>();
     }
 
+    public void setMembers(Set<User> members) {this.members = members;}
+
+
     public void addMember(User member) {
         members.add(member);
     }

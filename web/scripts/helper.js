@@ -20,6 +20,7 @@ function mapUser(object) {
     if (hasProperty(object, "user")) {
         object = object["user"];
     }
+    viewModel.userId = object["id"];
     viewModel.userName(object["username"]);
     viewModel.name(object["name"]);
 }

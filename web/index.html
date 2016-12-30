@@ -41,15 +41,22 @@
                     </div>
                     <div class="w3-dropdown-content w3-card-4 w3-border" style="width: 100px; font-size: small"
                          id="dropdown-options">
-                        <a id="myprofile">My Profile</a>
+                        <a id="my-profile">My Profile</a>
                         <a id="logout">Logout</a>
                     </div>
                 </div>
             </div>
             <h5 data-bind="text: name" class="w3-text-white" style="margin-left: 15px"></h5>
         </div>
-        <a id="app-link" class="nav-link w3-indigo">App</a>
-        <a id="groups-link" class="nav-link">Groups</a>
+        <a id="app-link" class="nav-link w3-indigo">Main</a>
+        <div class="w3-accordion">
+            <a data-bind="click: expandAccordion">Groups <i class="fa fa-caret-down"></i></a>
+            <div id="groupsNav" class="w3-accordion-content w3-white">
+                <ul data-bind="foreach: groups" style="margin: 0; list-style-type: none">
+                    <li data-bind="text: name"></li>
+                </ul>
+            </div>
+        </div>
         <a id="projects-link" class="nav-link">Projects</a>
     </div>
 </div>
@@ -149,25 +156,6 @@
 
     <a id="add-task-button" class="w3-btn-floating-large w3-teal">+</a>
 
-</div>
-
-<div id="groups-view" class="content w3-main">
-    <h1>Your Groups</h1>
-    <table class="w3-table-all w3-hoverable">
-        <tbody data-bind="foreach: groups">
-        <tr>
-            <td>
-                <a class="group-link data-card" data-bind="click: $root.groupClicked">
-                    <div class="w3-panel w3-card-4 w3-hover-gray" style="width: 400px">
-                        <h4 data-bind="text: name"></h4>
-                        <h6 data-bind="text: id"></h6>
-                    </div>
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <button id="join-group-opener" class="w3-btn w3-indigo modal-toggle" style="margin-left: 4px">Join a group</button>
 </div>
 
 <div id="projects-view" class="content w3-main">

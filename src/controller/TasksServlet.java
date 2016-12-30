@@ -2,7 +2,7 @@ package controller;
 
 import controller.json.JsonConstants;
 import controller.json.SupportedTypeReference;
-import database.Filter;
+import database.filter.TaskFilter;
 import model.User;
 import model.task.GroupTask;
 import model.task.IndividualTask;
@@ -26,9 +26,9 @@ public class TasksServlet extends ApplicationServlet {
     public ResponseEntity<?> processGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ResponseEntity<Set<Task>> responseEntity = new ResponseEntity<>();
         User user = getLoggedUser(request);
-        Filter filter = converter.cast(request.getParameter(JsonConstants.FILTERS), SupportedTypeReference.FILTER);
+        TaskFilter taskFilter = converter.cast(request.getParameter(JsonConstants.FILTERS), SupportedTypeReference.FILTER);
         if (user != null) {
-            responseEntity.setData(db.getTasks(user, filter));
+            responseEntity.setData(db.getTasks(user, taskFilter));
         }
         return responseEntity;
     }

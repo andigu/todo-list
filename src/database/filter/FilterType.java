@@ -1,4 +1,4 @@
-package database;
+package database.filter;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,7 +13,8 @@ import controller.json.JsonConstants;
 public enum FilterType {
     taskTypes(JsonConstants.TASK_TYPES_FILTER),
     taskId(JsonConstants.TASK_ID_FILTER),
-    parentId(JsonConstants.PARENT_ID_FILTER);
+    parentId(JsonConstants.PARENT_ID_FILTER),
+    notJoined(JsonConstants.NOT_JOINED_FILTER);
 
     private String value;
     FilterType(String value) {

@@ -6,6 +6,7 @@
 
 class ActivityViewModel {
     constructor() {
+        this.userId = null;
         this.name = ko.observable();
         this.userName = ko.observable();
         this.individualTasks = ko.observableArray();
@@ -42,10 +43,10 @@ class ActivityViewModel {
 
     register(form) {
         request("/register", "GET", {
-            "firstName": form.firstName.value,
-            "lastName": form.lastName.value,
-            "username": form.username.value,
-            "password": form.password.value
+            firstName: form.firstName.value,
+            lastName: form.lastName.value,
+            username: form.username.value,
+            password: form.password.value
         }, (response) => {
             if (response.hasOwnProperty("error")) {
                 alert(response["error"]);
@@ -61,7 +62,7 @@ class ActivityViewModel {
             filters["taskTypes"] = taskTypes.toString();
 
             //Specifies which group/project to get tasks from
-            if(parentId !== undefined){
+            if (parentId !== undefined) {
                 filters["parentId"] = parentId.toString();
             }
         }
@@ -75,13 +76,13 @@ class ActivityViewModel {
     };
 
     getGroups() {
-        request("/groups", "GET", {cmd: ""}, (response) => {
+        request("/groups", "GET", {}, (response) => {
             this.groups(response.data);
         });
     }
 
-    getAvailableGroups(){
-        request("/groups", "GET", {cmd: "getAvailableGroups"}, response => {
+    getAvailableGroups() {
+        request("/groups", "GET", {notJoined: this.userId}, response => {
             this.availableGroups(response.data);
         });
     }
@@ -89,6 +90,11 @@ class ActivityViewModel {
     getProjects() {
         request("/projects", "GET", {}, (response) => {
             this.projects(response.data);
+        });
+    }
+
+    joinGroup(group) {
+        request("/groups", "GET", {cmd: "joinGroup", groupId: group.id}, response => {
         });
     }
 
@@ -119,16 +125,21 @@ class ActivityViewModel {
         $(form)[0].reset();
     }
 
-    joinGroup(group){
-        request("/groups", "GET", {cmd: "joinGroup", groupId: group.id}, response =>{
-        });
-        viewModel.fetchEverything() //Sloppy: 'const self = this' does not work
-    }
 
-    fetchEverything(){
-        this.getAvailableGroups();
-        this.getGroups();
-        this.getProjects();
+    expandAccordion(viewModel, event) {
+        const accordion = $(event.target).next()[0];
+        const arrow = $(event.target).find("i")[0];
+        if (accordion.className.indexOf("w3-show") == -1) {
+            viewModel.getGroups();
+            arrow.className = arrow.className.replace(" fa-caret-down", " fa-caret-up");
+            accordion.className += " w3-show";
+            accordion.previousElementSibling.className += " w3-indigo";
+        } else {
+            arrow.className = arrow.className.replace(" fa-caret-up", " fa-caret-down");
+            accordion.className = accordion.className.replace(" w3-show", "");
+            accordion.previousElementSibling.className =
+                accordion.previousElementSibling.className.replace(" w3-indigo", "");
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-package database;
+package database.filter;
 
 import controller.json.JsonConstants;
 import controller.json.StateConverter;
@@ -10,7 +10,6 @@ import model.task.Task;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,30 +18,25 @@ import java.util.stream.Stream;
 /**
  * @author Andi Gu
  */
-public class Filter {
-    private final Map<FilterType, String> filters;
+public class TaskFilter extends Filter<Task> {
     private final Map<Class<? extends Task>, String> classJsonMap = new HashMap<Class<? extends Task>, String>() {{
         put(IndividualTask.class, JsonConstants.INDIVIDUAL_TASK);
         put(GroupTask.class, JsonConstants.GROUP_TASK);
         put(ProjectTask.class, JsonConstants.PROJECT_TASK);
     }};
 
-    public Filter(Map<FilterType, String> filters) {
-        this.filters = filters;
-    }
-
-    Set<Task> doFilter(Set<Task> tasks) throws IOException {
-        Set<Task> result = new HashSet<>();
+    public Set<Task> doFilter(Set<Task> tasks) throws IOException {
+        Set<Task> result = tasks;
         for (Map.Entry<FilterType, String> entry : filters.entrySet()) {
             switch (entry.getKey()) {
                 case parentId:
-                    result = parentId(tasks, entry.getValue());
+                    result = parentId(result, entry.getValue());
                     break;
                 case taskId:
-                    result = taskId(tasks, entry.getValue());
+                    result = taskId(result, entry.getValue());
                     break;
                 case taskTypes:
-                    result = taskTypes(tasks, entry.getValue());
+                    result = taskTypes(result, entry.getValue());
                     break;
             }
         }
