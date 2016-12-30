@@ -48,6 +48,7 @@ function mapTasks(object) {
 const hashHandlers = {
     "app": function () {
         viewModel.getTasks()
+        viewModel.getGroups();
     },
     "groups": function () {
         viewModel.getGroups()

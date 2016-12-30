@@ -24,7 +24,7 @@
     <h1>
         <span class="w3-opennav w3-hide-large" id="hamburger-icon">&#9776;</span>
         TODOLIST - <a id="tab-name" style="color:#C0C0C3"></a>
-        <span class="w3-opennav w3-hide-large w3-right fa" style="font-size: large; margin-top: 22px"
+        <span class="w3-opennav w3-right fa" style="font-size: large; margin-top: 22px"
               id="notification-icon">&#xf0f3;</span>
     </h1>
 </div>
@@ -41,14 +41,14 @@
                     </div>
                     <div class="w3-dropdown-content w3-card-4 w3-border" style="width: 100px; font-size: small"
                          id="dropdown-options">
-                        <a id="my-profile">My Profile</a>
-                        <a id="logout">Logout</a>
+                        <a href="javascript:void(0)" id="my-profile">My Profile</a>
+                        <a href="javascript:void(0)" id="logout">Logout</a>
                     </div>
                 </div>
             </div>
             <h5 data-bind="text: name" class="w3-text-white" style="margin-left: 15px"></h5>
         </div>
-        <a id="app-link" class="nav-link w3-indigo">Main</a>
+        <a id="app-link" class="nav-link w3-indigo">Dashboard</a>
         <div class="w3-accordion">
             <a data-bind="click: expandAccordion">Groups <i class="fa fa-caret-down"></i></a>
             <div id="groupsNav" class="w3-accordion-content w3-white">
@@ -163,7 +163,23 @@
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="w3-row pad" style="color: gray" data-bind="foreach: groups">
+            <!--<table>-->
+                <!--<tbody data-bind="foreach: groups">-->
+                    <!--<tr data-bind="text: name"></tr>-->
+                <!--</tbody>-->
+            <!--</table>-->
+            <div class="w3-col w3-container l4 s12 w3-card-2">
+                <h4 data-bind="text: name"></h4>
+                <div align="center" style="margin-bottom: 50px">
+                    Nothing here!
+                </div>
+            </div>
+        </div>
+
+        </div>
+
 
     <button id="add-task-button">Add  task</button>
 
