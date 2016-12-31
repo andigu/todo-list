@@ -53,7 +53,7 @@
             <a data-bind="click: expandAccordion">Groups <i class="fa fa-caret-down"></i></a>
             <div id="groupsNav" class="w3-accordion-content w3-white">
                 <ul data-bind="foreach: groups" style="margin: 0; list-style-type: none">
-                    <li data-bind="text: name"></li>
+                    <a data-bind="click: $root.groupClicked, text: name" href="javascript:void(0)">fdfg</a>
                 </ul>
             </div>
         </div>
@@ -170,11 +170,21 @@
                     <!--<tr data-bind="text: name"></tr>-->
                 <!--</tbody>-->
             <!--</table>-->
-            <div class="w3-col w3-container l4 s12 w3-card-2">
+            <div class="w3-col w3-container l4 s12 w3-card-2" style="overflow: auto">
                 <h4 data-bind="text: name"></h4>
-                <div align="center" style="margin-bottom: 50px">
-                    Nothing here!
+                <div data-bind="foreach: tasks" style="height: 100px">
+                    <div class="w3-row w3-container">
+                        <div class="w3-col s1">
+                            <input type="checkbox" class="w3-check" style="width: 10px"/>
+                        </div>
+                        <div class="w3-rest">
+                            <h6 data-bind="text: id" style="margin-left: 10px; margin-top: 5px; margin-bottom: 5px"></h6>
+                        </div>
+                    </div>
                 </div>
+                <!--<div align="center" style="margin-bottom: 50px">-->
+                    <!--Nothing here!-->
+                <!--</div>-->
             </div>
         </div>
 
@@ -198,7 +208,7 @@
 </div>
 
 <div id="group-view" class="content">
-    <h1></h1>
+    <h1>Not finished</h1>
 </div>
 
 <div id="register-view" class="content">

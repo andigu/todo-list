@@ -141,6 +141,12 @@ class ActivityViewModel {
                 accordion.previousElementSibling.className.replace(" w3-indigo", "");
         }
     }
+
+    groupClicked(group) {
+        console.log(group);
+        //TODO finish
+        setHash("group");
+    }
 }
 
 class Notification {

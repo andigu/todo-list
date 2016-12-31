@@ -1,6 +1,8 @@
 package model.group;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import model.Identifiable;
 import model.User;
 import model.task.GroupTask;
@@ -17,6 +19,7 @@ public class Group extends Identifiable {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<User> members;
 
+    @JsonManagedReference
     private Set<GroupTask> tasks;
 
     public Group(String id, String name) {
@@ -27,6 +30,7 @@ public class Group extends Identifiable {
 
     public void setMembers(Set<User> members) {this.members = members;}
 
+    public void setTasks (Set<GroupTask> tasks) {this.tasks = tasks;}
 
     public void addMember(User member) {
         members.add(member);

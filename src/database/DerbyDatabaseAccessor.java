@@ -125,6 +125,8 @@ public final class DerbyDatabaseAccessor implements DatabaseAccessor { // TODO p
             while (result.next()) {
                 Group group = ResultSetConverter.getGroup(result);
                 group.setMembers(getMembersOf(group));
+                GroupTaskDAO dao = (GroupTaskDAO)(taskDAOMap.get(GroupTask.class));
+                group.setTasks(dao.getTasksByGroup(group));
                 groups.add(group);
             }
             return filter.doFilter(groups);

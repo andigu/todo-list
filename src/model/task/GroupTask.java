@@ -1,6 +1,9 @@
 package model.task;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import model.User;
 import model.group.Group;
 
@@ -24,6 +27,7 @@ import java.util.Set;
  */
 
 public class GroupTask extends Task {
+    @JsonBackReference
     private Group group;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
