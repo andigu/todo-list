@@ -19,6 +19,12 @@ class ActivityViewModel {
             new Notification("Name", "This is a sample notification body"),
             new Notification("Second", "This is the second sample notification body")
         ]);
+
+        //Current group stuff
+        this.currentGroupName = ko.observable();
+        this.currentGroupId = ko.observable();
+        this.currentGroupTasks = ko.observableArray();
+        this.currentGroupUsers = ko.observableArray();
     }
 
     login(form) {
@@ -144,7 +150,7 @@ class ActivityViewModel {
 
     groupClicked(group) {
         console.log(group);
-        //TODO finish
+        mapGroup(group);
         setHash("group");
     }
 }

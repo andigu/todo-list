@@ -8,7 +8,10 @@
 var titleMap = {
     app: "Dashboard",
     groups: "My Groups",
-    projects: "My Projects"
+    projects: "My Projects",
+    group: function () {
+        return (viewModel.currentGroupName())
+    }
 };
 
 function inApp(hash) {
@@ -59,7 +62,7 @@ $(window).on("hashchange", function () {
             });
         });
         $("#tab-name").text(titleMap[getHash()]);
-        document.title = "Todolist | "+(titleMap[getHash()]);
+        document.title = "Todolist | "+(titleMap[getHash()])
         $("#nav-bar").hide();
     });
 });

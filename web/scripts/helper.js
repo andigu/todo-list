@@ -45,13 +45,11 @@ function mapTasks(object) {
     viewModel.projectTasks(projectTasks);
 }
 
-function mapGroup(object){
-    return {
-        id: ko.observable(object["id"]),
-        members: ko.observableArray(object["members"]),
-        name: ko.observable(object["name"]),
-        tasks: ko.observableArray(object["tasks"])
-    };
+function mapGroup(group){
+    viewModel.currentGroupName(group["name"]);
+    viewModel.currentGroupId(group["id"]);
+    viewModel.currentGroupTasks(group["tasks"]);
+    viewModel.currentGroupUsers(group["users"]);
 }
 
 const hashHandlers = {
