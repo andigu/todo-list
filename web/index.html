@@ -20,7 +20,7 @@
 
 
 <!--Header, navbar and notification bar-->
-<div class="persist w3-container w3-indigo w3-text-white w3-card-8">
+<div class="persist w3-container w3-indigo w3-text-white w3-card-6">
     <h1>
         <span class="w3-opennav w3-hide-large" id="hamburger-icon">&#9776;</span>
         TODOLIST - <a id="tab-name" style="color:#C0C0C3"></a>
@@ -207,10 +207,46 @@
     </table>
 </div>
 
-<div id="group-view" class="content">
-    <h1>Not finished</h1>
-    <div class="w3-container w3-card-2">
-        <h3>Members</h3>
+<div id="group-view" class="content w3-main">
+    <div class="w3-container" style="margin-top: 1%; margin-bottom: 5%">
+        <!--<div class="w3-container w3-card-2 pad" style="margin-top: 10px">-->
+            <!--<h1 data-bind="text: currentGroupName" style="margin-top: 70px"></h1>-->
+        <!--</div>-->
+        <!--<div class="w3-container w3-card-2 w3-row pad">-->
+            <!--<div class="w3-col l8 s12"></div>-->
+        <!--</div>-->
+        <div class="w3-row pad">
+            <div class="w3-col w3-container w3-card-2 w3-indigo w3-text-white">
+                <h1 style="margin-top: 70px">
+                    <strong data-bind="text: currentGroupName" ></strong>
+                </h1>
+            </div>
+        </div>
+
+        <div class="w3-row pad">
+            <div class="w3-col w3-container w3-card-2 l8 s12" style="height: 175px; overflow: auto; background-color: #f2f2f2">
+                <p>Group Description goes here Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultricies ornare nisl et congue. Suspendisse suscipit metus non est lobortis placerat. Ut at tincidunt est, eget mattis risus. Nam pellentesque aliquet nisi, in placerat dui ornare et. Etiam nisi diam, egestas sit amet orci ut, pharetra accumsan ex. Praesent pulvinar id nulla sed bibendum. Donec eleifend erat id elit tempus efficitur.</p>
+            </div>
+            <div class="w3-col w3-container w3-card-2 l4 s12" style="height: 175px; background-color: #f2f2f2">
+                <h4>Members</h4>
+                <div style="overflow: auto">
+                    <table data-bind="foreach: currentGroupUsers" style="color: gray">
+                        <tr><td>
+                            <span data-bind="text: name"></span>
+                        </td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="w3-row pad">
+            <div class="w3-col l4 s12 w3-card-2 w3-container" style="height: 350px">
+                <h4>Important Dates</h4>
+            </div>
+            <div class="w3-rest w3-container w3-card-2" style="height: 350px">
+                <h2>Tasks</h2>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -49,7 +49,7 @@ function mapGroup(group){
     viewModel.currentGroupName(group["name"]);
     viewModel.currentGroupId(group["id"]);
     viewModel.currentGroupTasks(group["tasks"]);
-    viewModel.currentGroupUsers(group["users"]);
+    viewModel.currentGroupUsers(group["members"]);
 }
 
 const hashHandlers = {

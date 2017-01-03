@@ -9,6 +9,7 @@ var titleMap = {
     app: "Dashboard",
     groups: "My Groups",
     projects: "My Projects",
+    login: "Login",
     group: function () {
         return (viewModel.currentGroupName())
     }
@@ -62,7 +63,11 @@ $(window).on("hashchange", function () {
             });
         });
         $("#tab-name").text(titleMap[getHash()]);
-        document.title = "Todolist | "+(titleMap[getHash()])
+
+        //Is there a better way to do this?
+        if(getHash() === "group" || getHash() === "project") document.title = "Todolist | "+(titleMap[getHash()])();
+        else document.title = "Todolist | "+(titleMap[getHash()]);
+
         $("#nav-bar").hide();
     });
 });
