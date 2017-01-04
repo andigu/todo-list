@@ -66,5 +66,10 @@ const hashHandlers = {
     "login": function () {
         $("#login-modal").hide();
         $("#improper-creds-msg").hide();
+    },
+    "group": function () {
+        if(viewModel.currentGroupId() === undefined){
+            setHash("app");
+        }
     }
 };
