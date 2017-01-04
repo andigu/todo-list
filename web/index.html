@@ -53,7 +53,7 @@
             <a data-bind="click: expandAccordion">Groups <i class="fa fa-caret-down"></i></a>
             <div id="groupsNav" class="w3-accordion-content w3-white">
                 <ul data-bind="foreach: groups" style="margin: 0; list-style-type: none">
-                    <a data-bind="click: $root.groupClicked, text: name" href="javascript:void(0)">fdfg</a>
+                    <a data-bind="click: $root.groupClicked, text: name" href="javascript:void(0)"></a>
                 </ul>
             </div>
         </div>
@@ -79,41 +79,70 @@
 </div>
 
 <div id="login-view" class="content">
-    <div class="w3-container w3-card-16 w3-padding-0" style="width: 350px; margin: auto">
-        <div class="w3-container w3-indigo">
-            <h1>Todolist</h1>
-        </div>
-        <div class="w3-container w3-padding-16">
-            <form data-bind="submit: login" method="post" id="login-form" class="w3-container">
-                <div class="w3-row w3-section">
-                    <div class="w3-col" style="width:50px">
-                        <i class="material-icons w3-xxlarge">person</i>
-                    </div>
-                    <div class="w3-rest">
-                        <input name="username" type="text" class="w3-input" placeholder="Username"/>
-                    </div>
-                </div>
-                <div class="w3-row w3-section">
-                    <div class="w3-col" style="width:50px">
-                        <i class="material-icons w3-xxlarge">lock</i>
-                    </div>
-                    <div class="w3-rest">
-                        <input name="password" type="password" class="w3-input" placeholder="Password"/>
-                    </div>
-                </div>
-                <div class="w3-container w3-padding-16 wd-row-padding">
-                    <label class="w3-validate">Remember Me
-                        <input type="checkbox" name="stay" checked="checked" class="w3-checkbox"/>
-                    </label>
-                </div>
-                <div style="text-align: center">
-                    <button type="submit" class="w3-btn w3-hover-white w3-indigo" style="text-align: center">LOGIN
-                    </button>
-                </div>
-            </form>
-            <a href="" id="register-button">Sign up</a>
+    <div class="w3-container w3-white w3-text-indigo" style="width: 100%; height: 100px">
+        <h1 style="margin-top: 20px">TODOLIST</h1>
+    </div>
+
+    <div class="w3-container w3-indigo w3-text-white" style="width: 100%; height: 400px; text-align: center">
+        <!--Todo add carousel here-->
+        <div class="w3-content w3-card-4 w3-white w3-animate-left" style="width: 500px; height: 360px; margin-top: 15px">
+            Slideshow
         </div>
     </div>
+
+    <div class="w3-container w3-white" align="center" style="margin-top: 25px">
+        <button class="modal-toggle1 w3-btn w3-large w3-indigo w3-hover-white" id="register-opener" style="width: 100px">Sign up</button>
+        <button class="modal-toggle w3-btn w3-large w3-white w3-border w3-border-indigo w3-hover-indigo" id="login-opener" style="width: 100px">Login</button>
+    </div>
+
+    <div id="login-modal" class="w3-modal w3-animate-zoom">
+        <div class="w3-container w3-modal-content w3-card-16" style="width: 360px; padding: 0px">
+            <div class="w3-container" style="padding: 0px">
+                <div class="w3-container w3-padding-0" style="">
+                    <div class="w3-container w3-indigo">
+                        <span id="login-closer" class="modal-toggle w3-closebtn">&times;</span>
+                        <h1>Login</h1>
+                    </div>
+                    <div id="improper-creds-msg" class="w3-container w3-red w3-animate-opacity" style="display: none">
+                        <h6>Your Username or Password is Incorrect</h6>
+                    </div>
+                    <div class="w3-container w3-padding-16">
+                        <form data-bind="submit: login" method="post" id="login-form" class="w3-container">
+                            <div class="w3-row w3-section">
+                                <div class="w3-col" style="width:50px">
+                                    <i class="material-icons w3-xxlarge">person</i>
+                                </div>
+                                <div class="w3-rest">
+                                    <input name="username" type="text" class="w3-input" placeholder="Username"/>
+                                </div>
+                            </div>
+                            <div class="w3-row w3-section">
+                                <div class="w3-col" style="width:50px">
+                                    <i class="material-icons w3-xxlarge">lock</i>
+                                </div>
+                                <div class="w3-rest">
+                                    <input name="password" type="password" class="w3-input" placeholder="Password"/>
+                                </div>
+                            </div>
+                            <div class="w3-container w3-padding-16 wd-row-padding">
+                                <label class="w3-validate">Remember Me
+                                    <input type="checkbox" name="stay" checked="checked" class="w3-checkbox"/>
+                                </label>
+                            </div>
+                            <div style="text-align: center">
+                                <button type="submit" class="w3-btn w3-hover-white w3-indigo" style="text-align: center">LOGIN</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="register-modal" class="w3-modal w3-animate-zoom">
+
+    </div>
+
 </div>
 
 <div id="app-view" class="content w3-main">
@@ -350,6 +379,10 @@
         </div>
     </div>
 </div>
+
+<footer class="w3-container w3-gray">
+    <p>This project is incomplete. Report bugs <a href="" style="text-decoration: underline">here</a></p>
+</footer>
 
 <script type="text/javascript" src="scripts/lib/jquery-3.1.1.js"></script>
 <script type="text/javascript" src="scripts/lib/serialize-json.js"></script>

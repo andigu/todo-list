@@ -42,7 +42,8 @@ class ActivityViewModel {
                     setHash("app");
                     this.getTasks();
                 } else {
-                    alert("Wrong login");
+                    //alert("Wrong login");
+                    $("#improper-creds-msg").show();
                 }
             });
     };
@@ -152,6 +153,7 @@ class ActivityViewModel {
         console.log(group);
         mapGroup(group);
         setHash("group");
+        $(".nav-link").removeClass("w3-indigo");
     }
 }
 

@@ -62,5 +62,9 @@ const hashHandlers = {
     },
     "projects": function () {
         viewModel.getProjects();
+    },
+    "login": function () {
+        $("#login-modal").hide();
+        $("#improper-creds-msg").hide();
     }
 };
