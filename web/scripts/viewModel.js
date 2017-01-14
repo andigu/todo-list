@@ -49,16 +49,20 @@ class ActivityViewModel {
     };
 
     register(form) {
-        request("/register", "GET", {
-            firstName: form.firstName.value,
-            lastName: form.lastName.value,
-            username: form.username.value,
-            password: form.password.value
+        request("/register", "POST", {
+            user: {
+                firstName: form.firstName.value,
+                lastName: form.lastName.value,
+                username: form.username.value,
+                password: form.password.value},
         }, (response) => {
             if (response.hasOwnProperty("error")) {
-                alert(response["error"]);
+                //alert(response["error"]);
             } else {
-                mapUser(response);
+                mapUser(response["data"]);
+                setHash("app");
+                console.log("registration success!")
+                this.getTasks();
             }
         });
     }

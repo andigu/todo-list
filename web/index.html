@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Todolist</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="w3-css.css">
+    <!--<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -22,10 +23,10 @@
 <!--Header, navbar and notification bar-->
 <div class="persist" id="main-header">
     <div class="w3-container w3-indigo w3-text-white w3-card-8">
-        <h1>
+        <h1 style="font-size: 175%">
             <span class="w3-opennav w3-hide-large" id="hamburger-icon">&#9776;</span>
             TODOLIST - <a id="tab-name" style="color:#C0C0C3"></a>
-            <span class="w3-opennav w3-right fa" style="font-size: large; margin-top: 22px"
+            <span class="w3-opennav w3-right fa" style="font-size: medium; margin-top: 14px"
                   id="notification-icon">&#xf0f3;</span>
         </h1>
     </div>
@@ -93,7 +94,7 @@
     </div>
 
     <div class="w3-container w3-white" align="center" style="margin-top: 25px">
-        <button class="modal-toggle1 w3-btn w3-large w3-indigo w3-hover-white" id="register-opener" style="width: 100px">Sign up</button>
+        <button class="modal-toggle w3-btn w3-large w3-indigo w3-hover-white" id="register-opener" style="width: 100px">Sign up</button>
         <button class="modal-toggle w3-btn w3-large w3-white w3-border w3-border-indigo w3-hover-indigo" id="login-opener" style="width: 100px">Login</button>
     </div>
 
@@ -109,7 +110,7 @@
                         <h6>Your Username or Password is Incorrect</h6>
                     </div>
                     <div class="w3-container w3-padding-16">
-                        <form data-bind="submit: login" method="post" id="login-form" class="w3-container">
+                        <form data-bind="submit: login" method="post" id="register-form" class="w3-container">
                             <div class="w3-row w3-section">
                                 <div class="w3-col" style="width:50px">
                                     <i class="material-icons w3-xxlarge">person</i>
@@ -142,7 +143,77 @@
     </div>
 
     <div id="register-modal" class="w3-modal w3-animate-zoom">
-
+        <div class="w3-modal-content w3-card-16 w3-container" style="width: 360px; padding: 0px">
+            <div class="w3-container" style="padding: 0px">
+                <div class="w3-container w3-padding-0" style="">
+                    <div class="w3-container w3-indigo">
+                        <span id="register-closer" class="modal-toggle w3-closebtn">&times;</span>
+                        <h1>Sign up</h1>
+                    </div>
+                    <div id="improper-register-msg" class="w3-container w3-red w3-animate-opacity" style="display: none">
+                        <h6>Your Username or Password is Incorrect</h6>
+                    </div>
+                    <div class="w3-container w3-padding-16">
+                        <form data-bind="submit: register" method="post" id="login-form" class="w3-container">
+                            <div class="w3-row w3-section">
+                                <div class="w3-col" style="width:50px">
+                                    <i class="material-icons w3-xxlarge">person</i>
+                                </div>
+                                <div class="w3-rest">
+                                    <input name="firstName" type="text" class="w3-input" placeholder="Enter your First Name"/>
+                                </div>
+                            </div>
+                            <div class="w3-row w3-section">
+                                <div class="w3-col" style="width:50px">
+                                    <i class="material-icons w3-xxlarge"> </i>
+                                </div>
+                                <div class="w3-rest">
+                                    <input name="lastName" type="text" class="w3-input" placeholder="Enter your Last Name"/>
+                                </div>
+                            </div>
+                            <div class="w3-row w3-section">
+                                <div class="w3-col" style="width:50px">
+                                    <i class="material-icons w3-xxlarge">person</i>
+                                </div>
+                                <div class="w3-rest">
+                                    <input name="username" type="text" class="w3-input" placeholder="Choose a username"/>
+                                </div>
+                            </div>
+                            <div class="w3-row w3-section">
+                                <div class="w3-col" style="width:50px">
+                                    <i class="material-icons w3-xxlarge">email</i>
+                                </div>
+                                <div class="w3-rest">
+                                    <input name="email" type="text" class="w3-input" placeholder="Enter your email"/>
+                                </div>
+                            </div>
+                            <div class="w3-row w3-section">
+                                <div class="w3-col" style="width:50px">
+                                    <i class="material-icons w3-xxlarge">lock</i>
+                                </div>
+                                <div class="w3-rest">
+                                    <input name="password" type="password" class="w3-input" placeholder="Choose a password"/>
+                                </div>
+                            </div>
+                            <div class="w3-row w3-section">
+                                <div class="w3-col" style="width:50px">
+                                    <i class="material-icons w3-xxlarge"> </i>
+                                </div>
+                                <div class="w3-rest">
+                                    <input name="confirm-password" type="password" class="w3-input" placeholder="Confirm password"/>
+                                </div>
+                            </div>
+                            <div>
+                                <input style="display: none" type="checkbox" name="stay"/>
+                            </div>
+                            <div style="text-align: center">
+                                <button type="submit" class="w3-btn w3-hover-white w3-indigo" style="text-align: center">SIGN UP</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>
@@ -256,7 +327,7 @@
 
         <div class="w3-row pad">
             <div class="w3-col w3-container w3-card-2 l8 s12 w3-padding-4" style="height: 175px; overflow: auto; background-color: #F2F2FA">
-                <p>Group Description goes here Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultricies ornare nisl et congue. Suspendisse suscipit metus non est lobortis placerat. Ut at tincidunt est, eget mattis risus. Nam pellentesque aliquet nisi, in placerat dui ornare et. Etiam nisi diam, egestas sit amet orci ut, pharetra accumsan ex. Praesent pulvinar id nulla sed bibendum. Donec eleifend erat id elit tempus efficitur.</p>
+                <p>Group Description goes here Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultricies ornare nisl et congue. Suspendisse suscipit metus non est lobortis placerat. Ut at tincidunt est, eget mattis risus. Nam pellentesque aliquet nisi, in placerat dui ornare et. .</p>
             </div>
             <div class="w3-col w3-container w3-card-2 l4 s12" style="height: 175px; background-color: #FAFAFA">
                 <h4>Members</h4>
