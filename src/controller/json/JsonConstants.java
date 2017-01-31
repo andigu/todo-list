@@ -40,4 +40,6 @@ public interface JsonConstants {
     String TASK_ID_FILTER = "taskId";
     String PARENT_ID_FILTER = "parentId";
     String NOT_JOINED_FILTER = "notJoined";
+    String START_DATE = "startDate";
+    String END_DATE = "endDate";
 }

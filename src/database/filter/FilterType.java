@@ -14,7 +14,10 @@ public enum FilterType {
     taskTypes(JsonConstants.TASK_TYPES_FILTER),
     taskId(JsonConstants.TASK_ID_FILTER),
     parentId(JsonConstants.PARENT_ID_FILTER),
+    startDate(JsonConstants.START_DATE),
+    endDate(JsonConstants.END_DATE),
     notJoined(JsonConstants.NOT_JOINED_FILTER);
+
 
     private String value;
     FilterType(String value) {

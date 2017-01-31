@@ -9,6 +9,7 @@ import model.task.ProjectTask;
 import model.task.Task;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -55,6 +56,11 @@ public class TaskFilter extends Filter<Task> {
             return false;
         }).collect(Collectors.toSet());
     }
+
+    private Set<Task> startDate(Set<Task> tasks, Date date) {
+        return null;
+
+    };
 
     private Set<Task> taskId(Set<Task> tasks, String id) {
         return tasks.stream().filter(task -> task.getId().equals(id)).collect(Collectors.toSet());

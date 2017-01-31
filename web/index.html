@@ -58,6 +58,10 @@
                 <ul data-bind="foreach: groups" style="margin: 0; list-style-type: none">
                     <a data-bind="click: $root.groupClicked, text: name" href="javascript:void(0)"></a>
                 </ul>
+                <a class="modal-toggle" id="group-manager-opener" style="margin-left: 20px" href="javascript:void(0)">
+                    <i class="material-icons" style="font-size: small">border_all</i>
+                    Manage Groups
+                </a>
             </div>
         </div>
         <a id="projects-link" class="nav-link">Projects</a>
@@ -80,6 +84,7 @@
         </div>
     </div>
 </div>
+
 
 <div id="login-view" class="content">
     <div class="w3-container w3-white w3-text-indigo" style="width: 100%; height: 100px">
@@ -217,6 +222,37 @@
     </div>
 
 </div>
+
+<div id="group-manager-modal" class="w3-modal">
+    <div class="w3-modal-content w3-card-16 w3-container w3-animate-top" style="padding: 0px">
+        <div class="w3-container" style="padding: 0px">
+            <div class="w3-container w3-padding-0" style="">
+                <div class="w3-container w3-indigo">
+                    <span id="group-manager-closer" class="modal-toggle w3-closebtn">&times;</span>
+                    <h1>Groups</h1>
+                </div>
+            </div>
+
+            <div class="w3-container">
+                <h3>My Groups</h3>
+                <div class="w3-row">
+                    <div data-bind="foreach: groups">
+                        <div class="w3-col l3">
+                            <a class="group-link" data-bind="click: $root.groupClicked">
+                                <div class="w3-panel w3-card-4 w3-hover-gray">
+                                    <h4 data-bind="text: name"></h4>
+                                    <h6 data-bind="text: id"></h6>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <div id="app-view" class="content w3-main">
     <div class="w3-container" style="margin-top: 1%; margin-bottom: 5%">
