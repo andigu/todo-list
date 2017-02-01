@@ -4,7 +4,7 @@ import controller.json.JsonConstants;
 import controller.json.StateConverter;
 import controller.json.SupportedTypeReference;
 import database.DatabaseAccessor;
-import database.DerbyDatabaseAccessor;
+import database.SQLDatabaseAccessor;
 import database.filter.Filter;
 import database.filter.FilterType;
 import model.User;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @author Andi Gu
  */
 public abstract class ApplicationServlet extends HttpServlet {
-    DatabaseAccessor db = DerbyDatabaseAccessor.getInstance();
+    DatabaseAccessor db = SQLDatabaseAccessor.getInstance();
     StateConverter converter = StateConverter.getInstance();
 
     @Override
