@@ -14,6 +14,7 @@ import model.task.IndividualTask;
 import model.task.ProjectTask;
 import model.task.Task;
 import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
+import org.postgresql.jdbc3.Jdbc3PoolingDataSource;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -25,18 +26,25 @@ import java.util.*;
  * @author Andi Gu, Susheel Kona
  */
 public final class SQLDatabaseAccessor implements DatabaseAccessor { // TODO possible to template this?
-    private static final String databaseName = "db";
-    private static final String sourceFlavor = "derby";
+    private static final String sourceFlavor = "postgreslocal";
     
     private static final Map<String, DataSource> sources = new HashMap<String, DataSource>() {{
             put("derby", new ClientConnectionPoolDataSource(){{
                     setDatabaseName("db");
-                }
-            });
+            }});
+
+            put("postgreslocal", new Jdbc3PoolingDataSource(){{
+                //Todo read all this from a file
+                setServerName("localhost");
+                setDatabaseName("todo-list");
+                setUser("postgres"); //running as root user like Jeff Dean
+                setPassword("root");
+            }});
     }};
 
     private static final SQLDatabaseAccessor instance = new SQLDatabaseAccessor();
 
+    //Todo make sure these work with postgres
     private static final String getUserByLoginSQL = "SELECT * FROM MODEL.USERS WHERE USERNAME = ? AND PASSWORD = ?";
     private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
     private static final String getMembersOfGroup = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_GROUPS WHERE GROUP_ID = ?";
