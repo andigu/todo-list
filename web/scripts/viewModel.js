@@ -54,10 +54,15 @@ class ActivityViewModel {
                 firstName: form.firstName.value,
                 lastName: form.lastName.value,
                 username: form.username.value,
-                password: form.password.value},
+                password: form.password.value,
+                confirmPass: form.confirmPassword.value,
+                email: form.email.value
+            },
         }, (response) => {
             if (response.hasOwnProperty("error")) {
-                //alert(response["error"]);
+                console.log(response["error"].message);
+                $("#improper-register-msg").children("h6").text(response["error"].message);
+                $("#improper-register-msg").show();
             } else {
                 mapUser(response["data"]);
                 setHash("app");

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Requests to register new users in the database are processed in this servlet
@@ -41,17 +43,31 @@ public class RegistrationServlet extends ApplicationServlet {
     public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
         ResponseEntity<User> responseEntity = new ResponseEntity<>();
         Map<String, String> registerInf = converter.cast(requestData.get(JsonConstants.USER), SupportedTypeReference.STRING_MAP);
-        //TODO handle null and invalid values here
-        try {
-            User user = db.registerUser(registerInf.get(JsonConstants.USERNAME), registerInf.get(JsonConstants.PASSWORD),
-                    registerInf.get(JsonConstants.FIRST_NAME), registerInf.get(JsonConstants.LAST_NAME));
-            responseEntity.setData(user);
-            request.getSession().setAttribute(JsonConstants.USER_ID, user.getId());
 
-        } catch (SQLIntegrityConstraintViolationException e) {
-            responseEntity.setError(new Error(JsonConstants.DUPLICATE_KEY_ERROR));
+        Set<String> nullValues = getNullValues(registerInf);
+
+        if(!nullValues.isEmpty()){
+            responseEntity.setError(new Error((nullValues.toString()).substring(1, (nullValues.toString().length())-1)+" are empty!"));
+        } else if (!registerInf.get("confirmPass").matches(registerInf.get("password"))){
+            responseEntity.setError(new Error("Passwords do not match"));
+        } else if (!registerInf.get("email").contains("@") && !registerInf.get("email").contains(".")) {
+            responseEntity.setError(new Error("Invalid email address"));
+        } else {
+            try {
+                User user = db.registerUser(registerInf.get(JsonConstants.USERNAME), registerInf.get(JsonConstants.PASSWORD),
+                        registerInf.get(JsonConstants.FIRST_NAME), registerInf.get(JsonConstants.LAST_NAME));
+                responseEntity.setData(user);
+                request.getSession().setAttribute(JsonConstants.USER_ID, user.getId());
+            } catch (SQLIntegrityConstraintViolationException e) {
+                responseEntity.setError(new Error(JsonConstants.DUPLICATE_KEY_ERROR));
+            }
         }
 
+
         return responseEntity;
+    }
+
+    public static Set<String> getNullValues(Map<String, String> map){
+        return map.entrySet().stream().filter(entry-> (entry.getValue().isEmpty() || entry.getValue()==null)).map(Map.Entry::getKey).collect(Collectors.toSet());
     }
 }
