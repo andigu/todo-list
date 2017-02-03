@@ -13,6 +13,7 @@ import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
 import model.task.Task;
+
 import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
 import org.postgresql.jdbc3.Jdbc3PoolingDataSource;
 
@@ -79,7 +80,7 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
-    private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME)  VALUES (?, ?, ?, ?, ?)";
+    private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL)  VALUES (?, ?, ?, ?, ?, ?)";
     private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
     private static final String getGroupSQL = "SELECT * FROM MODEL.GROUPS WHERE GROUP_ID = ?";
     private static final String getProjectSQL = "SELECT * FROM MODEL.PROJECTS WHERE PROJECT_ID = ?";
@@ -322,7 +323,7 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
      * @param lastName  The last name of the new user
      */
     @Override
-    public User registerUser(String username, String password, String firstName, String lastName) throws SQLIntegrityConstraintViolationException {
+    public User registerUser(String username, String password, String firstName, String lastName, String email) throws SQLIntegrityConstraintViolationException {
         try (Connection conn = sources.get(SOURCE_FLAVOR).getConnection();
              PreparedStatement statement = conn.prepareStatement(registerUserSQL)) {
             String token = randomId();
@@ -331,8 +332,9 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
             statement.setString(3, encrypt(password));
             statement.setString(4, firstName);
             statement.setString(5, lastName);
+            statement.setString(6, email);
             statement.execute();
-            return new User(token, firstName, lastName, username);
+            return new User(token, firstName, lastName, username, email);
         } catch (SQLIntegrityConstraintViolationException e) {
             throw e;
         } catch (SQLException e) {

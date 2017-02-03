@@ -8,10 +8,12 @@ package model;
 
 public class User extends Identifiable {
     private String username;
+    private String email;
 
-    public User(String id, String firstName, String lastName, String username) {
+    public User(String id, String firstName, String lastName, String username, String email) {
         super(id, firstName + " " + lastName);
         this.username = username;
+        this.email = email;
     }
 
     public User(String firstName, String lastName, String username) {
@@ -21,5 +23,9 @@ public class User extends Identifiable {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

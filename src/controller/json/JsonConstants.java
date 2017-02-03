@@ -15,6 +15,7 @@ public interface JsonConstants {
     String FIRST_NAME = "firstName";
     String LAST_NAME = "lastName";
     String PASSWORD = "password";
+    String EMAIL = "email";
     String PING_CMD = "ping";
     String USER_INF_CMD = "userInf";
     String USER = "user";

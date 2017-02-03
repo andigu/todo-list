@@ -59,7 +59,7 @@ public interface DatabaseAccessor {
 
     void completeProject(Project project, Date dateCompleted);
 
-    User registerUser(String username, String password, String firstName, String lastName) throws SQLIntegrityConstraintViolationException;
+    User registerUser(String username, String password, String firstName, String lastName, String email) throws SQLIntegrityConstraintViolationException;
 
     String storeLogin(String userId);
 }

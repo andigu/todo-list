@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 public final class ResultSetConverter {
     static User getUser(ResultSet resultSet) throws SQLException {
-        return new User(resultSet.getString("USER_ID"), resultSet.getString("FIRST_NAME"), resultSet.getString("LAST_NAME"), resultSet.getString("USERNAME"));
+        return new User(resultSet.getString("USER_ID"), resultSet.getString("FIRST_NAME"), resultSet.getString("LAST_NAME"), resultSet.getString("USERNAME"), resultSet.getString("EMAIL"));
     }
 
     public static Group getGroup(ResultSet resultSet) throws SQLException {

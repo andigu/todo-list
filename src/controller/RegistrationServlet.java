@@ -4,6 +4,7 @@ import controller.json.Error;
 import controller.json.JsonConstants;
 import controller.json.SupportedTypeReference;
 import model.User;
+import services.EmailService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,15 +28,15 @@ public class RegistrationServlet extends ApplicationServlet {
     @Override
     public ResponseEntity<?> processGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ResponseEntity<User> responseEntity = new ResponseEntity<>();
-        Map<String, String> registerInf = converter.cast(request.getParameter(JsonConstants.USER_INF), SupportedTypeReference.STRING_MAP);
-        try {
-            User user = db.registerUser(registerInf.get(JsonConstants.USERNAME), registerInf.get(JsonConstants.PASSWORD),
-                    registerInf.get(JsonConstants.FIRST_NAME), registerInf.get(JsonConstants.LAST_NAME));
-            responseEntity.setData(user);
-
-        } catch (SQLIntegrityConstraintViolationException e) {
-            responseEntity.setError(new Error(JsonConstants.DUPLICATE_KEY_ERROR));
-        }
+//        Map<String, String> registerInf = converter.cast(request.getParameter(JsonConstants.USER_INF), SupportedTypeReference.STRING_MAP);
+//        try {
+//            User user = db.registerUser(registerInf.get(JsonConstants.USERNAME), registerInf.get(JsonConstants.PASSWORD),
+//                    registerInf.get(JsonConstants.FIRST_NAME), registerInf.get(JsonConstants.LAST_NAME));
+//            responseEntity.setData(user);
+//
+//        } catch (SQLIntegrityConstraintViolationException e) {
+//            responseEntity.setError(new Error(JsonConstants.DUPLICATE_KEY_ERROR));
+//        }
         return responseEntity;
     }
 
@@ -55,10 +56,11 @@ public class RegistrationServlet extends ApplicationServlet {
         } else {
             try {
                 User user = db.registerUser(registerInf.get(JsonConstants.USERNAME), registerInf.get(JsonConstants.PASSWORD),
-                        registerInf.get(JsonConstants.FIRST_NAME), registerInf.get(JsonConstants.LAST_NAME));
+                        registerInf.get(JsonConstants.FIRST_NAME), registerInf.get(JsonConstants.LAST_NAME), registerInf.get(JsonConstants.EMAIL));
                 responseEntity.setData(user);
                 request.getSession().setAttribute(JsonConstants.USER_ID, user.getId());
-            } catch (SQLIntegrityConstraintViolationException e) {
+                EmailService.getInstance().sendWelcomeMessage(user);
+            } catch (Exception e) {
                 responseEntity.setError(new Error(JsonConstants.DUPLICATE_KEY_ERROR));
             }
         }

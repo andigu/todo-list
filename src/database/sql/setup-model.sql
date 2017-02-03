@@ -1,3 +1,4 @@
+DROP SCHEMA IF EXISTS model;
 CREATE SCHEMA model;
 
 CREATE TABLE model.users (
@@ -6,6 +7,7 @@ CREATE TABLE model.users (
   password   VARCHAR(50) NOT NULL DEFAULT 'a',
   first_name VARCHAR(30) NOT NULL DEFAULT 'first name filler',
   last_name  VARCHAR(30) NOT NULL DEFAULT 'last name filler',
+  email TEXT,
   UNIQUE (username)
 );
 
