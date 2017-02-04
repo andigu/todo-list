@@ -46,6 +46,7 @@ class ActivityViewModel {
                     $("#improper-creds-msg").show();
                 }
             });
+
     };
 
     register(form) {
@@ -92,10 +93,12 @@ class ActivityViewModel {
     };
 
     getGroups() {
-        request("/groups", "GET", {}, (response) => {
+        request("/groups", "GET", {joined: this.userId}, (response) => {
             this.groups(response.data);
         });
     }
+
+
 
     getAvailableGroups() {
         request("/groups", "GET", {notJoined: this.userId}, response => {

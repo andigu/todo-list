@@ -75,7 +75,8 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     private static final String getMembersOfGroup = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_GROUPS WHERE GROUP_ID = ?";
     private static final String getMembersOfProject = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_PROJECTS WHERE PROJECT_ID = ?";
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
-    private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
+    //private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
+    private static final String getGroupsSQL = "SELECT * FROM MODEL.GROUPS";
     private static final String getProjectsSQL = "SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?";
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
@@ -161,7 +162,7 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     public Set<Group> getGroups(User user, Filter<Group> filter) {
         try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
              PreparedStatement statement = connection.prepareStatement(getGroupsSQL)) {
-            statement.setString(1, user.getId());
+            //statement.setString(1, user.getId());
             ResultSet result = statement.executeQuery();
             Set<Group> groups = new HashSet<>();
             while (result.next()) {

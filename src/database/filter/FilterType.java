@@ -16,7 +16,8 @@ public enum FilterType {
     parentId(JsonConstants.PARENT_ID_FILTER),
     startDate(JsonConstants.START_DATE),
     endDate(JsonConstants.END_DATE),
-    notJoined(JsonConstants.NOT_JOINED_FILTER);
+    notJoined(JsonConstants.NOT_JOINED_FILTER),
+    joined(JsonConstants.JOINED_FILTER);
 
 
     private String value;

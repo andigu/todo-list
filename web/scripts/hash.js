@@ -34,6 +34,7 @@ function setHash(hash) {
 }
 
 $(window).on("hashchange", function () {
+
     let hash = getHash();
     request("/sessions", "GET", {cmd: "ping"}, (response) => {
         let loggedIn = getStatus(response, "loggedIn");
@@ -44,6 +45,7 @@ $(window).on("hashchange", function () {
         } else {
             location.hash = hash;
         }
+
         hash = getHash();
         let elementId = "#" + hash + "-view";
         const body = $("body");
@@ -62,12 +64,15 @@ $(window).on("hashchange", function () {
                 loadingDiv.hide();
             });
         });
-        $("#tab-name").text(titleMap[getHash()]);
 
-        //Is there a better way to do this?
-        if(getHash() === "group" || getHash() === "project") document.title = "Todolist | "+(titleMap[getHash()])();
-        else document.title = "Todolist | "+(titleMap[getHash()]);
-
-        $("#nav-bar").hide();
     });
+
+
+    $("#tab-name").text(titleMap[getHash()]);
+
+    //Is there a better way to do this?
+    if(getHash() === "group" || getHash() === "project") document.title = "Todolist | "+(titleMap[getHash()])();
+    else document.title = "Todolist | "+(titleMap[getHash()]);
+
+    $("#nav-bar").hide();
 });
