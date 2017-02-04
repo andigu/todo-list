@@ -65,8 +65,13 @@ $(window).on("hashchange", function () {
             });
         });
 
-    });
+        //Fixes bug where data is lost after page refresh
+        let name = $("#name").text();
+        if (!name && (loggedIn)) {
+            viewModel.fetchUserdata();
+        }
 
+    });
 
     $("#tab-name").text(titleMap[getHash()]);
 

@@ -47,6 +47,12 @@ class ActivityViewModel {
                 }
             });
 
+
+        setTimeout(function () {
+            //location.reload();
+        }, 1000);
+
+
     };
 
     register(form) {
@@ -71,6 +77,12 @@ class ActivityViewModel {
                 this.getTasks();
             }
         });
+    }
+
+    fetchUserdata () {
+        request("/sessions", "GET", {cmd: "userInf"}, response => {
+            mapUser({"user": response["data"]});
+        })
     }
 
     getTasks(taskTypes, parentId) {

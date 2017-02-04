@@ -35,7 +35,7 @@
     <div class="w3-sidenav w3-collapse w3-white w3-card-2 w3-animate-left" style="width:200px;" id="nav-bar">
         <div id="user-info" class="w3-gray w3-card-2">
             <div style="display: inline-block">
-                <img src="images/user_icon.png" class="profile-picture"/>
+                <img src="images/user_icon.png" class="profile-picture" alt="profile"/>
             </div>
             <div style="display: inline-block">
                 <div class="w3-dropdown-hover">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            <h5 data-bind="text: name" class="w3-text-white" style="margin-left: 15px"></h5>
+            <h5 id="name" data-bind="text: name" class="w3-text-white" style="margin-left: 15px"></h5>
         </div>
         <a id="app-link" class="nav-link w3-indigo">Dashboard</a>
         <div class="w3-accordion">
@@ -74,11 +74,13 @@
             <table>
                 <thead></thead>
                 <tbody data-bind="foreach: notifications">
-                <td>
-                    <div class="w3-card-2 w3-white" style="width: 100%; font-size: small">
-                        <a data-bind="text: content"></a>
-                    </div>
-                </td>
+                    <tr>
+                        <td>
+                            <div class="w3-card-2 w3-white" style="width: 100%; font-size: small">
+                                <a data-bind="text: content"></a>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -273,7 +275,7 @@
                     </div>
                     <div class="w3-rest">
                         <!--Concept, does not work yet-->
-                        <input name="" type="text" id="muted-input" placeholder="Quick Add Task (ex Math test tomorrow)"/>
+                        <!--<input type="text" id="muted-input" placeholder="Quick Add Task (ex Math test tomorrow)"/>-->
                     </div>
                 </div>
             </div>
@@ -336,12 +338,12 @@
 <div id="projects-view" class="content w3-main">
     <h1>Your Projects</h1>
     <table>
-        <thead>
-        <tr>Name</tr>
-        </thead>
-        <tbody data-bind="foreach: projects">
-        <tr data-bind="text: name"></tr>
-        </tbody>
+        <!--<thead>-->
+        <!--<tr>Name</tr>-->
+        <!--</thead>-->
+        <!--<tbody data-bind="foreach: projects">-->
+        <!--<tr data-bind="text: name"></tr>-->
+        <!--</tbody>-->
     </table>
 </div>
 

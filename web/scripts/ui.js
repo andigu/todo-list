@@ -41,7 +41,12 @@ $(document).ready(function () {
             if (getStatus(response, "success")) {
                 console.log("logged out!");
                 setHash("login");
-                viewModel = new ActivityViewModel(); // Clear data
+                //viewModel = new ActivityViewModel(); // Clear data *This does not work*
+
+                //Clear data
+                setTimeout(function () {
+                    location.reload();
+                }, 10);
             }
             else {
                 alert("Something went wrong!");
