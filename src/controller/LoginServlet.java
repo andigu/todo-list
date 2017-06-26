@@ -27,7 +27,7 @@ public class LoginServlet extends ApplicationServlet {
                 response.addCookie(new Cookie(JsonConstants.TOKEN, db.storeLogin(user.getId())));
             }
             request.getSession().setAttribute(JsonConstants.USER_ID, user.getId());
-        }
+        }//sdsd//
         return responseEntity;
     }
 }
