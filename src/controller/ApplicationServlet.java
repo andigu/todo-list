@@ -8,6 +8,7 @@ import database.SQLDatabaseAccessor;
 import database.filter.Filter;
 import database.filter.FilterType;
 import model.User;
+import services.FacebookService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -24,6 +25,7 @@ import java.util.Map;
 public abstract class ApplicationServlet extends HttpServlet {
     DatabaseAccessor db = SQLDatabaseAccessor.getInstance();
     StateConverter converter = StateConverter.getInstance();
+    FacebookService fb = FacebookService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

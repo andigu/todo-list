@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 /**
@@ -18,16 +19,15 @@ import java.util.Map;
 public class LoginServlet extends ApplicationServlet {
     @Override
     public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
-        ResponseEntity<User> responseEntity = new ResponseEntity<>();
-        Map<String, String> userData = converter.cast(requestData.get(JsonConstants.USER), SupportedTypeReference.STRING_MAP);
-        User user = db.getUserByLogin(userData.get(JsonConstants.USERNAME), userData.get(JsonConstants.PASSWORD));
-        responseEntity.setData(user);
-        if (user != null) {
-            if (converter.cast(requestData.get(JsonConstants.STAY_LOGGED), SupportedTypeReference.BOOLEAN)) {
-                response.addCookie(new Cookie(JsonConstants.TOKEN, db.storeLogin(user.getId())));
-            }
-            request.getSession().setAttribute(JsonConstants.USER_ID, user.getId());
-        }//sdsd//
-        return responseEntity;
+        System.out.println("login attempt received");
+
+        ResponseEntity<Map<String, Object>> responseEntity = new ResponseEntity<>();
+        Map<String, String> authResponse = converter.cast(requestData, SupportedTypeReference.STRING_MAP);
+        try {
+            System.out.println(fb.getLongLiveToken(authResponse.get("accessToken")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  responseEntity;
     }
 }
