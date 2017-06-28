@@ -19,7 +19,9 @@ import java.util.Set;
  * @author Andi Gu
  */
 public interface DatabaseAccessor {
-    User getUserByLogin(String username, String password);
+    //User getUserByLogin(String username, String password);
+
+    User getUserByFacebookId(String id);
 
     User getUserById(String id);
 
@@ -59,7 +61,9 @@ public interface DatabaseAccessor {
 
     void completeProject(Project project, Date dateCompleted);
 
-    User registerUser(String username, String password, String firstName, String lastName, String email) throws SQLIntegrityConstraintViolationException;
+    User registerUser(String firstName, String lastName, String email, String facebookId, String pictureUrl) throws SQLIntegrityConstraintViolationException;
+
+    User registerUser(User user) throws SQLIntegrityConstraintViolationException;
 
     String storeLogin(String userId);
 }

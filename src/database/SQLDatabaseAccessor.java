@@ -70,8 +70,9 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     }};
 
     //Todo make sure these work with postgres
-    private static final String getUserByLoginSQL = "SELECT * FROM MODEL.USERS WHERE USERNAME = ? AND PASSWORD = ?";
+    //private static final String getUserByLoginSQL = "SELECT * FROM MODEL.USERS WHERE USERNAME = ? AND PASSWORD = ?";
     private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
+    private static final String getUserByFacebookIdSQL = "SELECT * FROM MODEL.USERS WHERE FACEBOOK_ID = ?";
     private static final String getMembersOfGroup = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_GROUPS WHERE GROUP_ID = ?";
     private static final String getMembersOfProject = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_PROJECTS WHERE PROJECT_ID = ?";
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
@@ -81,7 +82,9 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
-    private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL)  VALUES (?, ?, ?, ?, ?, ?)";
+
+    private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, FIRST_NAME, LAST_NAME, EMAIL, FACEBOOK_ID, PICTURE_URL)  VALUES (?, ?, ?, ?, ?, ?)";
+
     private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
     private static final String getGroupSQL = "SELECT * FROM MODEL.GROUPS WHERE GROUP_ID = ?";
     private static final String getProjectSQL = "SELECT * FROM MODEL.PROJECTS WHERE PROJECT_ID = ?";
@@ -96,23 +99,54 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     private static final SQLDatabaseAccessor instance = new SQLDatabaseAccessor();
 
 
+//    @Override
+//    public User getUserByLogin(String username, String password) {
+//        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
+//             PreparedStatement statement = connection.prepareStatement(getUserByLoginSQL)) {
+//            statement.setString(1, username);
+//            statement.setString(2, encrypt(password));
+//            ResultSet resultSet = statement.executeQuery();
+//            return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+
+
     @Override
-    public User getUserByLogin(String username, String password) {
+    public User getUserByFacebookId(String id) {
+        return getUserByIdentification(id, "facebook_id");
+    }
+
+    @Override
+    public User getUserById(String id) {
+        return getUserByIdentification(id, "id");
+    }
+
+    /**
+     * Functionality that is shared between getUserById, getUserByToken and getUserByFacebookId
+     *
+     * @param identification Unique identification value
+     * @param idType         Cannot directly pass in SQL: if this were possible, other functions might accidentally call this
+     *                       function and get unexpected results
+     * @return User with matching identification
+     */
+    private User getUserByIdentification(String identification, String idType) {
+        Map<String, String> idTypeMap = new HashMap<String, String>() {{
+            put("token", getUserByTokenSQL);
+            put("id", getUserByIdSQL);
+            put("facebook_id", getUserByFacebookIdSQL);
+        }};
         try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
-             PreparedStatement statement = connection.prepareStatement(getUserByLoginSQL)) {
-            statement.setString(1, username);
-            statement.setString(2, encrypt(password));
+             PreparedStatement statement = connection.prepareStatement(idTypeMap.get(idType))) {
+            statement.setString(1, identification);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    @Override
-    public User getUserById(String id) {
-        return getUserByIdentification(id, "id");
     }
 
     @Override
@@ -132,26 +166,6 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
             }
             return tasks;
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * Functionality that is shared between getUserById and getUserByToken
-     *
-     * @param identification Unique identification value
-     * @param idType         Cannot directly pass in SQL: if this were possible, other functions might accidentally call this
-     *                       function and get unexpected results
-     * @return User with matching identification
-     */
-    private User getUserByIdentification(String identification, String idType) {
-        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
-             PreparedStatement statement = connection.prepareStatement(idType.equals("token") ? getUserByTokenSQL : getUserByIdSQL)) {
-            statement.setString(1, identification);
-            ResultSet resultSet = statement.executeQuery();
-            return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
-        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -324,24 +338,29 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
      * @param lastName  The last name of the new user
      */
     @Override
-    public User registerUser(String username, String password, String firstName, String lastName, String email) throws SQLIntegrityConstraintViolationException {
+    public User registerUser(String firstName, String lastName, String email, String facebookId, String pictureUrl) throws SQLIntegrityConstraintViolationException {
         try (Connection conn = sources.get(SOURCE_FLAVOR).getConnection();
              PreparedStatement statement = conn.prepareStatement(registerUserSQL)) {
             String token = randomId();
             statement.setString(1, token);
-            statement.setString(2, username);
-            statement.setString(3, encrypt(password));
-            statement.setString(4, firstName);
-            statement.setString(5, lastName);
-            statement.setString(6, email);
+            statement.setString(2, firstName);
+            statement.setString(3, lastName);
+            statement.setString(4, email);
+            statement.setString(5, facebookId);
+            statement.setString(6, pictureUrl);
             statement.execute();
-            return new User(token, firstName, lastName, username, email);
+            return new User(token, firstName, lastName, email, facebookId, pictureUrl);
         } catch (SQLIntegrityConstraintViolationException e) {
             throw e;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public User registerUser(User user) throws SQLIntegrityConstraintViolationException {
+        return registerUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getFacebookId(), user.getPictureUrl());
     }
 
     private String randomId() {

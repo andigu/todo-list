@@ -7,25 +7,59 @@ package model;
  */
 
 public class User extends Identifiable {
-    private String username;
+    private String facebookId;
+    private String pictureUrl;
     private String email;
+    private String firstName;
+    private String lastName;
 
-    public User(String id, String firstName, String lastName, String username, String email) {
+    public User(String id, String firstName, String lastName, String email, String facebookId, String pictureUrl) {
         super(id, firstName + " " + lastName);
-        this.username = username;
+        this.firstName = firstName;
+        this.lastName= lastName;
         this.email = email;
+        this.facebookId = facebookId;
+        this.pictureUrl = pictureUrl;
     }
 
-    public User(String firstName, String lastName, String username) {
+    public User(String firstName, String lastName, String email, String facebookId, String pictureUrl) {
         super(firstName + " " + lastName);
-        this.username = username;
+        this.firstName = firstName;
+        this.lastName= lastName;
+        this.facebookId = facebookId;
+        this.pictureUrl = pictureUrl;
+        this.email = email;
+
     }
 
-    public String getUsername() {
-        return username;
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "facebookId='" + facebookId + '\'' +
+                ", pictureUrl='" + pictureUrl + '\'' +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }
