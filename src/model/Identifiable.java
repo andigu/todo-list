@@ -39,6 +39,11 @@ public abstract class Identifiable implements Comparable<Identifiable> {
         return id;
     }
 
+    // Only useful for
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }

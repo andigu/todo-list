@@ -6,6 +6,8 @@ import database.dao.ProjectTaskDAO;
 import database.dao.TaskDAO;
 import database.filter.Filter;
 import database.filter.TaskFilter;
+import encryption.Encryption;
+import model.Session;
 import model.User;
 import model.group.Group;
 import model.group.Project;
@@ -81,9 +83,11 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     private static final String getProjectsSQL = "SELECT * FROM MODEL.USER_PROJECTS NATURAL JOIN MODEL.PROJECTS WHERE USER_ID = ?";
     private static final String getProjectTasksSQL = "SELECT * FROM MODEL.PROJECT_TASKS WHERE PROJECT_ID = ?";
     private static final String getUsersCompletedGroupTaskSQL = "SELECT * FROM MODEL.USER_COMPLETED_GROUP_TASKS WHERE TASK_ID = ?";
-    private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID) VALUES (?, ?)";
-
+    private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID, FACEBOOK_TOKEN) VALUES (?, ?, ?)";
+    private static final String deleteLoginSQL = "DELETE  FROM APP.LOGINS WHERE user_id = ?";
     private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, FIRST_NAME, LAST_NAME, EMAIL, FACEBOOK_ID, PICTURE_URL)  VALUES (?, ?, ?, ?, ?, ?)";
+
+    private static final String updateUserSQL = "UPDATE MODEL.USERS SET FIRST_NAME = ?, LAST_NAME = ?, EMAIL = ?, PICTURE_URL = ? WHERE USER_ID = ?";
 
     private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
     private static final String getGroupSQL = "SELECT * FROM MODEL.GROUPS WHERE GROUP_ID = ?";
@@ -315,25 +319,36 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     }
 
     @Override
-    public String storeLogin(String userId) {
+    public Session storeLogin(String userId, String facebookToken) {
         try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
              PreparedStatement statement = connection.prepareStatement(storeLoginSQL)) {
             String token = randomId();
+            String key = randomId();
             statement.setString(1, token);
             statement.setString(2, userId);
+            statement.setString(3, encrypt(facebookToken, key));
             statement.execute();
-            return token;
+            return new Session(token, key);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    @Override
+    public void deleteLogin(String userId) {
+        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
+             PreparedStatement statement = connection.prepareStatement(deleteLoginSQL)) {
+            statement.setString(1, userId);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Inserts a new user into the database.
      *
-     * @param username  The username of the new user
-     * @param password  The password of the new user
      * @param firstName The first name of the new user
      * @param lastName  The last name of the new user
      */
@@ -363,11 +378,28 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
         return registerUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getFacebookId(), user.getPictureUrl());
     }
 
+    @Override
+    public User updateUser(User user) {
+        try(Connection conn = sources.get(SOURCE_FLAVOR).getConnection();
+            PreparedStatement statement = conn.prepareStatement(updateUserSQL)){
+            statement.setString(1, user.getFirstName());
+            statement.setString(2, user.getLastName());
+            statement.setString(3, user.getEmail());
+            statement.setString(4, user.getPictureUrl());
+            statement.setString(5, user.getId());
+            statement.execute();
+            return getUserByFacebookId(user.getFacebookId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private String randomId() {
         return UUID.randomUUID().toString();
     }
 
-    private String encrypt(String string) {
+    private String getHash(String string) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
             messageDigest.update(string.getBytes());
@@ -428,4 +460,15 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     public void insertTask(Task task) {
         taskDAOMap.get(task.getClass()).insertTask(task);
     }
+
+    public String encrypt(String raw, String key) {
+        Encryption encryption = Encryption.getDefault(key, "fillersalt", new byte[16]);
+        return encryption.encryptOrNull(raw);
+    }
+
+    public String decrypt(String encrypted, String key) {
+        Encryption encryption = Encryption.getDefault(key, "fillersalt", new byte[16]);
+        return encryption.decryptOrNull(encrypted);
+    }
+
 }

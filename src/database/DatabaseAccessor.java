@@ -2,6 +2,7 @@ package database;
 
 import database.filter.Filter;
 import database.filter.TaskFilter;
+import model.Session;
 import model.User;
 import model.group.Group;
 import model.group.Project;
@@ -65,5 +66,9 @@ public interface DatabaseAccessor {
 
     User registerUser(User user) throws SQLIntegrityConstraintViolationException;
 
-    String storeLogin(String userId);
+    User updateUser(User user);
+
+    Session storeLogin(String userId, String facebookToken);
+
+    void deleteLogin(String userId);
 }
