@@ -7,6 +7,7 @@ import database.DatabaseAccessor;
 import database.SQLDatabaseAccessor;
 import database.filter.Filter;
 import database.filter.FilterType;
+import model.Session;
 import model.User;
 import services.FacebookService;
 
@@ -49,20 +50,12 @@ public abstract class ApplicationServlet extends HttpServlet {
     }
 
     User getLoggedUser(HttpServletRequest request) {
-        Object userId = request.getSession().getAttribute(JsonConstants.USER_ID);
-        if (userId != null) { // Checks session
-            return db.getUserById(userId.toString());
-        } else {
-            if (request.getCookies() != null) { // Checks cookies
-                for (Cookie cookie : request.getCookies()) {
-                    if (cookie.getName().equals(JsonConstants.TOKEN)) {
-                        return db.getUserByToken(cookie.getValue());
-                    }
-                }
-            }
-            return null;
-        }
+        System.out.println("getLoggedUser");
+        User user = db.getUserByToken(request.getParameter("loginToken"));
+        System.out.println(request.getParameter("loginToken"));
+        return user;
     }
+
 
     private String requestDataToString(HttpServletRequest request) throws IOException {
         String data = "";

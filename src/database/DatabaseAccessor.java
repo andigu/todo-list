@@ -69,6 +69,8 @@ public interface DatabaseAccessor {
     User updateUser(User user);
 
     Session storeLogin(String userId, String facebookToken);
+    
+    String getFacebookTokenBySession(Session session);
 
     void deleteLogin(String userId);
 }

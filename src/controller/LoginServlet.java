@@ -62,7 +62,7 @@ public class LoginServlet extends ApplicationServlet {
     public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
         System.out.println("login attempt received");
 
-        ResponseEntity<LoginResponse> responseEntity = new ResponseEntity<>();
+        ResponseEntity<Session> responseEntity = new ResponseEntity<>();
         Map<String, String> authResponse = converter.cast(requestData, SupportedTypeReference.STRING_MAP);
 
         try {
@@ -79,7 +79,8 @@ public class LoginServlet extends ApplicationServlet {
             Session session = db.storeLogin(databaseUser.getId(), longLiveToken);
             System.out.println(databaseUser);
             System.out.println(facebookUser);
-            responseEntity.setData(new LoginResponse(databaseUser, session));
+            responseEntity.setData(session);
+            request.getSession().setAttribute(JsonConstants.USER_ID, databaseUser.getId());
 
         } catch (URISyntaxException e) {
             e.printStackTrace();

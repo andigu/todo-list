@@ -75,6 +75,9 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     //private static final String getUserByLoginSQL = "SELECT * FROM MODEL.USERS WHERE USERNAME = ? AND PASSWORD = ?";
     private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
     private static final String getUserByFacebookIdSQL = "SELECT * FROM MODEL.USERS WHERE FACEBOOK_ID = ?";
+
+    private static final String getFacebookTokenByLoginToken = "SELECT FACEBOOK_TOKEN FROM APP.LOGINS WHERE TOKEN = ?";
+
     private static final String getMembersOfGroup = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_GROUPS WHERE GROUP_ID = ?";
     private static final String getMembersOfProject = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_PROJECTS WHERE PROJECT_ID = ?";
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
@@ -86,9 +89,7 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     private static final String storeLoginSQL = "INSERT INTO APP.LOGINS(TOKEN, USER_ID, FACEBOOK_TOKEN) VALUES (?, ?, ?)";
     private static final String deleteLoginSQL = "DELETE  FROM APP.LOGINS WHERE user_id = ?";
     private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, FIRST_NAME, LAST_NAME, EMAIL, FACEBOOK_ID, PICTURE_URL)  VALUES (?, ?, ?, ?, ?, ?)";
-
     private static final String updateUserSQL = "UPDATE MODEL.USERS SET FIRST_NAME = ?, LAST_NAME = ?, EMAIL = ?, PICTURE_URL = ? WHERE USER_ID = ?";
-
     private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
     private static final String getGroupSQL = "SELECT * FROM MODEL.GROUPS WHERE GROUP_ID = ?";
     private static final String getProjectSQL = "SELECT * FROM MODEL.PROJECTS WHERE PROJECT_ID = ?";
@@ -147,6 +148,19 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
             statement.setString(1, identification);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getFacebookTokenBySession(Session session) {
+        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
+             PreparedStatement statement = connection.prepareStatement(getFacebookTokenByLoginToken)) {
+            statement.setString(1, session.getLoginToken());
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next() ? decrypt(resultSet.getString("facebook_token"), session.getFacebookTokenKey()) : null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
