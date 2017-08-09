@@ -7,9 +7,8 @@ import database.DatabaseAccessor;
 import database.SQLDatabaseAccessor;
 import database.filter.Filter;
 import database.filter.FilterType;
-import model.Session;
 import model.User;
-import services.FacebookService;
+import model.facebook.FacebookService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;

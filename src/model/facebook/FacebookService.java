@@ -1,13 +1,13 @@
-package services;
+package model.facebook;
 
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import controller.json.StateConverter;
 import controller.json.SupportedTypeReference;
 import model.User;
+import model.group.Group;
 import org.apache.http.client.utils.URIBuilder;
+import services.EnvironmentVariable;
 
-import javax.ws.rs.core.UriBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,6 +26,7 @@ public class FacebookService {
     }
 
     private StateConverter converter = StateConverter.getInstance();
+    private FacebookDataHelper helper = FacebookDataHelper.getInstance();
 
     public FacebookService(){}
 
@@ -45,22 +46,21 @@ public class FacebookService {
 
     }
 
-    public User getUserByAccessToken(String accessToken){
-        try {
-            URI uri = new URIBuilder(BASE_URL+"me")
-                    .addParameter("access_token", accessToken)
-                    .addParameter("fields", "id,first_name,last_name,email,picture")
-                    .build();
+    public User getUserByAccessToken(String accessToken) throws URISyntaxException, IOException{
+        URI uri = new URIBuilder(BASE_URL+"me")
+                .addParameter("access_token", accessToken)
+                .addParameter("fields", "id,first_name,last_name,email,picture")
+                .build();
 
-            //TODO add profile pic support
-            Map<String, String> responseData = converter.fromJson(getResponse(uri.toURL()), SupportedTypeReference.STRING_MAP);
-            return new User(responseData.get("first_name"), responseData.get("last_name"), responseData.get("email"),
-                    responseData.get("id"), "n/a");
-        } catch (URISyntaxException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
+        //TODO add profile pic support
+        Map<String, String> responseData = converter.fromJson(getResponse(uri.toURL()), SupportedTypeReference.STRING_MAP);
+        System.out.println(responseData.toString());
+        return helper.getUser(getResponse(uri.toURL()));
+
+    }
+
+    public Group getGroupByFacebookId(String id){
+        return null;
     }
 
     private String getResponse(URL url) throws java.io.IOException {

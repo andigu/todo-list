@@ -1,12 +1,14 @@
 package model;
 
+import model.facebook.FacebookEntity;
+
 /**
  * A user holds a set of individual tasks, as well as a set of groups and projects that he or she belongs to.
  *
  * @author Andi Gu
  */
 
-public class User extends Identifiable {
+public class User extends FacebookEntity {
     private String facebookId;
     private String pictureUrl;
     private String email;

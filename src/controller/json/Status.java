@@ -7,18 +7,18 @@ package controller.json;
  */
 public class Status {
     private String name;
-    private Object status;
+    private Object state;
 
-    public Status(String name, Object status) {
+    public Status(String name, Object state) {
         this.name = name;
-        this.status = status;
+        this.state = state;
     }
 
     public String getName() {
         return name;
     }
 
-    public Object getStatus() {
-        return status;
+    public Object getState() {
+        return state;
     }
 }

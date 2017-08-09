@@ -3,6 +3,7 @@ package model;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public abstract class Identifiable implements Comparable<Identifiable> {
         return id;
     }
 
-    // Only useful for
+    // Only useful for fb
     public void setId(String id) {
         this.id = id;
     }

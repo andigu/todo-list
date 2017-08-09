@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,5 +22,10 @@ public class GroupServlet extends ApplicationServlet {
         ResponseEntity<Set<Group>> responseEntity = new ResponseEntity<>();
         responseEntity.setData(db.getGroups(getLoggedUser(request), addConstraints(new GroupFilter(), request)));
         return responseEntity;
+    }
+
+    @Override
+    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
+        return super.processPostResponse(request, response, requestData);
     }
 }

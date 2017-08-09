@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Just for front end to ping if a session for the user exists
  *
- * @author Andi Gu
+ * @author Andi Gu, Susheel Kona
  */
 
 @WebServlet("/sessions")
@@ -30,6 +30,7 @@ public class SessionServlet extends ApplicationServlet {
             case JsonConstants.USER_INF_CMD:
                 responseEntity.setData(getLoggedUser(request));
                 break;
+
         }
         System.out.println(responseEntity.getStatus());
         return responseEntity;
@@ -38,5 +39,6 @@ public class SessionServlet extends ApplicationServlet {
     @Override
     public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
         return this.processGetRequest(request, response);
+
     }
 }

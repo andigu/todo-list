@@ -21,48 +21,12 @@ import java.util.Map;
  */
 @WebServlet("/login")
 public class LoginServlet extends ApplicationServlet {
-//    @Override
-//    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
-//        System.out.println("login attempt received");
-//
-//        ResponseEntity<LoginResponse> responseEntity = new ResponseEntity<>();
-//        Map<String, String> authResponse = converter.cast(requestData, SupportedTypeReference.STRING_MAP);
-//
-//        String longLiveToken="";
-//        try {
-//            longLiveToken = fb.getLongLiveToken(authResponse.get("accessToken"));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.setStatus(500);
-//        }
-//
-//        User databaseUser = db.getUserByFacebookId(authResponse.get("userID")), facebookUser = fb.getUserByAccessToken(longLiveToken);
-//
-//        if (databaseUser == null) {
-//            try {
-//                databaseUser = db.registerUser(facebookUser);
-//            } catch (SQLIntegrityConstraintViolationException e) {
-//                e.printStackTrace();
-//            }
-//
-//        } else {
-//            db.deleteLogin(databaseUser.getId());
-//            System.out.println("Updating user");
-//            facebookUser.setId(databaseUser.getId());
-//            databaseUser = db.updateUser(facebookUser);
-//        }
-//
-//        Session session = db.storeLogin(databaseUser.getId(), longLiveToken);
-//        System.out.println(databaseUser);
-//        System.out.println(facebookUser);
-//        responseEntity.setData(new LoginResponse(databaseUser, session));
-//        return responseEntity;
-//    }
+
     @Override
     public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
         System.out.println("login attempt received");
 
-        ResponseEntity<Session> responseEntity = new ResponseEntity<>();
+        ResponseEntity<LoginResponse> responseEntity = new ResponseEntity<>();
         Map<String, String> authResponse = converter.cast(requestData, SupportedTypeReference.STRING_MAP);
 
         try {
@@ -79,14 +43,11 @@ public class LoginServlet extends ApplicationServlet {
             Session session = db.storeLogin(databaseUser.getId(), longLiveToken);
             System.out.println(databaseUser);
             System.out.println(facebookUser);
-            responseEntity.setData(session);
+            responseEntity.setData(new LoginResponse(databaseUser, session));
             request.getSession().setAttribute(JsonConstants.USER_ID, databaseUser.getId());
 
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.setStatus(500);
-            responseEntity.setError(new Error(e.getMessage()));
-        } catch (SQLIntegrityConstraintViolationException e) {
             response.setStatus(500);
             responseEntity.setError(new Error(e.getMessage()));
         }
