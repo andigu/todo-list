@@ -159,6 +159,7 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
         try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
              PreparedStatement statement = connection.prepareStatement(getFacebookTokenByLoginToken)) {
             statement.setString(1, session.getLoginToken());
+            System.out.println(session);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? decrypt(resultSet.getString("facebook_token"), session.getFacebookTokenKey()) : null;
         } catch (SQLException e) {
@@ -171,6 +172,7 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     public User getUserByToken(String token) {
         return getUserByIdentification(token, "token");
     }
+
 
     @Override
     public Set<Task> getTasks(User user, TaskFilter taskFilter) {

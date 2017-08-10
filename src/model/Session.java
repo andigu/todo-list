@@ -19,4 +19,12 @@ public class Session {
     public String getFacebookTokenKey() {
         return facebookTokenKey;
     }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "loginToken='" + loginToken + '\'' +
+                ", facebookTokenKey='" + facebookTokenKey + '\'' +
+                '}';
+    }
 }

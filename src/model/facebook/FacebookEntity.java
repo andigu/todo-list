@@ -2,9 +2,6 @@ package model.facebook;
 
 import model.Identifiable;
 
-import javax.persistence.Id;
-import java.util.Map;
-
 /**
  * A model for all entities that come from the Facebook Graph API.
  *
@@ -12,7 +9,7 @@ import java.util.Map;
  */
 public abstract class FacebookEntity extends Identifiable {
     private String facebookId;
-//    private Picture picture;
+    private String pictureUrl;
 
     // Default constructors
     public FacebookEntity() {
@@ -31,17 +28,20 @@ public abstract class FacebookEntity extends Identifiable {
         return facebookId;
     }
 
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         return ((this.getId() != null) && (((Identifiable)(o)).getId() != null)) ? super.equals(o) : (this.getFacebookId() == ((FacebookEntity)(o)).getFacebookId());
     }
-
 }
-
-//class Picture {
-//    private Map<String, String> data;
-//    public Map<String, String> getData() {
-//        return data;
-//    }
-//}
-//

@@ -7,6 +7,7 @@ import database.DatabaseAccessor;
 import database.SQLDatabaseAccessor;
 import database.filter.Filter;
 import database.filter.FilterType;
+import model.Session;
 import model.User;
 import model.facebook.FacebookService;
 
@@ -37,22 +38,43 @@ public abstract class ApplicationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(JsonConstants.JSON_CONTENT_TYPE);
         Map<String, Object> requestData = converter.fromJson(requestDataToString(request), SupportedTypeReference.OBJECT_MAP);
-        response.getWriter().write(converter.toJson(processPostResponse(request, response, requestData)));
+        Session session = null;
+        try {
+            session = new Session(requestData.get("loginToken").toString(), requestData.get("facebookTokenKey").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        response.getWriter().write(converter.toJson(processPostResponse(request, response, requestData, session)));
     }
 
     public ResponseEntity<?> processGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         return new ResponseEntity<>();
     }
 
-    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
+    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData, Session session) throws IOException {
         return new ResponseEntity<>();
     }
 
+    // Only works for get requests?
     User getLoggedUser(HttpServletRequest request) {
-        System.out.println("getLoggedUser");
         User user = db.getUserByToken(request.getParameter("loginToken"));
-        System.out.println(request.getParameter("loginToken"));
         return user;
+    }
+
+//    String getFacebookToken(HttpServletRequest request) {
+//        System.out.println("logintoken: "+ request.getParameter("loginToken"));
+//        System.out.println("map: "+ request.getParameterMap());
+//        return db.getFacebookTokenBySession(new Session(request.getParameter("loginToken"), request.getParameter("facebookTokenKey")));
+//    }
+
+    // Get requests
+    String getFacebookToken(HttpServletRequest request) {
+        return getFacebookToken(new Session(request.getParameter("loginToken"), request.getParameter("facebookTokenKey")));
+    }
+
+    // Post requests
+    String getFacebookToken(Session session) {
+        return db.getFacebookTokenBySession(session);
     }
 
 

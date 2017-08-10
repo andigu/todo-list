@@ -19,7 +19,6 @@ import java.util.Set;
 public class Group extends FacebookEntity {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<User> members;
-    private String icon; // Url for Facebook icon
 
 
     public Group(String id, String name) {
@@ -31,11 +30,17 @@ public class Group extends FacebookEntity {
         super(name);
     }
 
+    // From facebook
+    public Group(String facebookId, String name, String privacy, String pictureUrl) {
+        this.setId(null);
+        this.setFacebookId(facebookId);
+        this.setName(name);
+        this.setPictureUrl(pictureUrl);
+    }
+
+
     public void setMembers(Set<User> members) {this.members = members;}
 
-    public String getIcon() {
-        return icon;
-    }
 
     public void addMember(User member) {
         members.add(member);

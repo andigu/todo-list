@@ -3,6 +3,7 @@ package controller;
 import controller.json.Error;
 import controller.json.JsonConstants;
 import controller.json.SupportedTypeReference;
+import model.Session;
 import model.User;
 import services.EmailService;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  * Requests to register new users in the database are processed in this servlet
  *
  * @author Susheel Kona
+ * @deprecated Switched to Facebook Login
  */
 @WebServlet("/register")
 public class RegistrationServlet extends ApplicationServlet {
@@ -41,7 +43,7 @@ public class RegistrationServlet extends ApplicationServlet {
     }
 
     @Override
-    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
+    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData, Session session) throws IOException {
         ResponseEntity<User> responseEntity = new ResponseEntity<>();
         Map<String, String> registerInf = converter.cast(requestData.get(JsonConstants.USER), SupportedTypeReference.STRING_MAP);
 

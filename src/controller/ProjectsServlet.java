@@ -12,6 +12,7 @@ import java.util.Set;
 
 /**
  * @author Andi Gu
+ * @deprecated
  */
 
 @WebServlet("/projects")

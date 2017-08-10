@@ -2,6 +2,7 @@ package controller;
 
 import controller.json.JsonConstants;
 import controller.json.Status;
+import model.Session;
 import model.User;
 
 import javax.servlet.annotation.WebServlet;
@@ -37,7 +38,7 @@ public class SessionServlet extends ApplicationServlet {
     }
 
     @Override
-    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
+    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData, Session session) throws IOException {
         return this.processGetRequest(request, response);
 
     }

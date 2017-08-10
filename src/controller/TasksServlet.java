@@ -3,6 +3,7 @@ package controller;
 import controller.json.JsonConstants;
 import controller.json.SupportedTypeReference;
 import database.filter.TaskFilter;
+import model.Session;
 import model.User;
 import model.task.GroupTask;
 import model.task.IndividualTask;
@@ -34,7 +35,7 @@ public class TasksServlet extends ApplicationServlet {
     }
 
     @Override
-    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
+    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData, Session session) throws IOException {
         ResponseEntity<Task> responseEntity = new ResponseEntity<>();
         Map<String, Object> taskJson = converter.cast(requestData.get(JsonConstants.TASK), SupportedTypeReference.OBJECT_MAP);
         Task task = getTask(getLoggedUser(request), taskJson, requestData.get(JsonConstants.TASK_TYPE).toString());

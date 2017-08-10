@@ -23,7 +23,7 @@ import java.util.Map;
 public class LoginServlet extends ApplicationServlet {
 
     @Override
-    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
+    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData, Session session) throws IOException {
         System.out.println("login attempt received");
 
         ResponseEntity<LoginResponse> responseEntity = new ResponseEntity<>();
@@ -40,7 +40,7 @@ public class LoginServlet extends ApplicationServlet {
                 facebookUser.setId(databaseUser.getId());
                 databaseUser = db.updateUser(facebookUser);
             }
-            Session session = db.storeLogin(databaseUser.getId(), longLiveToken);
+            session = db.storeLogin(databaseUser.getId(), longLiveToken);
             System.out.println(databaseUser);
             System.out.println(facebookUser);
             responseEntity.setData(new LoginResponse(databaseUser, session));

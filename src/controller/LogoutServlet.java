@@ -2,6 +2,7 @@ package controller;
 
 import controller.json.JsonConstants;
 import controller.json.Status;
+import model.Session;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import java.util.Map;
 @WebServlet("/logout")
 public class LogoutServlet extends ApplicationServlet {
     @Override
-    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData) throws IOException {
+    public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData, Session session) throws IOException {
         ResponseEntity responseEntity = new ResponseEntity();
         deleteCookie(request, JsonConstants.TOKEN, response);
         request.getSession().removeAttribute(JsonConstants.USER_ID);
