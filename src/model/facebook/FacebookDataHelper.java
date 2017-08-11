@@ -6,6 +6,9 @@ import model.User;
 import model.group.Group;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -19,8 +22,14 @@ public class FacebookDataHelper {
         JsonNode root = mapper.readTree(json);
         Group group = new Group(root.path("id").asText(), root.path("name").asText(), root.path("privacy").asText(),
                 extractPictureUrl(root.path("picture")));
-//        JsonNode membersNode = root.path()
-
+        JsonNode membersNode = root.path("members").path("data");
+        Set<User> members = new HashSet<User>();
+        for(JsonNode node: membersNode) {
+            members.add(new User(node.path("name").asText()){{
+                setFacebookId(node.path("id").asText());
+            }});
+        }
+        group.setMembers(members);
         return group;
     }
 
@@ -30,7 +39,7 @@ public class FacebookDataHelper {
                 root.path("id").asText(), extractPictureUrl(root.path("picture")));
     }
 
-    public FacebookException getException(String json) throws IOException{
+    public FacebookException getException(String json) throws IOException {
         JsonNode root = mapper.readTree(json);
         int errorCode = root.path("error").path("code").asInt();
         return new FacebookException(errorCode);

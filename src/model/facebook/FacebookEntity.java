@@ -42,6 +42,15 @@ public abstract class FacebookEntity extends Identifiable {
 
     @Override
     public boolean equals(Object o) {
-        return ((this.getId() != null) && (((Identifiable)(o)).getId() != null)) ? super.equals(o) : (this.getFacebookId() == ((FacebookEntity)(o)).getFacebookId());
+        return ((this.getId() != null) && (((Identifiable)(o)).getId() != null)) ? super.equals(o)
+                : ((FacebookEntity)(o)).getFacebookId().matches(this.getFacebookId());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (facebookId != null ? facebookId.hashCode() : 0);
+        return result;
     }
 }

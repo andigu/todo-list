@@ -12,7 +12,7 @@ public class User extends FacebookEntity {
 //    private String facebookId;
 //    private String pictureUrl;
     private String email;
-    private String firstName;
+    private String firstName; // TODO deprecate
     private String lastName;
 
     public User(String id, String firstName, String lastName, String email, String facebookId, String pictureUrl) {
@@ -37,6 +37,11 @@ public class User extends FacebookEntity {
 //        this.pictureUrl = pictureUrl;
         this.email = email;
 
+    }
+
+    public User(String name) {
+        super(name);
+        this.setId(null);
     }
 
 //    public String getFacebookId() {

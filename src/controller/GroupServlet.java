@@ -27,12 +27,24 @@ public class GroupServlet extends ApplicationServlet {
         return responseEntity;
     }
 
+    /**
+     * Processes requests to join groups
+     *
+     * @return
+     * @throws IOException
+     */
     @Override
     public ResponseEntity<?> processPostResponse(HttpServletRequest request, HttpServletResponse response, Map<String, Object> requestData, Session session) throws IOException {
         ResponseEntity<Group> responseEntity = new ResponseEntity<>();
         String facebookAccessToken = getFacebookToken(session);
         try {
-            responseEntity.setData(fb.getGroupByFacebookId(facebookAccessToken, requestData.get("facebookId").toString()));
+            Group group = fb.getGroupByFacebookId(facebookAccessToken, requestData.get("facebookId").toString());
+
+            // Check if the user is a member of the group on facebook
+            if (group.getMembers().contains(getLoggedUser(session))) {
+
+            }
+            responseEntity.setData(group);
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(400);

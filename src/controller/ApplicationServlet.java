@@ -61,6 +61,10 @@ public abstract class ApplicationServlet extends HttpServlet {
         return user;
     }
 
+    User getLoggedUser(Session session) {
+        return db.getUserByToken(session.getLoginToken());
+    }
+
 //    String getFacebookToken(HttpServletRequest request) {
 //        System.out.println("logintoken: "+ request.getParameter("loginToken"));
 //        System.out.println("map: "+ request.getParameterMap());
