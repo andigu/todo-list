@@ -3,6 +3,7 @@ package controller.json;
 import com.fasterxml.jackson.core.type.TypeReference;
 import database.filter.TaskFilter;
 import model.Session;
+import model.group.Topic;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
@@ -30,6 +31,8 @@ public enum SupportedTypeReference {
     STRING_ARRAY(new TypeReference<String[]>() {
     }),
     SESSION(new TypeReference<Session>(){
+    }),
+    TOPIC(new TypeReference<Topic>() {
     });
 
     private TypeReference<?> typeReference;

@@ -20,6 +20,7 @@ public class Group extends FacebookEntity {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<User> members;
 
+    private Set<Topic> topics;
 
     public Group(String id, String name) {
         super(id, name);
@@ -35,6 +36,14 @@ public class Group extends FacebookEntity {
         this.setId(null);
         this.setFacebookId(facebookId);
         this.setName(name);
+        this.setPictureUrl(pictureUrl);
+    }
+
+    // From db
+    public Group(String id, String name, String facebookId, String pictureUrl, String privacy) {
+        this.setId(id);
+        this.setName(name);
+        this.setFacebookId(facebookId);
         this.setPictureUrl(pictureUrl);
     }
 
@@ -54,5 +63,11 @@ public class Group extends FacebookEntity {
         return members;
     }
 
+    public Set<Topic> getTopics() {
+        return topics;
+    }
 
+    public void setTopics(Set<Topic> topics) {
+        this.topics = topics;
+    }
 }

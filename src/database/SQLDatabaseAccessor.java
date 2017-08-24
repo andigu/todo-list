@@ -11,6 +11,7 @@ import model.Session;
 import model.User;
 import model.group.Group;
 import model.group.Project;
+import model.group.Topic;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
@@ -75,11 +76,9 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     //private static final String getUserByLoginSQL = "SELECT * FROM MODEL.USERS WHERE USERNAME = ? AND PASSWORD = ?";
     private static final String getUserByIdSQL = "SELECT * FROM MODEL.USERS WHERE USER_ID = ?";
     private static final String getUserByFacebookIdSQL = "SELECT * FROM MODEL.USERS WHERE FACEBOOK_ID = ?";
-
     private static final String getFacebookTokenByLoginToken = "SELECT FACEBOOK_TOKEN FROM APP.LOGINS WHERE TOKEN = ?";
 
     private static final String getMembersOfGroup = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_GROUPS WHERE GROUP_ID = ?";
-    private static final String getMembersOfProject = "SELECT * FROM MODEL.USERS NATURAL JOIN MODEL.USER_PROJECTS WHERE PROJECT_ID = ?";
     private static final String getUserByTokenSQL = "SELECT * FROM MODEL.USERS NATURAL JOIN APP.LOGINS WHERE TOKEN = ?";
     //private static final String getGroupsSQL = "SELECT * FROM MODEL.USER_GROUPS NATURAL JOIN MODEL.GROUPS WHERE USER_ID = ?";
     private static final String getGroupsSQL = "SELECT * FROM MODEL.GROUPS";
@@ -90,10 +89,15 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     private static final String deleteLoginSQL = "DELETE  FROM APP.LOGINS WHERE user_id = ?";
     private static final String registerUserSQL = "INSERT INTO MODEL.USERS(USER_ID, FIRST_NAME, LAST_NAME, EMAIL, FACEBOOK_ID, PICTURE_URL)  VALUES (?, ?, ?, ?, ?, ?)";
     private static final String updateUserSQL = "UPDATE MODEL.USERS SET FIRST_NAME = ?, LAST_NAME = ?, EMAIL = ?, PICTURE_URL = ? WHERE USER_ID = ?";
-    private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME) VALUES (?, ?)";
+    private static final String createGroupSQL = "INSERT INTO MODEL.GROUPS (GROUP_ID, GROUP_NAME, FACEBOOK_ID, PICTURE_URL) VALUES (?, ?, ?, ?)";
     private static final String getGroupSQL = "SELECT * FROM MODEL.GROUPS WHERE GROUP_ID = ?";
-    private static final String getProjectSQL = "SELECT * FROM MODEL.PROJECTS WHERE PROJECT_ID = ?";
+    private static final String getGroupByFacebookIdSQL = "SELECT * FROM MODEL.GROUPS WHERE FACEBOOK_ID = ?";
     private static final String joinGroupSQL = "INSERT INTO MODEL.USER_GROUPS (USER_ID, GROUP_ID) VALUES (?, ?)";
+
+    private static final String getTopicsByGroupSQL = "SELECT * FROM MODEL.TOPICS WHERE group_id = ?";
+    private static final String getTopicsSQL = "SELECT * FROM MODEL.TOPICS";
+    private static final String insertTopicSQL = "INSERT INTO MODEL.TOPICS (TOPIC_ID, TOPIC_NAME, GROUP_ID, START_DATE) VALUES(?, ?, ?, ?)";
+
 
     private final Map<Class<? extends Task>, TaskDAO> taskDAOMap = new HashMap<Class<? extends Task>, TaskDAO>() {{
         put(GroupTask.class, new GroupTaskDAO(sources.get(SOURCE_FLAVOR)));
@@ -102,21 +106,6 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     }};
 
     private static final SQLDatabaseAccessor instance = new SQLDatabaseAccessor();
-
-
-//    @Override
-//    public User getUserByLogin(String username, String password) {
-//        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
-//             PreparedStatement statement = connection.prepareStatement(getUserByLoginSQL)) {
-//            statement.setString(1, username);
-//            statement.setString(2, encrypt(password));
-//            ResultSet resultSet = statement.executeQuery();
-//            return resultSet.next() ? ResultSetConverter.getUser(resultSet) : null;
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
 
 
     @Override
@@ -196,13 +185,14 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     public Set<Group> getGroups(User user, Filter<Group> filter) {
         try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
              PreparedStatement statement = connection.prepareStatement(getGroupsSQL)) {
-            //statement.setString(1, user.getId());
             ResultSet result = statement.executeQuery();
             Set<Group> groups = new HashSet<>();
             while (result.next()) {
                 Group group = ResultSetConverter.getGroup(result);
                 group.setMembers(getMembersOf(group));
-                GroupTaskDAO dao = (GroupTaskDAO)(taskDAOMap.get(GroupTask.class));
+//                GroupTaskDAO dao = (GroupTaskDAO)(taskDAOMap.get(GroupTask.class));
+//                group.setTopics(getTopicsByGroup(group));
+//                group.setTopics(getTopics());
                 groups.add(group);
             }
             return filter.doFilter(groups);
@@ -212,8 +202,44 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
         return null;
     }
 
+//    /**
+//     * Designed to be used only with getGroups Method
+//     */
+//    public Set<Topic> getTopicsByGroup(Group group) {
+//        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
+//             PreparedStatement statement = connection.prepareStatement(getTopicsByGroupSQL)) {
+//            statement.setString(1, group.getId());
+//            ResultSet result = statement.executeQuery();
+//            Set<Topic> topics = new LinkedHashSet<>();
+//            while (result.next()) {
+//                topics.add(ResultSetConverter.getTopic(result));
+//            }
+//            return topics;
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+
     @Override
-    public void joinGroup(String id, User user) {
+    public Set<Topic> getTopics(Filter<Topic> topicFilter) {
+        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
+             PreparedStatement statement = connection.prepareStatement(getTopicsSQL)) {
+            ResultSet result = statement.executeQuery();
+            Set<Topic> topics = new LinkedHashSet<>();
+            while (result.next()) {
+                topics.add(ResultSetConverter.getTopic(result));
+            }
+            return topicFilter.doFilter(topics);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    @Override
+    public void joinGroup(String id, User user) throws SQLException {
         try (Connection conn = sources.get(SOURCE_FLAVOR).getConnection();
              PreparedStatement statement = conn.prepareStatement(joinGroupSQL)) {
             statement.setString(1, user.getId());
@@ -221,65 +247,21 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
-    @Override
-    public Set<Project> getProjects(User user) {
-        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
-             PreparedStatement statement = connection.prepareStatement(getProjectsSQL)) {
-            statement.setString(1, user.getId());
-            ResultSet result = statement.executeQuery();
-            Set<Project> projects = new HashSet<>();
-            while (result.next()) {
-                Project project = ResultSetConverter.getProject(result);
-                project.setCollaborators(getMembersOf(project));
-                projects.add(project);
-            }
-            return projects;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @Override
     public Set<GroupTask> getGroupTasks(Group group) {
         return null;
     }
 
-    @Override
-    public Set<ProjectTask> getProjectTasks(Project project) {
-        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
-             PreparedStatement statement = connection.prepareStatement(getProjectTasksSQL)) {
-            statement.setString(1, project.getId());
-            ResultSet result = statement.executeQuery();
-            Set<ProjectTask> tasks = new HashSet<>();
-            while (result.next()) {
-                tasks.add(ResultSetConverter.getProjectTask(result, project));
-            }
-            return tasks;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @Override
     public Set<User> getMembersOf(Group group) {
         try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection(); PreparedStatement statement = connection.prepareStatement(getMembersOfGroup)) {
             statement.setString(1, group.getId());
-            return getMembers(statement);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public Set<User> getMembersOf(Project project) {
-        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection(); PreparedStatement statement = connection.prepareStatement(getMembersOfProject)) {
-            statement.setString(1, project.getId());
             return getMembers(statement);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -324,13 +306,20 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     }
 
     @Override
-    public void complete(ProjectTask task, Date dateCompleted) {
-
-    }
-
-    @Override
-    public void completeProject(Project project, Date dateCompleted) {
-
+    public Topic insertTopic(Topic topic) {
+        try (Connection connection = sources.get(SOURCE_FLAVOR).getConnection();
+             PreparedStatement statement = connection.prepareStatement(insertTopicSQL)) {
+            topic.setId(randomId());
+            statement.setString(1, topic.getId());
+            statement.setString(2, topic.getName());
+            statement.setString(3, topic.getGroupId());
+            statement.setDate(4, toSqlDate(topic.getStartDate()));
+            statement.execute();
+            return topic;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -430,13 +419,16 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     }
 
     @Override
-    public Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException { // TODO change to create by Group
+    public Group createGroup(Group group) throws SQLIntegrityConstraintViolationException { // TODO change to create by Group
         try (Connection conn = sources.get(SOURCE_FLAVOR).getConnection();
              PreparedStatement statement = conn.prepareStatement(createGroupSQL)) {
-            String id = randomId();
-            statement.setString(1, id);
-            statement.setString(2, groupName);
-            return new Group(id, groupName);
+            group.setId(randomId());
+            statement.setString(1, group.getId());
+            statement.setString(2, group.getName());
+            statement.setString(3, group.getFacebookId());
+            statement.setString(4, group.getPictureUrl());
+            statement.execute();
+            return group;
         } catch (SQLIntegrityConstraintViolationException e) {
             e.printStackTrace();
             throw e;
@@ -460,16 +452,17 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     }
 
     @Override
-    public Project getProjectById(String id) {
-        try (Connection conn = sources.get(SOURCE_FLAVOR).getConnection(); PreparedStatement statement = conn.prepareStatement(getProjectSQL)) {
-            statement.setString(1, id);
+    public Group getGroupByFacebookId(String facebookId) {
+        try (Connection conn = sources.get(SOURCE_FLAVOR).getConnection(); PreparedStatement statement = conn.prepareStatement(getGroupByFacebookIdSQL)) {
+            statement.setString(1, facebookId);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next() ? ResultSetConverter.getProject(resultSet) : null;
+            return resultSet.next() ? ResultSetConverter.getGroup(resultSet) : null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
+
 
     @Override
     public void insertTask(Task task) {
@@ -484,6 +477,10 @@ public final class SQLDatabaseAccessor implements DatabaseAccessor {
     public String decrypt(String encrypted, String key) {
         Encryption encryption = Encryption.getDefault(key, "fillersalt", new byte[16]);
         return encryption.decryptOrNull(encrypted);
+    }
+
+    public java.sql.Date toSqlDate(Date date) {
+        return new java.sql.Date(date.getTime());
     }
 
 }

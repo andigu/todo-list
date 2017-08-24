@@ -74,6 +74,7 @@ public class User extends FacebookEntity {
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", id='" + getId() + '\'' +
                 '}';
     }
 }

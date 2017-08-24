@@ -54,10 +54,6 @@ public class TasksServlet extends ApplicationServlet {
                 GroupTask groupTask = converter.cast(taskJson, SupportedTypeReference.GROUP_TASK);
                 groupTask.setGroup(db.getGroupById(taskJson.get(JsonConstants.GROUP_ID).toString()));
                 return groupTask;
-            case JsonConstants.PROJECT_TASK:
-                ProjectTask projectTask = converter.cast(taskJson, SupportedTypeReference.PROJECT_TASK);
-                projectTask.setProject(db.getProjectById(taskJson.get(JsonConstants.PROJECT_ID).toString()));
-                return projectTask;
         }
         return null;
     }

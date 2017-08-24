@@ -6,11 +6,13 @@ import model.Session;
 import model.User;
 import model.group.Group;
 import model.group.Project;
+import model.group.Topic;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
 import model.task.Task;
 
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.Map;
@@ -32,25 +34,19 @@ public interface DatabaseAccessor {
 
     Set<Group> getGroups(User user, Filter<Group> filter);
 
-    Set<Project> getProjects(User user);
-
     Set<GroupTask> getGroupTasks(Group group);
-
-    Set<ProjectTask> getProjectTasks(Project project);
 
     Set<User> getMembersOf(Group group);
 
-    Set<User> getMembersOf(Project project);
-
     Map<User, Date> getUsersCompletedGroupTask(GroupTask task);
 
-    Group createGroup(String groupName) throws SQLIntegrityConstraintViolationException;
+    Group createGroup(Group group) throws SQLIntegrityConstraintViolationException;
 
-    void joinGroup (String id, User user);
+    Group getGroupByFacebookId(String facebookId);
+
+    void joinGroup (String id, User user) throws SQLException;
 
     Group getGroupById(String id);
-
-    Project getProjectById(String id);
 
     void insertTask(Task task);
 
@@ -58,9 +54,7 @@ public interface DatabaseAccessor {
 
     void complete(GroupTask task, Date dateCompleted);
 
-    void complete(ProjectTask task, Date dateCompleted);
-
-    void completeProject(Project project, Date dateCompleted);
+    Topic insertTopic(Topic topic);
 
     User registerUser(String firstName, String lastName, String email, String facebookId, String pictureUrl) throws SQLIntegrityConstraintViolationException;
 
@@ -73,4 +67,7 @@ public interface DatabaseAccessor {
     String getFacebookTokenBySession(Session session);
 
     void deleteLogin(String userId);
+
+    Set<Topic> getTopics(Filter<Topic> filter);
+
 }

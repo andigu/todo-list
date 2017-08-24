@@ -45,6 +45,8 @@ public interface JsonConstants {
     String START_DATE = "startDate";
     String END_DATE = "endDate";
 
+    String ID = "id";
+
     //Facebook
     String ACCESS_TOKEN = "accessToken";
     String FACEBOOK_USER_ID = "userID";

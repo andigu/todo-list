@@ -4,6 +4,7 @@ import model.Completable;
 import model.User;
 import model.group.Group;
 import model.group.Project;
+import model.group.Topic;
 import model.task.GroupTask;
 import model.task.IndividualTask;
 import model.task.ProjectTask;
@@ -20,7 +21,11 @@ public final class ResultSetConverter {
     }
 
     public static Group getGroup(ResultSet resultSet) throws SQLException {
-        return new Group(resultSet.getString("GROUP_ID"), resultSet.getString("GROUP_NAME"));
+        return new Group(resultSet.getString("GROUP_ID"), resultSet.getString("GROUP_NAME"), resultSet.getString("FACEBOOK_ID"), resultSet.getString("PICTURE_URL"), "");
+    }
+
+    public static Topic getTopic(ResultSet rs) throws SQLException{
+        return new Topic(rs.getString("TOPIC_ID"), rs.getString("TOPIC_NAME"),rs.getString("GROUP_ID"), rs.getDate("START_DATE"), rs.getDate("END_DATE"), rs.getBoolean("COMPLETED"));
     }
 
     public static Project getProject(ResultSet resultSet) throws SQLException {

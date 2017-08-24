@@ -109,15 +109,32 @@ public abstract class ApplicationServlet extends HttpServlet {
         }
     }
 
+    // Flags
     <T> Filter<T> addConstraints(Filter<T> filter, HttpServletRequest request) {
         if (filter != null) {
             for (String key : request.getParameterMap().keySet()) {
-                FilterType filterType = FilterType.fromValue(key);
-                if (filterType != null) {
-                    filter.addConstraint(filterType, request.getParameter(key));
+                try {
+                    FilterType filterType = FilterType.fromValue(key);
+                    if (filterType != null) {
+                        String filterValue = evaluateFlags(getLoggedUser(request), request.getParameter(key));
+                        filter.addConstraint(filterType, filterValue);
+                    }
+                } catch (Exception e) {
+                    continue;
                 }
             }
         }
         return filter;
     }
+
+    // Todo make something more elegant
+    private String evaluateFlags(User user, String value) {
+        switch (value) {
+            case "$me_id" : value = user.getId();
+            break;
+        }
+
+        return value;
+    }
+
 }

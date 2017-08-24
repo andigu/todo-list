@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 import controller.json.JsonConstants;
 
+import javax.json.Json;
+
 /**
  * @author Andi Gu
  */
@@ -17,8 +19,9 @@ public enum FilterType {
     startDate(JsonConstants.START_DATE),
     endDate(JsonConstants.END_DATE),
     notJoined(JsonConstants.NOT_JOINED_FILTER),
-    joined(JsonConstants.JOINED_FILTER);
+    joined(JsonConstants.JOINED_FILTER),
 
+    id(JsonConstants.ID); // Generic id
 
     private String value;
     FilterType(String value) {
@@ -32,6 +35,7 @@ public enum FilterType {
 
     @JsonCreator
     public static FilterType fromValue(String value) {
+        System.out.println("fromVal: "+value);
         return FilterType.valueOf(value);
     }
 }

@@ -14,6 +14,7 @@ import java.util.Set;
  * as complete. Once it is marked as complete, it is shown as complete for all the collaborators within the project.
  *
  * @author Andi Gu
+ * @deprecated
  */
 public class Project extends Completable {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
