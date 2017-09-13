@@ -17,7 +17,6 @@ import java.util.Set;
 public class FacebookDataHelper {
     private ObjectMapper mapper = new ObjectMapper();
 
-
     public Group getGroup (String json) throws IOException {
         JsonNode root = mapper.readTree(json);
         Group group = new Group(root.path("id").asText(), root.path("name").asText(), root.path("privacy").asText(),
